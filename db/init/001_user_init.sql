@@ -20,6 +20,9 @@ CREATE TABLE IF NOT EXISTS users(
     created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
     updated_at TIMESTAMPTZ NOT NULL DEFAULT now(),
 
+    agree_to_the_processing_of_personal_data BOOLEAN NOT NULL DEFAULT true,
+    agree_to_the_processing_of_personal_data_since TIMESTAMPTZ NOT NULL DEFAULT now(),
+
     password_hash BYTEA NOT NULL,
     password_hash_algorithm TEXT NOT NULL DEFAULT 'bcrypt',
     password_hash_key_id TEXT NOT NULL DEFAULT 'bcrypt_v1'
