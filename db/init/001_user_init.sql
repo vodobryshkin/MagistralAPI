@@ -26,7 +26,7 @@ CREATE TABLE IF NOT EXISTS users(
 );
 
 -- Функция, которая привязана к триггеру на обновление временной точки, когда был обновлён пользователь
-CREATE OR REPLACE FUNCTION set_updated_at()
+CREATE OR REPLACE FUNCTION set_updated_at_user()
 RETURNS trigger AS $$
 BEGIN
 NEW.updated_at := now();
@@ -40,7 +40,7 @@ DROP TRIGGER IF EXISTS trg_users_set_updated_at ON users;
 CREATE TRIGGER trg_users_set_updated_at
     BEFORE UPDATE ON users
     FOR EACH ROW
-    EXECUTE FUNCTION set_updated_at();
+    EXECUTE FUNCTION set_updated_at_user();
 
 -- Тип данных "Права пользователя в системе"
 CREATE TYPE AUTHORITY AS ENUM (
