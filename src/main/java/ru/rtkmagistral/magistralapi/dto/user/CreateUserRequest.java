@@ -3,6 +3,7 @@ package ru.rtkmagistral.magistralapi.dto.user;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.*;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import ru.rtkmagistral.magistralapi.validation.formats.password.Password;
 import ru.rtkmagistral.magistralapi.validation.formats.phone.PhoneNumber;
@@ -14,6 +15,7 @@ import ru.rtkmagistral.magistralapi.validation.rules.proper_noun.ProperNoun;
  */
 @Data
 @JsonInclude(JsonInclude.Include.NON_NULL)
+@AllArgsConstructor
 public class CreateUserRequest {
     @NotBlank
     @CyrillicWord

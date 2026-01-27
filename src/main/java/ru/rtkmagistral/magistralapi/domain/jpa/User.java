@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 
@@ -17,6 +18,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @Getter
 @Setter
+@ToString
 public class User {
     /**
      * Enum user_type, описанный в DDL.
@@ -24,6 +26,25 @@ public class User {
     public enum UserType {
         INDIVIDUAL,
         BUSINESS
+    }
+
+    /**
+     * Конструктор для сущности "Пользователь". В него передаются все поля, которые можно считать с DTO CreateUserRequest.
+     *
+     * @param name имя пользователя.
+     * @param surname фамилия пользователя.
+     * @param fathersName отчество пользователя.
+     * @param email адрес электронной почты пользователя.
+     * @param phone номер телефона пользователя.
+     * @param passwordHash пароль пользователя, к которому было применено хэширование.
+     */
+    public User(String name, String surname, String fathersName, String email, String phone, byte[] passwordHash) {
+        this.name = name;
+        this.surname = surname;
+        this.fathersName = fathersName;
+        this.email = email;
+        this.phone = phone;
+        this.passwordHash = passwordHash;
     }
 
     /**
