@@ -2,7 +2,9 @@ package ru.rtkmagistral.magistralapi.dto.user;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.List;
 import java.util.Map;
@@ -11,6 +13,7 @@ import java.util.Map;
  * DTO, которое отправляется в сущности ответа на запрос на добавление пользователя в систему.
  */
 @Data
+@AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class UserResponse {
     /**
