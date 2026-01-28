@@ -29,7 +29,7 @@ CREATE TABLE IF NOT EXISTS idempotency_keys (
     expires_at TIMESTAMPTZ NOT NULL DEFAULT (now() + interval '24 hours')
 );
 
--- Функция, которая привязана к триггеру на обновление временной точки, когда был обновлён пользователь
+-- Функция, которая привязана к триггеру на обновление временной точки, когда был обновлён ключ идемпотентности
 CREATE OR REPLACE FUNCTION set_updated_at_idempotency_key()
 RETURNS trigger AS $$
 BEGIN
@@ -38,10 +38,10 @@ RETURN NEW;
 END;
 $$ LANGUAGE plpgsql;
 
-DROP TRIGGER IF EXISTS trg_users_set_updated_at ON idempotency_keys;
+DROP TRIGGER IF EXISTS trg_idempotency_keys_set_updated_at ON idempotency_keys;
 
 -- Триггер на обновление временной точки, когда был обновлён пользователь, который срабатывает при обновлении пользователя
-CREATE TRIGGER trg_users_set_updated_at
+CREATE TRIGGER trg_idempotency_keys_set_updated_at
     BEFORE UPDATE ON idempotency_keys
     FOR EACH ROW
 EXECUTE FUNCTION set_updated_at_idempotency_key();
