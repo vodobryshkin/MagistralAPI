@@ -5,3 +5,7 @@ spring:
     url: ${POSTGRES_URL}
     username: ${POSTGRES_USER}
     password: ${POSTGRES_PASSWORD}
+
+idempotency:
+  hmac:
+    secret-key: ${HMAC_SHA256_V1}

@@ -39,6 +39,20 @@ public class IdempotencyKey {
     }
 
     /**
+     * Конструктор для сущности "Ключ идемпотентности". В него передаются все поля, которые можно считать с DTO IdempotencyKeyDTO.
+     *
+     * @param id id ключа идемпотентности.
+     * @param path путь запроса.
+     * @param requestHash хэш пришедшего тела запроса.
+     */
+    public IdempotencyKey(UUID id, HttpMethod httpMethod, String path, byte[] requestHash) {
+        this.id = id;
+        this.httpMethod = httpMethod;
+        this.path = path;
+        this.requestHash = requestHash;
+    }
+
+    /**
      * Уникальный идентификатор пользователя.
      */
     @Id
