@@ -55,6 +55,12 @@ public class User {
     private UUID id;
 
     /**
+     * Компания, к которой прикреплён пользователь.
+     */
+    @OneToOne(mappedBy = "user")
+    private Company company;
+
+    /**
      * Имя пользователя. Не может быть null-значением.
      */
     @Column(name = "name", nullable = false)
