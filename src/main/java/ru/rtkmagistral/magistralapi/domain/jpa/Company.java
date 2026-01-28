@@ -19,6 +19,21 @@ import java.util.UUID;
 @ToString
 public class Company {
     /**
+     * Конструктор для сущности "Компания". В него передаются все поля, которые можно считать с DTO CreateCompanyRequest.
+     *
+     * @param title название компании.
+     * @param inn ИНН компании.
+     * @param kpp КПП компании.
+     * @param okved ОКВЭД компании.
+     */
+    public Company(String title, String inn, String kpp, String okved) {
+        this.title = title;
+        this.inn = inn;
+        this.kpp = kpp;
+        this.okved = okved;
+    }
+
+    /**
      * Уникальный идентификатор компании.
      */
     @Id
@@ -53,6 +68,6 @@ public class Company {
     /**
      * ОКВЭД компании. Не может быть null-значением.
      */
-    @Column(name = "kpp", nullable = false)
+    @Column(name = "okved", nullable = false)
     private String okved;
 }
