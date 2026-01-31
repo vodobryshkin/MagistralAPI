@@ -12,3 +12,9 @@ spring:
 idempotency:
   hmac:
     secret-key: ${HMAC_SHA256_V1}
+
+dadata:
+  client:
+    base-url: https://suggestions.dadata.ru/suggestions/api/4_1/rs/findById/party
+    token: ${DADATA_TOKEN}
+    timeout: 30s
