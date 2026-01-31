@@ -69,6 +69,6 @@ public class DadataClient implements IDadataClient {
             throw new DadataClientException("DADATA_ERROR_WHILE_PARSING_INN_KPP_OKVED");
         }
 
-        return new CreateCompanyRequest(title, mappedInn, mappedKpp, okved, true);
+        return new CreateCompanyRequest(title, mappedInn, mappedKpp, okved);
     }
 }
