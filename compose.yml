@@ -16,5 +16,22 @@ services:
       timeout: 3s
       retries: 20
 
+  rabbitmq:
+    image: rabbitmq:3-management
+    environment:
+      RABBITMQ_DEFAULT_USER: ${RABBIT_MQ_USERNAME}
+      RABBITMQ_DEFAULT_PASS: ${RABBIT_MQ_PASSWORD}
+    ports:
+      - "${RABBIT_MQ_PORT}:5672"
+      - "15672:15672"
+    volumes:
+      - rabbitmqdata:/var/lib/rabbitmq
+    healthcheck:
+      test: [ "CMD-SHELL", "rabbitmq-diagnostics -q ping" ]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+
 volumes:
   pgdata:
+  rabbitmqdata:

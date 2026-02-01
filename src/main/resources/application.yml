@@ -16,10 +16,23 @@ spring:
     properties:
       mail.smtp.auth: true
       mail.smtp.starttls.enable: true
+  rabbitmq:
+    host: ${RABBIT_MQ_HOST:localhost}
+    port: ${RABBIT_MQ_PORT:5672}
+    username: ${RABBIT_MQ_USERNAME:guest}
+    password: ${RABBIT_MQ_PASSWORD:guest}
+
 
 idempotency:
   hmac:
     secret-key: ${HMAC_SHA256_V1}
+
+confirmationlink.prefix: ${CONFIRMATION_LINK_PREFIX}
+
+mail:
+  confirm:
+    queue:
+      name: ${RABBIT_MQ_QUEUE_CONFIRMATION_NAME:DefaultQueue}
 
 dadata:
   client:

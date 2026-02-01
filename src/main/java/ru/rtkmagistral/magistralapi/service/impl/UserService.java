@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.rtkmagistral.magistralapi.domain.jpa.User;
 import ru.rtkmagistral.magistralapi.dto.company.CreateCompanyRequest;
+import ru.rtkmagistral.magistralapi.dto.mail.ConfirmAccountMailRequest;
 import ru.rtkmagistral.magistralapi.dto.user.CreateUserRequest;
 import ru.rtkmagistral.magistralapi.dto.user.UserResponse;
 import ru.rtkmagistral.magistralapi.dto.user.UserResponses;
@@ -13,6 +14,7 @@ import ru.rtkmagistral.magistralapi.exception.UserWithThisCreditsAlreadyExistsEx
 import ru.rtkmagistral.magistralapi.mapper.IUserMapper;
 import ru.rtkmagistral.magistralapi.repository.UserRepository;
 import ru.rtkmagistral.magistralapi.service.spec.ICompanyService;
+import ru.rtkmagistral.magistralapi.service.spec.IMessageService;
 import ru.rtkmagistral.magistralapi.service.spec.IUserService;
 
 /**
@@ -24,6 +26,7 @@ public class UserService implements IUserService {
     private final IUserMapper userMapper;
 
     private final ICompanyService companyService;
+    private final IMessageService messageService;
 
     private final PasswordEncoder passwordEncoder;
 
@@ -41,6 +44,8 @@ public class UserService implements IUserService {
         user.setUserType(User.UserType.INDIVIDUAL);
 
         userRepository.save(user);
+
+        sendConfirmationMessageForUser(user);
 
         return UserResponses.USER_CREATED;
     }
@@ -60,6 +65,8 @@ public class UserService implements IUserService {
         userRepository.save(user);
         companyService.createCompany(createCompanyRequest, user);
 
+        sendConfirmationMessageForUser(user);
+
         return UserResponses.USER_CREATED;
     }
 
@@ -73,5 +80,18 @@ public class UserService implements IUserService {
         }
 
         return userMapper.toEntity(createUserRequest, passwordEncoder);
+    }
+
+    private void sendConfirmationMessageForUser(User user) {
+        ConfirmAccountMailRequest request = new ConfirmAccountMailRequest(
+                user.getName(),
+                user.getSurname(),
+                user.getFathersName() == null? "": user.getFathersName(),
+                user.getEmail(),
+                "Подтверждение аккаунта",
+                "позже сгенерю"
+        );
+
+        messageService.sendConfirmAccountMessageToQueue(request);
     }
 }
