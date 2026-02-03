@@ -85,6 +85,9 @@ BEGIN
 INSERT INTO roles(user_id, role)
     VALUES (NEW.id, 'ROLE_VERIFIED_USER')
         ON CONFLICT DO NOTHING;
+DELETE FROM roles
+    WHERE user_id = NEW.id
+        AND role='ROLE_UNVERIFIED_USER';
 RETURN NEW;
 END;
 $$ LANGUAGE plpgsql;
