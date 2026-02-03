@@ -2,7 +2,7 @@ package ru.rtkmagistral.magistralapi.dto.company;
 
 
 /**
- * Класс для введения констант для ответов на запрос.
+ * Класс для введения констант для ответов на запрос, связанный с доменной сущностью "Компания".
  */
 public final class CompanyResponses {
     private CompanyResponses() {}

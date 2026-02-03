@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import ru.rtkmagistral.magistralapi.dto.company.CompanyResponse;
 import ru.rtkmagistral.magistralapi.dto.company.CompanyResponses;
+import ru.rtkmagistral.magistralapi.dto.confirmation_link.ConfirmationLinkResponses;
+import ru.rtkmagistral.magistralapi.dto.token.VerifyResponse;
 import ru.rtkmagistral.magistralapi.dto.user.UserResponse;
 import ru.rtkmagistral.magistralapi.dto.user.UserResponses;
 
@@ -87,5 +89,17 @@ public class AppExceptionHandler {
                 ));
 
         return new UserResponse("VALIDATION_ERROR", errors);
+    }
+
+    /**
+     * Метод для обработки исключения ConfirmationLinkException.
+     *
+     * @param ex ошибка, которую вернул метод.
+     * @return HTTP-ответ с ошибкой 404 Not found.
+     * */
+    @ExceptionHandler(ConfirmationLinkException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public VerifyResponse handleValidationException(ConfirmationLinkException ex) {
+        return ConfirmationLinkResponses.CONFIRMATION_LINK_HAS_EXPIRED_OR_INVALID;
     }
 }
