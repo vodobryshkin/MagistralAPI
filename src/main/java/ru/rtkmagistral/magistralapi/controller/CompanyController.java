@@ -2,22 +2,27 @@ package ru.rtkmagistral.magistralapi.controller;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseCookie;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.rtkmagistral.magistralapi.dto.company.CompanyDTO;
 import ru.rtkmagistral.magistralapi.dto.company.CreateCompanyRequest;
 import ru.rtkmagistral.magistralapi.dto.user.CreateUserRequest;
 import ru.rtkmagistral.magistralapi.dto.user.UserResponse;
+import ru.rtkmagistral.magistralapi.service.spec.IJWTService;
 import ru.rtkmagistral.magistralapi.service.spec.IUserService;
 
 /**
  * Контроллер, принимающий запросы идущие на эндпойнт "/company"
  */
 @RestController
-@RequestMapping("/company")
+@RequestMapping("/companies")
 @RequiredArgsConstructor
 public class CompanyController {
     private final IUserService userService;
+    private final IJWTService jwtService;
 
     /**
      * Метод, принимающий POST-запросы идущие на эндпойнт "/company".
@@ -28,10 +33,26 @@ public class CompanyController {
      */
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public UserResponse createCompany(@RequestBody @Valid CompanyDTO companyDTO) {
+    public ResponseEntity<UserResponse> createCompany(@RequestBody @Valid CompanyDTO companyDTO) {
         CreateUserRequest createUserRequest = companyDTO.getCreateUserRequest();
         CreateCompanyRequest companyRequest = companyDTO.getCreateCompanyRequest();
 
-        return userService.createLegalUser(createUserRequest, companyRequest);
+        UserResponse userResponse = userService.createLegalUser(createUserRequest, companyRequest);
+
+        String accessToken = jwtService.generateAccessToken(createUserRequest.getEmail(), "ROLE_UNVERIFIED_USER");
+        String refreshToken = jwtService.generateRefreshToken(createUserRequest.getEmail(), "ROLE_UNVERIFIED_USER");
+
+        ResponseCookie refreshCookie = ResponseCookie.from("refresh_token", refreshToken)
+                .httpOnly(true)
+                .secure(true)
+                .sameSite("Strict")
+                .path("/")
+                .build();
+
+        return ResponseEntity
+                .ok()
+                .header(HttpHeaders.AUTHORIZATION, accessToken)
+                .header(HttpHeaders.SET_COOKIE, refreshCookie.toString())
+                .body(userResponse);
     }
 }
