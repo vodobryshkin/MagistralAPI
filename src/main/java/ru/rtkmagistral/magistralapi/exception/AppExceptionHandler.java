@@ -7,6 +7,8 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import ru.rtkmagistral.magistralapi.dto.auth.AuthResponse;
+import ru.rtkmagistral.magistralapi.dto.auth.AuthResponses;
 import ru.rtkmagistral.magistralapi.dto.company.CompanyResponse;
 import ru.rtkmagistral.magistralapi.dto.company.CompanyResponses;
 import ru.rtkmagistral.magistralapi.dto.confirmation_link.ConfirmationLinkResponses;
@@ -99,7 +101,19 @@ public class AppExceptionHandler {
      * */
     @ExceptionHandler(ConfirmationLinkException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public VerifyResponse handleValidationException(ConfirmationLinkException ex) {
+    public VerifyResponse handleConfirmationLinkException(ConfirmationLinkException ex) {
         return ConfirmationLinkResponses.CONFIRMATION_LINK_HAS_EXPIRED_OR_INVALID;
+    }
+
+    /**
+     * Метод для обработки исключения AuthException.
+     *
+     * @param ex ошибка, которую вернул метод.
+     * @return HTTP-ответ с ошибкой 401 Unauthorized.
+     * */
+    @ExceptionHandler(AuthException.class)
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    public AuthResponse handleAuthException(AuthException ex) {
+        return AuthResponses.INCORRECT_EMAIL_OR_PASSWORD;
     }
 }
