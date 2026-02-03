@@ -22,10 +22,10 @@
 </head>
 <body>
 <header>
-    <h2>Здравствуйте, <b><span th:text="${surname}">surname</span> <span th:text="${name}">name</span> <span th:text="${fathersName}">fathersName</span></b>!</h2>
+    <h2>Здравствуйте, <b><span th:text="${name}">name</span> <span th:text="${fathersName}">fathersName</span></b>!</h2>
 </header>
 Благодарим Вас за регистрацию на платформе Магистраль!<br>
-Для подтверждения аккаунта перейдите по ссылке:
+Для подтверждения аккаунта перейдите по ссылке:<br>
 <a th:href="${confirmationLink}" th:text="${confirmationLink}">ссылка</a>
 
 <p>Это письмо отправлено автоматически, не отвечайте на него.</p>

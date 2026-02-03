@@ -35,7 +35,6 @@ public class MailService implements IMailService {
         Context context = new Context();
         context.setVariable("name", confirmAccountMailRequest.getName());
         context.setVariable("fathersName", confirmAccountMailRequest.getFathersName());
-        context.setVariable("surname", confirmAccountMailRequest.getSurname());
         context.setVariable("confirmationLink", prefix + confirmAccountMailRequest.getLink());
 
         String htmlContent = templateEngine.process("confirmation", context);

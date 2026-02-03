@@ -110,7 +110,6 @@ public class UserService implements IUserService {
     private void sendConfirmationMessageForUser(User user, String id) {
         ConfirmAccountMailRequest request = new ConfirmAccountMailRequest(
                 user.getName(),
-                user.getSurname(),
                 user.getFathersName() == null? "": user.getFathersName(),
                 user.getEmail(),
                 "Подтверждение аккаунта",

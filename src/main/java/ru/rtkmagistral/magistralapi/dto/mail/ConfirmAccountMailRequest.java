@@ -9,7 +9,6 @@ import lombok.Data;
 @AllArgsConstructor
 public class ConfirmAccountMailRequest {
     private String name;
-    private String surname;
     private String fathersName;
     private String to;
     private String subject;
