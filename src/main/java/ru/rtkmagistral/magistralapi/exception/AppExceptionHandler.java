@@ -22,13 +22,13 @@ import java.util.stream.Collectors;
 @RestControllerAdvice
 public class AppExceptionHandler {
     /**
-     * Метод для обработки исключения UserWithThisCreditsAlreadyExistsException.
+     * Метод для обработки исключения UserException.
      *
      * @param ex ошибка, которую вернул метод.
      * @return HTTP-ответ с сообщением в зависимости от типа исключения.
      */
-    @ExceptionHandler(UserWithThisCreditsAlreadyExistsException.class)
-    public ResponseEntity<UserResponse> handleUserWithThisCreditsAlreadyExistsException(UserWithThisCreditsAlreadyExistsException ex) {
+    @ExceptionHandler(UserException.class)
+    public ResponseEntity<UserResponse> handleUserWithThisCreditsAlreadyExistsException(UserException ex) {
         return switch (ex.getMessage()) {
             case "USER_WITH_THIS_EMAIL_ALREADY_EXISTS" -> new ResponseEntity<>(UserResponses.USER_WITH_THIS_EMAIL_ALREADY_EXISTS, HttpStatus.CONFLICT);
             case "USER_WITH_THIS_PHONE_ALREADY_EXISTS" -> new ResponseEntity<>(UserResponses.USER_WITH_THIS_PHONE_ALREADY_EXISTS, HttpStatus.CONFLICT);
@@ -37,13 +37,13 @@ public class AppExceptionHandler {
     }
 
     /**
-     * Метод для обработки исключения CompanyCreditsException.
+     * Метод для обработки исключения CompanyException.
      *
      * @param ex ошибка, которую вернул метод.
      * @return HTTP-ответ с сообщением в зависимости от типа исключения.
      */
-    @ExceptionHandler(CompanyCreditsException.class)
-    public ResponseEntity<CompanyResponse> handleCompanyCreditsException(CompanyCreditsException ex) {
+    @ExceptionHandler(CompanyException.class)
+    public ResponseEntity<CompanyResponse> handleCompanyCreditsException(CompanyException ex) {
         return switch (ex.getMessage()) {
             case "COMPANY_WITH_THIS_INN_NOT_EXISTS_IN_DADATA" -> new ResponseEntity<>(CompanyResponses.COMPANY_WITH_THIS_INN_NOT_EXISTS_IN_DADATA, HttpStatus.UNPROCESSABLE_CONTENT);
             case "INN_NOT_MATCHES_WITH_DADATA" -> new ResponseEntity<>(CompanyResponses.INN_NOT_MATCHES_WITH_DADATA, HttpStatus.UNPROCESSABLE_CONTENT);

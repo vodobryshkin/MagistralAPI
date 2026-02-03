@@ -23,7 +23,7 @@ public class ConfirmationLink implements Serializable {
     @Id
     private UUID id;
 
-    private String username;
+    private String email;
 
     @TimeToLive
     private Long ttlSeconds;

@@ -97,6 +97,12 @@ public class User {
     private byte[] passwordHash;
 
     /**
+     * Статус аккаунта пользователя (подтверждён/не подтверждён). Не может быть null-значением.
+     */
+    @Column(name = "verified", nullable = false)
+    private boolean verified;
+
+    /**
      * Тип аккаунта пользователя. Может принимать только значения enum'а UserType. Не может быть null-значением.
      */
     @Enumerated(EnumType.STRING)

@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import ru.rtkmagistral.magistralapi.domain.redis.ConfirmationLink;
 import ru.rtkmagistral.magistralapi.dto.token.VerifyResponse;
+import ru.rtkmagistral.magistralapi.exception.ConfirmationLinkException;
 import ru.rtkmagistral.magistralapi.repository.IConfirmationLinkRepository;
 import ru.rtkmagistral.magistralapi.service.spec.IConfirmationLinkService;
 
@@ -21,7 +22,6 @@ public class ConfirmationLinkService implements IConfirmationLinkService {
     private Long ttl;
 
     private final IConfirmationLinkRepository confirmationLinkRepository;
-    private static final VerifyResponse INVALID_TOKEN = new VerifyResponse(false, null);
 
 
     /**
@@ -35,13 +35,13 @@ public class ConfirmationLinkService implements IConfirmationLinkService {
         Optional<ConfirmationLink> confirmationLinkOptional = confirmationLinkRepository.findById(uuid);
 
         if (confirmationLinkOptional.isPresent()) {
-            String username = confirmationLinkOptional.get().getUsername();
+            String username = confirmationLinkOptional.get().getEmail();
             confirmationLinkRepository.deleteById(uuid);
 
             return new VerifyResponse(true, username);
         }
 
-        return INVALID_TOKEN;
+        throw new ConfirmationLinkException("CONFIRMATION_LINK_HAS_EXPIRED_OR_INVALID");
     }
 
     /**

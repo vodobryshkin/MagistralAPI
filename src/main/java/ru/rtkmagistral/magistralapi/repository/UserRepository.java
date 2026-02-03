@@ -3,6 +3,7 @@ package ru.rtkmagistral.magistralapi.repository;
 import org.springframework.data.repository.CrudRepository;
 import ru.rtkmagistral.magistralapi.domain.jpa.User;
 
+import java.util.Optional;
 import java.util.UUID;
 
 /**
@@ -24,4 +25,13 @@ public interface UserRepository extends CrudRepository<User, UUID> {
      * @return результат проверки на существование пользователя.
      */
     boolean existsUserByPhone(String phone);
+
+    /**
+     * Метод для поиска пользователя по его адресу электронной почты.
+     *
+     * @param email адрес электронной почты пользователя.
+     * @return Optional с null'ом, если пользователь с данным адресом электронной почты не найден, или с
+     * экземпляром класса User в противном случае.
+     */
+    Optional<User> findUserByEmail(String email);
 }

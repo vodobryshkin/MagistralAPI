@@ -22,12 +22,25 @@ services:
       RABBITMQ_DEFAULT_USER: ${RABBIT_MQ_USERNAME}
       RABBITMQ_DEFAULT_PASS: ${RABBIT_MQ_PASSWORD}
     ports:
-      - "${RABBIT_MQ_PORT}:5672"
+      - "5672:5672"
       - "15672:15672"
     volumes:
       - rabbitmqdata:/var/lib/rabbitmq
     healthcheck:
-      test: [ "CMD-SHELL", "rabbitmq-diagnostics -q ping" ]
+      test: ["CMD-SHELL", "rabbitmq-diagnostics -q ping" ]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - redisdata:/data
+    command: ["redis-server", "--appendonly", "yes"]
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
       interval: 5s
       timeout: 3s
       retries: 20
@@ -35,3 +48,4 @@ services:
 volumes:
   pgdata:
   rabbitmqdata:
+  redisdata:

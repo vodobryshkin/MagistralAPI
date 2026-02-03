@@ -9,8 +9,8 @@ spring:
     password: ${POSTGRES_PASSWORD}
     driver-class-name: org.postgresql.Driver
   mail:
-    host: ${MAIL_HOST}
-    port: ${MAIL_PORT}
+    host: ${MAIL_HOST:smtp.gmail.com}
+    port: ${MAIL_PORT:587}
     username: ${MAIL_USERNAME}
     password: ${MAIL_PASSWORD}
     properties:
@@ -21,13 +21,21 @@ spring:
     port: ${RABBIT_MQ_PORT:5672}
     username: ${RABBIT_MQ_USERNAME:guest}
     password: ${RABBIT_MQ_PASSWORD:guest}
+  data:
+    redis:
+      host: ${REDIS_DATABASE_HOST:localhost}
+      port: ${REDIS_DATABASE_PORT:6379}
+      database: ${REDIS_DATABASE_NAME:0}
 
 
 idempotency:
   hmac:
     secret-key: ${HMAC_SHA256_V1}
 
-confirmationlink.prefix: ${CONFIRMATION_LINK_PREFIX}
+confirmationlink:
+  ttl: 86400
+  prefix: ${CONFIRMATION_LINK_PREFIX}
+
 
 mail:
   confirm:

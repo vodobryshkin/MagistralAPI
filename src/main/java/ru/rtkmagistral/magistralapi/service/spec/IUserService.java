@@ -24,4 +24,6 @@ public interface IUserService {
      * @return ответ на создание пользователя.
      */
     UserResponse createLegalUser(CreateUserRequest createUserRequest, CreateCompanyRequest createCompanyRequest);
+
+    void verifyUser(String email);
 }
