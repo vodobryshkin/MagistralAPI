@@ -54,7 +54,7 @@ public class JWTService implements IJWTService {
      */
     @Override
     public String generateAccessToken(String username, List<String> roles) {
-        return generateToken(username, roles, accessTokenExpiration);
+        return "Bearer " + generateToken(username, roles, accessTokenExpiration);
     }
 
     /**
