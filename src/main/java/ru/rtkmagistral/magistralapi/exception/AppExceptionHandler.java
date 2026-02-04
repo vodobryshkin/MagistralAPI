@@ -12,6 +12,8 @@ import ru.rtkmagistral.magistralapi.dto.auth.AuthResponses;
 import ru.rtkmagistral.magistralapi.dto.company.CompanyResponse;
 import ru.rtkmagistral.magistralapi.dto.company.CompanyResponses;
 import ru.rtkmagistral.magistralapi.dto.confirmation_link.ConfirmationLinkResponses;
+import ru.rtkmagistral.magistralapi.dto.order.OrderResponse;
+import ru.rtkmagistral.magistralapi.dto.order.OrderResponses;
 import ru.rtkmagistral.magistralapi.dto.token.VerifyResponse;
 import ru.rtkmagistral.magistralapi.dto.user.UserResponse;
 import ru.rtkmagistral.magistralapi.dto.user.UserResponses;
@@ -116,5 +118,17 @@ public class AppExceptionHandler {
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     public AuthResponse handleAuthException(AuthException ex) {
         return AuthResponses.INCORRECT_EMAIL_OR_PASSWORD;
+    }
+
+    /**
+     * Метод для обработки исключения OrderException.
+     *
+     * @param ex ошибка, которую вернул метод.
+     * @return HTTP-ответ с ошибкой 409 Conflict.
+     * */
+    @ExceptionHandler(OrderException.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public OrderResponse handleOrderException(OrderException ex) {
+        return OrderResponses.ORDER_IS_STILL_BEING_CREATED;
     }
 }

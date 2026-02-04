@@ -11,4 +11,10 @@ public class OrderResponses {
      */
     public static final OrderResponse ORDER_CREATED =
             new OrderResponse("СREATED", true);
+
+    /**
+     * Ответ со статусом 409 Conflict. Заказ до сих пор создаётся.
+     */
+    public static final OrderResponse ORDER_IS_STILL_BEING_CREATED =
+            new OrderResponse("ORDER_IS_STILL_BEING_CREATED", false);
 }

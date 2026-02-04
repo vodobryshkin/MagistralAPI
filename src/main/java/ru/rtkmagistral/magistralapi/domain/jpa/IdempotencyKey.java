@@ -8,7 +8,7 @@ import lombok.Setter;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.annotations.Type;
 import org.hibernate.type.SqlTypes;
-import ru.rtkmagistral.magistralapi.dto.user.UserResponse;
+import ru.rtkmagistral.magistralapi.dto.order.OrderResponse;
 
 import java.util.Map;
 import java.util.UUID;
@@ -104,5 +104,5 @@ public class IdempotencyKey {
      */
     @Type(JsonType.class)
     @Column(name = "response_body", columnDefinition = "jsonb")
-    private UserResponse responseBody;
+    private OrderResponse responseBody;
 }
