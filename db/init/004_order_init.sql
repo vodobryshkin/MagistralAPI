@@ -81,6 +81,7 @@ CREATE TABLE IF NOT EXISTS orders (
 
     created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
     updated_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+    finished_at TIMESTAMPTZ,
 
     CHECK (
         (deliver_as_soon_as_possible = true  AND wishing_delivery_time IS NULL) OR
@@ -99,11 +100,31 @@ $$ LANGUAGE plpgsql;
 
 DROP TRIGGER IF EXISTS trg_orders_set_updated_at ON orders;
 
--- Триггер на обновление временной точки, когда был обновлён пользователь, который срабатывает при обновлении пользователя
+-- Триггер на обновление временной точки, когда был обновлён заказ, который срабатывает при обновлении заказа
 CREATE TRIGGER trg_orders_set_updated_at
     BEFORE UPDATE ON orders
     FOR EACH ROW
 EXECUTE FUNCTION set_updated_at_order();
+
+-- Функция, которая привязана к триггеру на обновление временной точки, когда был завершён заказ, срабатывающий при обновлении статуса заказа
+CREATE OR REPLACE FUNCTION set_finished_status_at_order()
+    RETURNS trigger AS $$
+BEGIN
+    NEW.finished_at := now();
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+-- Триггер на обновление временной точки, когда был завершён заказ, который срабатывает при обновлении статуса заказа
+CREATE TRIGGER trg_orders_set_finished_time
+    BEFORE UPDATE OF order_status ON orders
+    FOR EACH ROW
+    WHEN (
+        NEW.order_status = 'FINISHED' AND
+        OLD.order_status IS DISTINCT FROM 'FINISHED' AND
+        NEW.finished_at IS NULL
+    )
+EXECUTE FUNCTION set_finished_status_at_order();
 
 -- Индекс для быстрого поиска заказа по id
 CREATE INDEX IF NOT EXISTS idx_orders_user_id ON orders(user_id);
