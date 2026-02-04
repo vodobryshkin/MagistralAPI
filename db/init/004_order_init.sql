@@ -58,11 +58,11 @@ CREATE TABLE IF NOT EXISTS orders (
     shipping_address VARCHAR(512) NOT NULL,
     arrival_address VARCHAR(512) NOT NULL,
 
-    length_centi_cm integer NOT NULL CHECK (length_centi_cm > 0 AND length_centi_cm <= 20_000),
-    width_centi_cm  integer NOT NULL CHECK (width_centi_cm  > 0 AND width_centi_cm  <= 20_000),
-    height_centi_cm integer NOT NULL CHECK (height_centi_cm > 0 AND height_centi_cm <= 20_000),
+    length_centi_cm integer NOT NULL CHECK (length_centi_cm > 0 AND length_centi_cm <= 20000),
+    width_centi_cm  integer NOT NULL CHECK (width_centi_cm  > 0 AND width_centi_cm  <= 20000),
+    height_centi_cm integer NOT NULL CHECK (height_centi_cm > 0 AND height_centi_cm <= 20000),
 
-    weight_gr INTEGER NOT NULL CHECK (weight_gr > 0 AND weight_gr <= 300_000),
+    weight_gr INTEGER NOT NULL CHECK (weight_gr > 0 AND weight_gr <= 300000),
 
     cost_of_investment_kopeika BIGINT NOT NULL CHECK (cost_of_investment_kopeika > 0),
 
