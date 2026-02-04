@@ -46,4 +46,21 @@ public class AuthController {
                 .header(HttpHeaders.SET_COOKIE, refreshCookie.toString())
                 .body(authResponse);
     }
+
+    @GetMapping("/refresh")
+    public ResponseEntity<Void> refresh(@CookieValue(name = "refresh_token", required = false) String refreshToken) {
+        if (refreshToken == null || !jwtService.isTokenValid(refreshToken)) {
+            return ResponseEntity.status(401).build();
+        }
+
+        String email = jwtService.extractUsername(refreshToken);
+        List<String> roles = jwtService.extractRoles(refreshToken);
+
+        String accessToken = jwtService.generateAccessToken(email, roles);
+
+        return ResponseEntity
+                .ok()
+                .header(HttpHeaders.AUTHORIZATION, accessToken)
+                .build();
+    }
 }

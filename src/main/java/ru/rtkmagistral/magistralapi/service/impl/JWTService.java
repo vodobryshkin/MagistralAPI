@@ -120,6 +120,36 @@ public class JWTService implements IJWTService {
         return extractAllClaims(token).getSubject();
     }
 
+    /**
+     * Метод для получения ролей в токене.
+     *
+     * @param token токен, который необходимо проверить.
+     * @return результат проверки токена.
+     */
+    @Override
+    public List<String> extractRoles(String token) {
+        Claims claims = extractAllClaims(token);
+
+        Object raw = claims.get("roles");
+        if (raw == null) {
+            return List.of();
+        }
+
+        if (raw instanceof List<?> list) {
+            return list.stream()
+                    .map(String::valueOf)
+                    .toList();
+        }
+
+        String s = String.valueOf(raw).trim();
+        if (s.isEmpty()) {
+            return List.of();
+        }
+
+        return List.of(s.split("\\s*,\\s*"));
+    }
+
+
     private Claims extractAllClaims(String token) {
         return Jwts.parser()
                 .verifyWith(secretKey)

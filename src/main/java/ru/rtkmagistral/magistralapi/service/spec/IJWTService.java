@@ -57,4 +57,12 @@ public interface IJWTService {
      * @return результат проверки токена.
      */
     String extractUsername(String token);
+
+    /**
+     * Метод для получения ролей в токене.
+     *
+     * @param token токен, который необходимо проверить.
+     * @return результат проверки токена.
+     */
+    List<String> extractRoles(String token);
 }
