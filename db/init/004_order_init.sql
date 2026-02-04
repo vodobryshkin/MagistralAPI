@@ -1,0 +1,109 @@
+-- Тип данных "Вид отправления"
+CREATE TYPE TYPE_OF_SHIPMENT AS ENUM(
+    'PACKAGE',
+    'PACKET'
+);
+
+-- Тип данных "Характер вложения"
+CREATE TYPE NATURE_OF_INVESTMENT AS ENUM (
+    'ALCOHOLIC_PRODUCTS',
+    'COSTUME_JEWELRY',
+    'BIOLOGICAL_MATERIALS',
+    'HABERDASHERY_AND_TEXTILE_GOODS',
+    'DOCUMENTATION',
+    'GOLD_BULLION_ORE_SCRAP_GRANULES',
+    'GOLD_LIQUID',
+    'GOLD_POWDER',
+    'STONES',
+    'HOUSEHOLD_AND_INDUSTRIAL_PIERCING_AND_CUTTING_ITEMS',
+    'CONTROL_AND_IDENTIFICATION_MARKS_KIZ',
+    'COSMETICS',
+    'CULTURAL_PROPERTY',
+    'MEDICINES',
+    'METAL_PRODUCTS',
+    'PLATINUM_GROUP_METALS_LIQUID',
+    'PLATINUM_GROUP_METALS_POWDER',
+    'PLATINUM_GROUP_METALS_BULLION_ORE_SCRAP_GRANULES',
+    'COINS',
+    'NON_METALLIC_PRODUCTS',
+    'PRINTED_MATERIALS',
+    'PARCELS_WITH_BATTERIES',
+    'PARCELS_WITH_GAS_CONTAINERS',
+    'PARCELS_WITH_LIQUID_CONTAINERS',
+    'DEVICES_AND_TOOLS',
+    'FOOD_PRODUCTS',
+    'SILVER_BULLION_ORE_SCRAP_GRANULES',
+    'SILVER_LIQUID',
+    'SILVER_POWDER',
+    'HOUSEHOLD_CHEMICALS',
+    'TOBACCO_PRODUCTS',
+    'CHEMICAL_PRODUCTS',
+    'FRAGILE_AND_BREAKABLE_ITEMS',
+    'SECURITIES',
+    'ELECTRICAL_AND_ELECTRONIC_EQUIPMENT',
+    'JEWELRY'
+);
+
+-- Тип данных "Статус заказа"
+CREATE TYPE ORDER_STATUS AS ENUM (
+    'ACCEPTED',
+    'FINISHED'
+);
+
+-- Таблица с заказами
+CREATE TABLE IF NOT EXISTS orders (
+    id UUID PRIMARY KEY,
+    user_id UUID REFERENCES users(id) NOT NULL,
+    order_status ORDER_STATUS NOT NULL DEFAULT 'ACCEPTED',
+    shipping_address VARCHAR(512) NOT NULL,
+    arrival_address VARCHAR(512) NOT NULL,
+
+    length_centi_cm integer NOT NULL CHECK (length_centi_cm > 0 AND length_centi_cm <= 20_000),
+    width_centi_cm  integer NOT NULL CHECK (width_centi_cm  > 0 AND width_centi_cm  <= 20_000),
+    height_centi_cm integer NOT NULL CHECK (height_centi_cm > 0 AND height_centi_cm <= 20_000),
+
+    weight_gr INTEGER NOT NULL CHECK (weight_gr > 0 AND weight_gr <= 300_000),
+
+    cost_of_investment_kopeika BIGINT NOT NULL CHECK (cost_of_investment_kopeika > 0),
+
+    type_of_shipment TYPE_OF_SHIPMENT NOT NULL,
+    nature_of_investment NATURE_OF_INVESTMENT NOT NULL,
+
+    deliver_as_soon_as_possible BOOLEAN NOT NULL,
+    wishing_delivery_time TIMESTAMPTZ,
+
+    price_kopeika BIGINT NOT NULL DEFAULT 0,
+
+    secret_cargo BOOLEAN NOT NULL,
+
+    agree_with_the_terms_of_the_agreement BOOLEAN NOT NULL DEFAULT true,
+    agree_with_the_terms_of_the_agreement_since TIMESTAMPTZ NOT NULL DEFAULT now(),
+
+    created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+
+    CHECK (
+        (deliver_as_soon_as_possible = true  AND wishing_delivery_time IS NULL) OR
+        (deliver_as_soon_as_possible = false AND wishing_delivery_time IS NOT NULL)
+    )
+);
+
+-- Функция, которая привязана к триггеру на обновление временной точки, когда был обновлён заказ
+CREATE OR REPLACE FUNCTION set_updated_at_order()
+    RETURNS trigger AS $$
+BEGIN
+    NEW.updated_at := now();
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+DROP TRIGGER IF EXISTS trg_orders_set_updated_at ON orders;
+
+-- Триггер на обновление временной точки, когда был обновлён пользователь, который срабатывает при обновлении пользователя
+CREATE TRIGGER trg_orders_set_updated_at
+    BEFORE UPDATE ON orders
+    FOR EACH ROW
+EXECUTE FUNCTION set_updated_at_order();
+
+-- Индекс для быстрого поиска заказа по id
+CREATE INDEX IF NOT EXISTS idx_orders_user_id ON orders(user_id);
