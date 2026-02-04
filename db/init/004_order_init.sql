@@ -83,6 +83,9 @@ CREATE TABLE IF NOT EXISTS orders (
     updated_at TIMESTAMPTZ NOT NULL DEFAULT now(),
     finished_at TIMESTAMPTZ,
 
+    receiver_fio VARCHAR(512) NOT NULL,
+    receiver_phone VARCHAR(16) NOT NULL,
+
     CHECK (
         (deliver_as_soon_as_possible = true  AND wishing_delivery_time IS NULL) OR
         (deliver_as_soon_as_possible = false AND wishing_delivery_time IS NOT NULL)
