@@ -29,5 +29,11 @@ public final class UserResponses {
      */
     public static final UserResponse BAD_REQUEST =
             new UserResponse("BAD_REQUEST", null);
+
+    /**
+     * Ответ со статусом 404 Not Found, вызванный невоможностью найти пользователя по переданным идентификационным данным.
+     */
+    public static final UserResponse USER_NOT_FOUND =
+            new UserResponse("USER_NOT_FOUND", null);
 }
 

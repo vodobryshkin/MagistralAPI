@@ -36,6 +36,7 @@ public class AppExceptionHandler {
         return switch (ex.getMessage()) {
             case "USER_WITH_THIS_EMAIL_ALREADY_EXISTS" -> new ResponseEntity<>(UserResponses.USER_WITH_THIS_EMAIL_ALREADY_EXISTS, HttpStatus.CONFLICT);
             case "USER_WITH_THIS_PHONE_ALREADY_EXISTS" -> new ResponseEntity<>(UserResponses.USER_WITH_THIS_PHONE_ALREADY_EXISTS, HttpStatus.CONFLICT);
+            case "USER_NOT_FOUND" -> new ResponseEntity<>(UserResponses.USER_NOT_FOUND, HttpStatus.NOT_FOUND);
             default -> new ResponseEntity<>(UserResponses.BAD_REQUEST, HttpStatus.BAD_REQUEST);
         };
     }
