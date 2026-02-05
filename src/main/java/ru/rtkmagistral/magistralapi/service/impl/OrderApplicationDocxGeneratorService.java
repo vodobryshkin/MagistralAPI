@@ -4,7 +4,9 @@ import org.apache.poi.xwpf.usermodel.*;
 import org.springframework.stereotype.Service;
 import ru.rtkmagistral.magistralapi.domain.jpa.Order;
 import ru.rtkmagistral.magistralapi.domain.jpa.User;
+import ru.rtkmagistral.magistralapi.dto.order.OrderBlock;
 import ru.rtkmagistral.magistralapi.dto.order.OrderDocumentDTO;
+import ru.rtkmagistral.magistralapi.dto.user.UserBlock;
 import ru.rtkmagistral.magistralapi.service.spec.IOrderApplicationDocxGeneratorService;
 
 import java.io.*;
@@ -68,12 +70,12 @@ public class OrderApplicationDocxGeneratorService implements IOrderApplicationDo
     }
 
     private Map<String, String> buildValues(OrderDocumentDTO dto) {
-        OrderDocumentDTO.UserBlock u = dto.getUser();
-        OrderDocumentDTO.OrderBlock o = dto.getOrder();
+        UserBlock u = dto.getUser();
+        OrderBlock o = dto.getOrder();
 
         String senderName = safeJoin(" ", u.getSurname(), u.getName(), u.getFathersName()).trim();
-        String customerName = (u.getUserType() == User.UserType.BUSINESS && dto.getCompanyName() != null && !dto.getCompanyName().isBlank())
-                ? dto.getCompanyName()
+        String customerName = (u.getUserType() == User.UserType.BUSINESS && u.getCompanyName() != null && !u.getCompanyName().isBlank())
+                ? u.getCompanyName()
                 : senderName;
 
         String senderAddress = o.getShippingAddress();
