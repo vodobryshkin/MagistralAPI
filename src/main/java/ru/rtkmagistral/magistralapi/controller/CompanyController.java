@@ -11,6 +11,7 @@ import ru.rtkmagistral.magistralapi.dto.company.CompanyDTO;
 import ru.rtkmagistral.magistralapi.dto.company.CreateCompanyRequest;
 import ru.rtkmagistral.magistralapi.dto.user.CreateUserRequest;
 import ru.rtkmagistral.magistralapi.dto.user.UserResponse;
+import ru.rtkmagistral.magistralapi.service.spec.IAuthenticationService;
 import ru.rtkmagistral.magistralapi.service.spec.IJWTService;
 import ru.rtkmagistral.magistralapi.service.spec.IUserService;
 
@@ -23,6 +24,8 @@ import ru.rtkmagistral.magistralapi.service.spec.IUserService;
 public class CompanyController {
     private final IUserService userService;
     private final IJWTService jwtService;
+    private final IAuthenticationService authenticationService;
+
 
     /**
      * Метод, принимающий POST-запросы идущие на эндпойнт "/company".
@@ -48,6 +51,8 @@ public class CompanyController {
                 .sameSite("Strict")
                 .path("/")
                 .build();
+
+        authenticationService.createResendToken(createUserRequest.getEmail());
 
         return ResponseEntity
                 .ok()
