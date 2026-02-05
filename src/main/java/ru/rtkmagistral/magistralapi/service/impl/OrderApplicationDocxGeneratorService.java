@@ -4,6 +4,7 @@ import org.apache.poi.xwpf.usermodel.*;
 import org.springframework.stereotype.Service;
 import ru.rtkmagistral.magistralapi.domain.jpa.Order;
 import ru.rtkmagistral.magistralapi.domain.jpa.User;
+import ru.rtkmagistral.magistralapi.dto.order.OrderDocumentDTO;
 import ru.rtkmagistral.magistralapi.service.spec.IOrderApplicationDocxGeneratorService;
 
 import java.io.*;
@@ -44,38 +45,18 @@ public class OrderApplicationDocxGeneratorService implements IOrderApplicationDo
      * Генерирует DOCX-заявку по шаблону и данным заказа.
      *
      * @param templatePath путь к шаблону .docx
-     * @param order заказ, из него берутся адреса/параметры груза/отправитель/получатель
-     * @param applicationNumber номер заявки (в шапку "ЗАЯВКА № ...")
-     * @param applicationDate дата заявки (в шапку, формат dd.MM.yyyy)
-     * @param contractText строка с договором/офертой (для 2-й строки таблицы)
-     * @param pickupDate дата забора отправления исполнителем (может быть null)
-     * @param deliveryDate предполагаемая дата вручения (может быть null)
-     * @param places количество мест (если < 1 — будет 1)
-     * @param extraInfo доп. инфа для последней строки (может быть пусто/null)
-     * @param companyName название компании для BUSINESS (если пусто — будет ФИО)
      * @return готовый docx в байтах
      * @throws IOException если шаблон не читается или docx не записывается
      */
     @Override
-    public byte[] generate(
-            Path templatePath,
-            Order order,
-            String applicationNumber,
-            OffsetDateTime applicationDate,
-            String contractText,
-            OffsetDateTime pickupDate,
-            OffsetDateTime deliveryDate,
-            int places,
-            String extraInfo,
-            String companyName
-    ) throws IOException {
+    public byte[] generate(Path templatePath, OrderDocumentDTO dto) throws IOException {
 
         try (InputStream is = new FileInputStream(templatePath.toFile());
              XWPFDocument doc = new XWPFDocument(is)) {
 
-            Map<String, String> values = buildValues(order, contractText, pickupDate, deliveryDate, places, extraInfo, companyName);
+            Map<String, String> values = buildValues(dto);
 
-            fillHeaderParagraphs(doc, applicationNumber, applicationDate);
+            fillHeaderParagraphs(doc, dto.getApplicationNumber(), dto.getApplicationDate());
             fillTableBySecondColumnKey(doc, values);
             forceTimesNewRomanEverywhere(doc);
 
@@ -86,50 +67,43 @@ public class OrderApplicationDocxGeneratorService implements IOrderApplicationDo
         }
     }
 
-    private Map<String, String> buildValues(
-            Order order,
-            String contractText,
-            OffsetDateTime pickupDate,
-            OffsetDateTime deliveryDate,
-            int places,
-            String extraInfo,
-            String companyName
-    ) {
-        User u = order.getUser();
+    private Map<String, String> buildValues(OrderDocumentDTO dto) {
+        OrderDocumentDTO.UserBlock u = dto.getUser();
+        OrderDocumentDTO.OrderBlock o = dto.getOrder();
 
         String senderName = safeJoin(" ", u.getSurname(), u.getName(), u.getFathersName()).trim();
-        String customerName = (u.getUserType() == User.UserType.BUSINESS && companyName != null && !companyName.isBlank())
-                ? companyName
+        String customerName = (u.getUserType() == User.UserType.BUSINESS && dto.getCompanyName() != null && !dto.getCompanyName().isBlank())
+                ? dto.getCompanyName()
                 : senderName;
 
-        String senderAddress = order.getShippingAddress();
+        String senderAddress = o.getShippingAddress();
         String senderContact = safeJoin(", ", nullIfBlank(senderName), nullIfBlank(u.getPhone())).trim();
 
-        String receiverName = order.getReceiverFio();
-        String receiverAddress = order.getArrivalAddress();
-        String receiverContact = safeJoin(", ", nullIfBlank(order.getReceiverFio()), nullIfBlank(order.getReceiverPhone())).trim();
+        String receiverName = o.getReceiverFio();
+        String receiverAddress = o.getArrivalAddress();
+        String receiverContact = safeJoin(", ", nullIfBlank(o.getReceiverFio()), nullIfBlank(o.getReceiverPhone())).trim();
 
-        String type = mapShipmentType(order.getTypeOfShipment());
-        String secret = order.isSecretCargo() ? "СЕКРЕТНО" : "Без грифа секретности";
+        String type = mapShipmentType(o.getTypeOfShipment());
+        String secret = o.isSecretCargo() ? "СЕКРЕТНО" : "Без грифа секретности";
 
-        String nature = order.getNatureOfInvestment() != null ? order.getNatureOfInvestment().getRussianTitle() : "";
+        String nature = o.getNatureOfInvestment() != null ? o.getNatureOfInvestment().getRussianTitle() : "";
 
-        String cost = formatKopeika(order.getCostOfInvestmentInKopeika());
-        String weight = order.getWeightGr() + " г";
-        String placesStr = String.valueOf(Math.max(1, places));
-        String dims = (order.getLengthCentiCm() / 100) + " x " + (order.getWidthCentiCm() / 100) + " x " + (order.getHeightCentiCm() / 100) + " см";
+        String cost = formatKopeika(o.getCostOfInvestmentInKopeika());
+        String weight = o.getWeightGr() + " г";
+        String placesStr = String.valueOf(Math.max(1, dto.getPlaces()));
+        String dims = (o.getLengthCentiCm() / 100) + " x " + (o.getWidthCentiCm() / 100) + " x " + (o.getHeightCentiCm() / 100) + " см";
 
         Map<String, String> map = new HashMap<>();
         map.put(KEY_CUSTOMER_NAME, customerName);
-        map.put(KEY_CONTRACT, nullToEmpty(contractText));
+        map.put(KEY_CONTRACT, nullToEmpty(dto.getContractText()));
         map.put(KEY_SENDER_NAME, senderName);
         map.put(KEY_SENDER_ADDRESS, nullToEmpty(senderAddress));
         map.put(KEY_SENDER_CONTACT, nullToEmpty(senderContact));
-        map.put(KEY_PICKUP_DATE, pickupDate != null ? RU_DATE.format(pickupDate) : "");
+        map.put(KEY_PICKUP_DATE, dto.getPickupDate() != null ? RU_DATE.format(dto.getPickupDate()) : "");
         map.put(KEY_RECEIVER_NAME, nullToEmpty(receiverName));
         map.put(KEY_RECEIVER_ADDRESS, nullToEmpty(receiverAddress));
         map.put(KEY_RECEIVER_CONTACT, nullToEmpty(receiverContact));
-        map.put(KEY_DELIVERY_DATE, deliveryDate != null ? RU_DATE.format(deliveryDate) : "");
+        map.put(KEY_DELIVERY_DATE, dto.getDeliveryDate() != null ? RU_DATE.format(dto.getDeliveryDate()) : "");
         map.put(KEY_TYPE, type);
         map.put(KEY_SECRET, secret);
         map.put(KEY_NATURE, nature);
@@ -137,7 +111,7 @@ public class OrderApplicationDocxGeneratorService implements IOrderApplicationDo
         map.put(KEY_WEIGHT, weight);
         map.put(KEY_PLACES, placesStr);
         map.put(KEY_DIMENSIONS, dims);
-        map.put(KEY_EXTRA, nullToEmpty(extraInfo));
+        map.put(KEY_EXTRA, nullToEmpty(dto.getExtraInfo()));
         return map;
     }
 
