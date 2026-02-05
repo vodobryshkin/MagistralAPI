@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.stereotype.Component;
 import ru.rtkmagistral.magistralapi.dto.mail.ConfirmAccountMailRequest;
+import ru.rtkmagistral.magistralapi.dto.mail.DocumentMailRequest;
 
 @Component
 @RequiredArgsConstructor
@@ -14,5 +15,10 @@ public class MailQueueConsumer {
     @RabbitListener(queues = "${mail.confirm.queue.name}", containerFactory = "rabbitListenerContainerFactory")
     public void onConfirmAccount(ConfirmAccountMailRequest request) {
         mailService.sendConfirmationLetter(request);
+    }
+
+    @RabbitListener(queues = "${mail.document.queue.name}", containerFactory = "rabbitListenerContainerFactory")
+    public void onDocument(DocumentMailRequest request) {
+        mailService.sendDocumentLetter(request);
     }
 }

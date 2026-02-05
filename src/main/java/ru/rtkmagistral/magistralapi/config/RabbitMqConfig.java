@@ -21,6 +21,9 @@ public class RabbitMqConfig {
     @Value("${mail.confirm.queue.name}")
     private String confirmQueueName;
 
+    @Value("${mail.document.queue.name}")
+    private String documentQueueName;
+
     @Value("${spring.rabbitmq.username}")
     private String username;
 
@@ -33,6 +36,11 @@ public class RabbitMqConfig {
     @Bean
     public Queue confirmQueue() {
         return new Queue(confirmQueueName);
+    }
+
+    @Bean
+    public Queue documentQueue() {
+        return new Queue(documentQueueName);
     }
 
     @Bean

@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Документ</title>
+    <style>
+        header, footer {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        body {
+            font-family: sans-serif;
+        }
+
+        footer {
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+<header>
+    <h2>Новая заявка на заказ.</h2>
+</header>
+
+<p>Во вложении документ с заявкой на заказ: <b><span th:text="${filename}">document.docx</span></b></p>
+<p>Это письмо отправлено автоматически, не отвечайте на него.</p>
+
+<footer>©ООО "ЛТК МАГИСТРАЛЬ". Все права защищены.</footer>
+</body>
+</html>

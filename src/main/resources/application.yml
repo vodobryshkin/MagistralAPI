@@ -41,6 +41,10 @@ mail:
   confirm:
     queue:
       name: ${RABBIT_MQ_QUEUE_CONFIRMATION_NAME:DefaultQueue}
+  document:
+    mail: ${SPEC_SVYAZ_MAIL}
+    queue:
+      name: ${RABBIT_MQ_QUEUE_CONFIRMATION_NAME:DocumentQueue}
 
 dadata:
   client:
