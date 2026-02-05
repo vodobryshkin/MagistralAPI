@@ -11,13 +11,13 @@ import java.util.regex.Pattern;
  */
 @Component
 public class PasswordValidator implements ConstraintValidator<Password, String> {
-    private static final Pattern PHONE = Pattern.compile(
+    private static final Pattern PASSWORD = Pattern.compile(
             "^[\\x21-\\x7E]+$"
     );
 
     @Override
     public boolean isValid(String value, ConstraintValidatorContext context) {
         if (value == null) return true;
-        return PHONE.matcher(value).matches();
+        return PASSWORD.matcher(value).matches();
     }
 }
