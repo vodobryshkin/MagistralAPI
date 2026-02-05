@@ -18,17 +18,17 @@ class ICompanyMapperTest {
     static Stream<Arguments> toEntityCases() {
         return Stream.of(
                 Arguments.of(
-                        new CreateCompanyRequest("MAGISTRAL", "1234567890", "123456789", "11.11"),
+                        new CreateCompanyRequest("MAGISTRAL", "1234567890", "123456789", "11.11", true),
                         new Company("MAGISTRAL", "1234567890", "123456789", "11.11"),
                         true
                 ),
                 Arguments.of(
-                        new CreateCompanyRequest("magistral", "1234567890", "123456789", "11.11"),
+                        new CreateCompanyRequest("magistral", "1234567890", "123456789", "11.11", true),
                         new Company("MAGISTRAL", "1234567890", "123456789", "11.11"),
                         true
                 ),
                 Arguments.of(
-                        new CreateCompanyRequest("MAGISTRAL", "1234567890", "123456789", "11.11"),
+                        new CreateCompanyRequest("MAGISTRAL", "1234567890", "123456789", "11.11", true),
                         new Company("MAGISTRAL", "1234567890", "123456789", "1.1"),
                         false
                 )

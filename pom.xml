@@ -154,6 +154,11 @@
             <artifactId>jjwt</artifactId>
             <version>0.13.0</version>
         </dependency>
+        <dependency>
+            <groupId>org.apache.poi</groupId>
+            <artifactId>poi-ooxml</artifactId>
+            <version>5.4.0</version>
+        </dependency>
     </dependencies>
     <dependencyManagement>
         <dependencies>
@@ -163,6 +168,19 @@
                 <version>5.0.1</version>
                 <type>pom</type>
                 <scope>import</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-compress</artifactId>
+                <version>1.26.0</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.assertj</groupId>
+                <artifactId>assertj-core</artifactId>
+                <version>3.27.7</version>
+                <scope>test</scope>
             </dependency>
         </dependencies>
     </dependencyManagement>
