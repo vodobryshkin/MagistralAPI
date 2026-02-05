@@ -6,6 +6,8 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import ru.rtkmagistral.magistralapi.dto.auth.AuthResponse;
 import ru.rtkmagistral.magistralapi.dto.auth.LoginRequest;
@@ -48,6 +50,7 @@ public class AuthController {
     }
 
     @GetMapping("/refresh")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public ResponseEntity<Void> refresh(@CookieValue(name = "refresh_token", required = false) String refreshToken) {
         if (refreshToken == null || !jwtService.isTokenValid(refreshToken)) {
             return ResponseEntity.status(401).build();
@@ -62,5 +65,12 @@ public class AuthController {
                 .ok()
                 .header(HttpHeaders.AUTHORIZATION, accessToken)
                 .build();
+    }
+
+    @GetMapping("/resend")
+    @PreAuthorize("hasRole('UNVERIFIED_USER')")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public ResponseEntity<Void> resend(Authentication authentication) {
+        return authenticationService.resend(authentication.getName());
     }
 }

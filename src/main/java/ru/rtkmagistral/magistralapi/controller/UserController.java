@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import ru.rtkmagistral.magistralapi.dto.token.VerifyResponse;
 import ru.rtkmagistral.magistralapi.dto.user.CreateUserRequest;
 import ru.rtkmagistral.magistralapi.dto.user.UserResponse;
+import ru.rtkmagistral.magistralapi.service.spec.IAuthenticationService;
 import ru.rtkmagistral.magistralapi.service.spec.IConfirmationLinkService;
 import ru.rtkmagistral.magistralapi.service.spec.IJWTService;
 import ru.rtkmagistral.magistralapi.service.spec.IUserService;
@@ -25,6 +26,7 @@ public class UserController {
     private final IUserService userService;
     private final IConfirmationLinkService confirmationLinkService;
     private final IJWTService jwtService;
+    private final IAuthenticationService authenticationService;
 
     /**
      * Метод, принимающий POST-запросы идущие на эндпойнт "/users".
@@ -47,6 +49,8 @@ public class UserController {
                 .sameSite("Strict")
                 .path("/")
                 .build();
+
+        authenticationService.createResendToken(createUserRequest.getEmail());
 
         return ResponseEntity
                 .ok()

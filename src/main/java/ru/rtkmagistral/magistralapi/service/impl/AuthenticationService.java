@@ -1,17 +1,29 @@
 package ru.rtkmagistral.magistralapi.service.impl;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Service;
+import ru.rtkmagistral.magistralapi.domain.jpa.User;
+import ru.rtkmagistral.magistralapi.domain.redis.ConfirmationLink;
+import ru.rtkmagistral.magistralapi.domain.redis.ResendToken;
 import ru.rtkmagistral.magistralapi.dto.auth.AuthResponse;
 import ru.rtkmagistral.magistralapi.dto.auth.LoginRequest;
+import ru.rtkmagistral.magistralapi.dto.mail.ConfirmAccountMailRequest;
 import ru.rtkmagistral.magistralapi.exception.AuthException;
+import ru.rtkmagistral.magistralapi.exception.UserException;
+import ru.rtkmagistral.magistralapi.repository.IResendTokenRepository;
+import ru.rtkmagistral.magistralapi.repository.UserRepository;
 import ru.rtkmagistral.magistralapi.service.spec.IAuthenticationService;
+import ru.rtkmagistral.magistralapi.service.spec.IConfirmationLinkService;
+import ru.rtkmagistral.magistralapi.service.spec.IMessageService;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Сервиса для работы с функциональностью приложения, связанной с аутентификацией в приложении.
@@ -19,7 +31,16 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class AuthenticationService implements IAuthenticationService {
+    @Value("${redis.resend_token.ttl}")
+    private Long resendTokenTtl;
+
+    private final IConfirmationLinkService confirmationLinkService;
+    private final IMessageService messageService;
+
     private final AuthenticationManager authenticationManager;
+
+    private final IResendTokenRepository resendTokenRepository;
+    private final UserRepository userRepository;
 
     /**
      * Метод для реализации логики входа в приложение.
@@ -42,5 +63,56 @@ public class AuthenticationService implements IAuthenticationService {
         }
 
         throw new AuthException("INCORRECT_EMAIL_OR_PASSWORD");
+    }
+
+    /**
+     * Метод для проверки на то, можно ли сейчас отправить новое письмо с подтверждением аккаунта.
+     *
+     * @param email адрес электронной почты пользователя.
+     * @return сформированный респонс энтити.
+     */
+    @Override
+    public ResponseEntity<Void> resend(String email) {
+        Optional<ResendToken> resendTokenOptional = resendTokenRepository.findById(email);
+
+        if (resendTokenOptional.isEmpty()) {
+            ConfirmationLink confirmationLink = confirmationLinkService.generateConfirmationLink(email);
+            confirmationLinkService.saveConfirmationLink(confirmationLink);
+            String id = confirmationLink.getId().toString();
+
+            User user = userRepository.findUserByEmail(email).orElseThrow(() -> new UserException("USER_NOT_FOUND"));
+
+            ConfirmAccountMailRequest request = new ConfirmAccountMailRequest(
+                    user.getName(),
+                    user.getFathersName() == null? "": user.getFathersName(),
+                    user.getEmail(),
+                    "Подтверждение аккаунта",
+                    id
+            );
+
+            messageService.sendConfirmAccountMessageToQueue(request);
+
+            createResendToken(email);
+
+            return ResponseEntity.status(201)
+                    .build();
+        }
+
+        ResendToken resendToken = resendTokenOptional.get();
+
+        return ResponseEntity.status(429)
+                .header("Retry-After", String.valueOf(resendToken.getTtlSeconds()))
+                .build();
+    }
+
+    /**
+     * Метод для создания токена для контроля когда можно отправить новое письмо с подтверждением аккаунта.
+     *
+     * @param email адрес электронной почты пользователя.
+     */
+    @Override
+    public void createResendToken(String email) {
+        ResendToken resendToken = new ResendToken(email, resendTokenTtl);
+        resendTokenRepository.save(resendToken);
     }
 }

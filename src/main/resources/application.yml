@@ -54,3 +54,6 @@ jwt:
     expiration: ${JWT_ACCESS_EXP}
   refresh:
     expiration: ${JWT_REFRESH_EXP}
+
+redis:
+  resend_token.ttl: ${REDIS_RESEND_TOKEN_TTL}
