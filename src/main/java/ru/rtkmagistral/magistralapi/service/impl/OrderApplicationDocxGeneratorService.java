@@ -12,7 +12,6 @@ import ru.rtkmagistral.magistralapi.service.spec.IOrderApplicationDocxGeneratorS
 import java.io.*;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.nio.file.Path;
 import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
@@ -46,16 +45,12 @@ public class OrderApplicationDocxGeneratorService implements IOrderApplicationDo
     /**
      * Генерирует DOCX-заявку по шаблону и данным заказа.
      *
-     * @param templatePath путь к шаблону .docx
      * @return готовый docx в байтах
      * @throws IOException если шаблон не читается или docx не записывается
      */
     @Override
-    public byte[] generate(Path templatePath, OrderDocumentDTO dto) throws IOException {
-
-        try (InputStream is = new FileInputStream(templatePath.toFile());
-             XWPFDocument doc = new XWPFDocument(is)) {
-
+    public byte[] generate(InputStream template, OrderDocumentDTO dto) throws IOException {
+        try (XWPFDocument doc = new XWPFDocument(template)) {
             Map<String, String> values = buildValues(dto);
 
             fillHeaderParagraphs(doc, dto.getApplicationNumber(), dto.getApplicationDate());
@@ -68,6 +63,7 @@ public class OrderApplicationDocxGeneratorService implements IOrderApplicationDo
             }
         }
     }
+
 
     private Map<String, String> buildValues(OrderDocumentDTO dto) {
         UserBlock u = dto.getUser();

@@ -20,11 +20,6 @@ public interface IUserMapper {
             ".getBytes(java.nio.charset.StandardCharsets.UTF_8))")
     User toEntity(CreateUserRequest createUserRequest, @Context PasswordEncoder passwordEncoder);
 
-    @Mapping(target = "id", ignore = true)
-    @Mapping(target = "passwordHash", ignore = true)
-    @Mapping(target = "verified", ignore = true)
-    @Mapping(target = "userType", ignore = true)
-    @Mapping(target = "companyName",
-            expression = "java(companyName.isEmpty() ? null ? companyName.getTitle())")
+    @Mapping(target = "companyName", expression = "java(user.getCompany() != null ? user.getCompany().getTitle() : null)")
     UserBlock toDto(User user);
 }

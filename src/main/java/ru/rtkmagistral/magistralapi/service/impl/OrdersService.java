@@ -1,6 +1,8 @@
 package ru.rtkmagistral.magistralapi.service.impl;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -9,17 +11,23 @@ import ru.rtkmagistral.magistralapi.domain.jpa.IdempotencyKey;
 import ru.rtkmagistral.magistralapi.domain.jpa.Order;
 import ru.rtkmagistral.magistralapi.domain.jpa.User;
 import ru.rtkmagistral.magistralapi.dto.idempotency_key.IdempotencyKeyDTO;
-import ru.rtkmagistral.magistralapi.dto.order.CreateOrderRequest;
-import ru.rtkmagistral.magistralapi.dto.order.OrderResponse;
-import ru.rtkmagistral.magistralapi.dto.order.OrderResponses;
+import ru.rtkmagistral.magistralapi.dto.mail.DocumentMailRequest;
+import ru.rtkmagistral.magistralapi.dto.order.*;
+import ru.rtkmagistral.magistralapi.dto.user.UserBlock;
 import ru.rtkmagistral.magistralapi.exception.OrderException;
 import ru.rtkmagistral.magistralapi.exception.UserException;
 import ru.rtkmagistral.magistralapi.mapper.IOrderMapper;
+import ru.rtkmagistral.magistralapi.mapper.IUserMapper;
 import ru.rtkmagistral.magistralapi.repository.IOrderRepository;
 import ru.rtkmagistral.magistralapi.repository.UserRepository;
 import ru.rtkmagistral.magistralapi.service.spec.IIdempotencyKeyService;
+import ru.rtkmagistral.magistralapi.service.spec.IMessageService;
+import ru.rtkmagistral.magistralapi.service.spec.IOrderApplicationDocxGeneratorService;
 import ru.rtkmagistral.magistralapi.service.spec.IOrdersService;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.time.OffsetDateTime;
 import java.util.HashMap;
 import java.util.Optional;
 import java.util.UUID;
@@ -34,8 +42,15 @@ public class OrdersService implements IOrdersService {
     private final IOrderRepository orderRepository;
 
     private final IOrderMapper orderMapper;
+    private final IUserMapper userMapper;
 
     private final IIdempotencyKeyService idempotencyKeyService;
+    private final IOrderApplicationDocxGeneratorService docxGeneratorService;
+    private final IMessageService mailQueueProducer;
+
+
+    @Value("${mail.document.contract-text}")
+    private String contractText;
 
     /**
      * Метод для создания заказа на доставку в системе.
@@ -55,6 +70,33 @@ public class OrdersService implements IOrdersService {
         order.setUser(user);
 
         orderRepository.save(order);
+
+        UserBlock userBlock = userMapper.toDto(user);
+        OrderBlock orderBlock = orderMapper.toDto(order);
+
+        OrderDocumentDTO docDto = new OrderDocumentDTO(
+                order.getId().toString(),
+                OffsetDateTime.now(),
+                contractText,
+                OffsetDateTime.now(),
+                order.getWishingDeliveryTime(),
+                1,
+                "",
+                userBlock,
+                orderBlock
+        );
+
+        byte[] docx = null;
+        try (InputStream template = new ClassPathResource("templates/заявка.docx").getInputStream()) {
+            docx = docxGeneratorService.generate(template, docDto);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        String filename = "zayavka-" + order.getId() + ".docx";
+        String subject = "Заявка № " + order.getId();
+
+        mailQueueProducer.sendDocumentMessageToQueue(new DocumentMailRequest(subject, docx, filename));
 
         return OrderResponses.ORDER_CREATED;
     }

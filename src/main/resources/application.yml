@@ -42,6 +42,7 @@ mail:
     queue:
       name: ${RABBIT_MQ_QUEUE_CONFIRMATION_NAME:DefaultQueue}
   document:
+    contract-text: "Договор (публичная оферта) об оказании услуг по экспресс-доставке отправлений от 25.01.2026, г. Санкт-Петербург"
     mail: ${SPEC_SVYAZ_MAIL}
     queue:
       name: ${RABBIT_MQ_QUEUE_CONFIRMATION_NAME:DocumentQueue}
@@ -58,6 +59,10 @@ jwt:
     expiration: ${JWT_ACCESS_EXP}
   refresh:
     expiration: ${JWT_REFRESH_EXP}
+
+docx:
+  templates:
+    order-application: "templates/заявка.docx"
 
 redis:
   resend_token.ttl: ${REDIS_RESEND_TOKEN_TTL}
