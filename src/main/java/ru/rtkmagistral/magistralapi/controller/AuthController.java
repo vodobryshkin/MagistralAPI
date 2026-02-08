@@ -6,11 +6,11 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import ru.rtkmagistral.magistralapi.dto.auth.AuthResponse;
 import ru.rtkmagistral.magistralapi.dto.auth.LoginRequest;
+import ru.rtkmagistral.magistralapi.security.authorization.ForUnverifiedUsers;
 import ru.rtkmagistral.magistralapi.service.spec.IAuthenticationService;
 import ru.rtkmagistral.magistralapi.service.spec.IJWTService;
 
@@ -68,7 +68,7 @@ public class AuthController {
     }
 
     @GetMapping("/resend")
-    @PreAuthorize("hasRole('UNVERIFIED_USER')")
+    @ForUnverifiedUsers
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public ResponseEntity<Void> resend(Authentication authentication) {
         return authenticationService.resend(authentication.getName());

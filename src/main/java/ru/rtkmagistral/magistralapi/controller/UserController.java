@@ -12,6 +12,7 @@ import ru.rtkmagistral.magistralapi.dto.token.VerifyResponse;
 import ru.rtkmagistral.magistralapi.dto.user.CreateUserRequest;
 import ru.rtkmagistral.magistralapi.dto.user.UserProfileDTO;
 import ru.rtkmagistral.magistralapi.dto.user.UserResponse;
+import ru.rtkmagistral.magistralapi.security.authorization.ForAuthenticatedUsers;
 import ru.rtkmagistral.magistralapi.service.spec.IAuthenticationService;
 import ru.rtkmagistral.magistralapi.service.spec.IConfirmationLinkService;
 import ru.rtkmagistral.magistralapi.service.spec.IJWTService;
@@ -96,6 +97,7 @@ public class UserController {
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
+    @ForAuthenticatedUsers
     public UserProfileDTO readUserProfile(Authentication authentication) {
         return userService.getUserProfile(authentication.getName());
     }
