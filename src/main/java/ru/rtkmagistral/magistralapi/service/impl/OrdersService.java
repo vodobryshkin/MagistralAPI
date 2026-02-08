@@ -5,8 +5,10 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 import ru.rtkmagistral.magistralapi.domain.jpa.IdempotencyKey;
 import ru.rtkmagistral.magistralapi.domain.jpa.Order;
 import ru.rtkmagistral.magistralapi.domain.jpa.User;
@@ -20,10 +22,7 @@ import ru.rtkmagistral.magistralapi.mapper.IOrderMapper;
 import ru.rtkmagistral.magistralapi.mapper.IUserMapper;
 import ru.rtkmagistral.magistralapi.repository.IOrderRepository;
 import ru.rtkmagistral.magistralapi.repository.UserRepository;
-import ru.rtkmagistral.magistralapi.service.spec.IIdempotencyKeyService;
-import ru.rtkmagistral.magistralapi.service.spec.IMessageService;
-import ru.rtkmagistral.magistralapi.service.spec.IOrderApplicationDocxGeneratorService;
-import ru.rtkmagistral.magistralapi.service.spec.IOrdersService;
+import ru.rtkmagistral.magistralapi.service.spec.*;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -47,10 +46,13 @@ public class OrdersService implements IOrdersService {
     private final IIdempotencyKeyService idempotencyKeyService;
     private final IOrderApplicationDocxGeneratorService docxGeneratorService;
     private final IMessageService mailQueueProducer;
-
+    private final IMinioService minioService;
 
     @Value("${mail.document.contract-text}")
     private String contractText;
+
+    @Value("${docx.templates.order-application}")
+    private String orderApplication;
 
     /**
      * Метод для создания заказа на доставку в системе.
@@ -71,32 +73,13 @@ public class OrdersService implements IOrdersService {
 
         orderRepository.save(order);
 
-        UserBlock userBlock = userMapper.toDto(user);
-        OrderBlock orderBlock = orderMapper.toDto(order);
+        DocumentMailRequest documentMailRequest = formMailRequest(user, order);
+        mailQueueProducer.sendDocumentMessageToQueue(documentMailRequest);
 
-        OrderDocumentDTO docDto = new OrderDocumentDTO(
-                order.getId().toString(),
-                OffsetDateTime.now(),
-                contractText,
-                OffsetDateTime.now(),
-                order.getWishingDeliveryTime(),
-                1,
-                "",
-                userBlock,
-                orderBlock
-        );
+        byte[] document = documentMailRequest.getDocument();
+        String fileName = documentMailRequest.getFilename();
 
-        byte[] docx = null;
-        try (InputStream template = new ClassPathResource("templates/заявка.docx").getInputStream()) {
-            docx = docxGeneratorService.generate(template, docDto);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-
-        String filename = "zayavka-" + order.getId() + ".docx";
-        String subject = "Заявка № " + order.getId();
-
-        mailQueueProducer.sendDocumentMessageToQueue(new DocumentMailRequest(subject, docx, filename));
+        sendDocumentToMinio(document, fileName);
 
         return OrderResponses.ORDER_CREATED;
     }
@@ -148,5 +131,47 @@ public class OrdersService implements IOrdersService {
         return ResponseEntity
                 .status(201)
                 .body(orderResponse);
+    }
+
+    private DocumentMailRequest formMailRequest(User user, Order order) {
+        UserBlock userBlock = userMapper.toDto(user);
+        OrderBlock orderBlock = orderMapper.toDto(order);
+
+        OrderDocumentDTO docDto = new OrderDocumentDTO(
+                order.getId().toString(),
+                OffsetDateTime.now(),
+                contractText,
+                OffsetDateTime.now(),
+                order.getWishingDeliveryTime(),
+                1,
+                "",
+                userBlock,
+                orderBlock
+        );
+
+        byte[] docx = null;
+        try (InputStream template = new ClassPathResource(orderApplication).getInputStream()) {
+            docx = docxGeneratorService.generate(template, docDto);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        String suffix = userBlock.getCompanyName() == null ? userBlock.getName() + userBlock.getSurname() : userBlock.getCompanyName();
+
+        String filename = "zayavka-" + suffix + "-" + order.getId() + ".docx";
+        String subject = "Заявка № " + order.getId();
+
+        return new DocumentMailRequest(subject, docx, filename);
+    }
+
+    private void sendDocumentToMinio(byte[] content, String filename) {
+        MultipartFile mf = new MockMultipartFile(
+                "file",
+                filename,
+                "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+                content
+        );
+
+        minioService.uploadToOrders(mf);
     }
 }

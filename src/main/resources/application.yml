@@ -63,6 +63,10 @@ jwt:
 redis:
   resend_token.ttl: ${REDIS_RESEND_TOKEN_TTL}
 
+docx:
+  templates:
+    order-application: "templates/заявка.docx"
+
 minio:
   endpoint: ${MINIO_ENDPOINT}
   access-key: ${MINIO_ACCESS_KEY}
