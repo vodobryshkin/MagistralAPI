@@ -10,6 +10,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import ru.rtkmagistral.magistralapi.dto.auth.AuthResponse;
 import ru.rtkmagistral.magistralapi.dto.auth.LoginRequest;
+import ru.rtkmagistral.magistralapi.dto.resend_token.ResendTokenDTO;
 import ru.rtkmagistral.magistralapi.security.authorization.ForUnverifiedUsers;
 import ru.rtkmagistral.magistralapi.service.spec.IAuthenticationService;
 import ru.rtkmagistral.magistralapi.service.spec.IJWTService;
@@ -27,7 +28,6 @@ public class AuthController {
     private final IAuthenticationService authenticationService;
 
     @PostMapping("/login")
-    @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<AuthResponse> login(@RequestBody @Valid LoginRequest loginRequest) {
         AuthResponse authResponse = authenticationService.login(loginRequest);
         List<String> authorities = authResponse.getAuthorities();
@@ -43,14 +43,13 @@ public class AuthController {
                 .build();
 
         return ResponseEntity
-                .ok()
+                .status(HttpStatus.CREATED)
                 .header(HttpHeaders.AUTHORIZATION, accessToken)
                 .header(HttpHeaders.SET_COOKIE, refreshCookie.toString())
                 .body(authResponse);
     }
 
     @GetMapping("/refresh")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
     public ResponseEntity<Void> refresh(@CookieValue(name = "refresh_token", required = false) String refreshToken) {
         if (refreshToken == null || !jwtService.isTokenValid(refreshToken)) {
             return ResponseEntity.status(401).build();
@@ -62,15 +61,24 @@ public class AuthController {
         String accessToken = jwtService.generateAccessToken(email, roles);
 
         return ResponseEntity
-                .ok()
+                .status(HttpStatus.NO_CONTENT)
                 .header(HttpHeaders.AUTHORIZATION, accessToken)
                 .build();
     }
 
     @GetMapping("/resend")
     @ForUnverifiedUsers
-    @ResponseStatus(HttpStatus.NO_CONTENT)
     public ResponseEntity<Void> resend(Authentication authentication) {
-        return authenticationService.resend(authentication.getName());
+        ResendTokenDTO resendTokenDTO = authenticationService.resend(authentication.getName());
+
+        if (resendTokenDTO.getCode() == 429) {
+            return ResponseEntity.status(429)
+                    .header("Retry-After", resendTokenDTO.getMessage())
+                    .build();
+        }
+
+        return ResponseEntity
+                .status(HttpStatus.NO_CONTENT)
+                .build();
     }
 }

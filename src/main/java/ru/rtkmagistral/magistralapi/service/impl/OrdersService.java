@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.rtkmagistral.magistralapi.domain.jpa.IdempotencyKey;
@@ -92,7 +91,7 @@ public class OrdersService implements IOrdersService {
      */
     @Override
     @Transactional
-    public ResponseEntity<OrderResponse> createIdempotentOrder(UUID id, String email, CreateOrderRequest createOrderRequest, String method, String path) {
+    public OrderResponseDTO createIdempotentOrder(UUID id, String email, CreateOrderRequest createOrderRequest, String method, String path) {
         Optional<IdempotencyKey> idempotencyKeyOptional = idempotencyKeyService.readIdempotencyKey(id);
 
         if (idempotencyKeyOptional.isPresent()) {
@@ -105,10 +104,11 @@ public class OrdersService implements IOrdersService {
             HttpHeaders headers = new HttpHeaders();
             idempotencyKey.getResponseHeaders().forEach(headers::add);
 
-            return ResponseEntity
-                    .status(idempotencyKey.getResponseStatus())
-                    .headers(headers)
-                    .body(idempotencyKey.getResponseBody());
+            return new OrderResponseDTO(
+                    idempotencyKey.getResponseStatus(),
+                    headers,
+                    idempotencyKey.getResponseBody()
+            );
         }
 
         IdempotencyKeyDTO idempotencyKeyDTO = new IdempotencyKeyDTO(
@@ -124,9 +124,11 @@ public class OrdersService implements IOrdersService {
 
         idempotencyKeyService.deactivateIdempotencyKey(id, 201, new HashMap<>(), orderResponse);
 
-        return ResponseEntity
-                .status(201)
-                .body(orderResponse);
+        return new OrderResponseDTO(
+                201,
+                new HttpHeaders(),
+                orderResponse
+        );
     }
 
     private DocumentMailRequest formMailRequest(User user, Order order) {

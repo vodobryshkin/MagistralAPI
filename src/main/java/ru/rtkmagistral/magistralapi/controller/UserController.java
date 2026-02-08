@@ -39,7 +39,6 @@ public class UserController {
      * @return ответ на запрос с информацией о прошедшей операции.
      */
     @PostMapping
-    @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<UserResponse> createUser(@RequestBody @Valid CreateUserRequest createUserRequest) {
         UserResponse userResponse = userService.createUser(createUserRequest);
 
@@ -56,7 +55,7 @@ public class UserController {
         authenticationService.createResendToken(createUserRequest.getEmail());
 
         return ResponseEntity
-                .ok()
+                .status(HttpStatus.CREATED)
                 .header(HttpHeaders.AUTHORIZATION, accessToken)
                 .header(HttpHeaders.SET_COOKIE, refreshCookie.toString())
                 .body(userResponse);
@@ -70,7 +69,6 @@ public class UserController {
      * @return ответ на запрос с информацией о прошедшей операции.
      */
     @PatchMapping("/{id}")
-    @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<VerifyResponse> verifyUser(@PathVariable @Valid @UUID String id) {
         VerifyResponse verifyResponse = confirmationLinkService.verifyConfirmationLink(id);
         String email = verifyResponse.getMessage();
@@ -96,9 +94,10 @@ public class UserController {
     }
 
     @GetMapping
-    @ResponseStatus(HttpStatus.OK)
     @ForAuthenticatedUsers
-    public UserProfileDTO readUserProfile(Authentication authentication) {
-        return userService.getUserProfile(authentication.getName());
+    public ResponseEntity<UserProfileDTO> readUserProfile(Authentication authentication) {
+        return ResponseEntity
+                .ok()
+                .body(userService.getUserProfile(authentication.getName()));
     }
 }

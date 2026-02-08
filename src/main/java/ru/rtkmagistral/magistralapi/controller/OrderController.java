@@ -8,6 +8,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import ru.rtkmagistral.magistralapi.dto.order.CreateOrderRequest;
 import ru.rtkmagistral.magistralapi.dto.order.OrderResponse;
+import ru.rtkmagistral.magistralapi.dto.order.OrderResponseDTO;
 import ru.rtkmagistral.magistralapi.security.authorization.ForVerifiedUsers;
 import ru.rtkmagistral.magistralapi.service.spec.IOrdersService;
 
@@ -28,12 +29,17 @@ public class OrderController {
                                                      @RequestHeader("Idempotency-Key") UUID uuid,
                                                      HttpServletRequest httpServletRequest,
                                                      Authentication authentication) {
-        return ordersService.createIdempotentOrder(
+        OrderResponseDTO orderResponseDTO = ordersService.createIdempotentOrder(
                 uuid,
                 authentication.getName(),
                 createOrderRequest,
                 httpServletRequest.getMethod(),
                 httpServletRequest.getRequestURI()
         );
+
+        return ResponseEntity
+                .status(orderResponseDTO.getCode())
+                .headers(orderResponseDTO.getHeaders())
+                .body(orderResponseDTO.getBody());
     }
 }

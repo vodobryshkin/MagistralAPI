@@ -35,7 +35,6 @@ public class CompanyController {
      * @return ответ на запрос с информацией о прошедшей операции.
      */
     @PostMapping
-    @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<UserResponse> createCompany(@RequestBody @Valid CompanyDTO companyDTO) {
         CreateUserRequest createUserRequest = companyDTO.getCreateUserRequest();
         CreateCompanyRequest companyRequest = companyDTO.getCreateCompanyRequest();
@@ -55,7 +54,7 @@ public class CompanyController {
         authenticationService.createResendToken(createUserRequest.getEmail());
 
         return ResponseEntity
-                .ok()
+                .status(HttpStatus.CREATED)
                 .header(HttpHeaders.AUTHORIZATION, accessToken)
                 .header(HttpHeaders.SET_COOKIE, refreshCookie.toString())
                 .body(userResponse);

@@ -2,7 +2,6 @@ package ru.rtkmagistral.magistralapi.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -13,6 +12,7 @@ import ru.rtkmagistral.magistralapi.domain.redis.ResendToken;
 import ru.rtkmagistral.magistralapi.dto.auth.AuthResponse;
 import ru.rtkmagistral.magistralapi.dto.auth.LoginRequest;
 import ru.rtkmagistral.magistralapi.dto.mail.ConfirmAccountMailRequest;
+import ru.rtkmagistral.magistralapi.dto.resend_token.ResendTokenDTO;
 import ru.rtkmagistral.magistralapi.exception.AuthException;
 import ru.rtkmagistral.magistralapi.exception.UserException;
 import ru.rtkmagistral.magistralapi.repository.IResendTokenRepository;
@@ -69,7 +69,7 @@ public class AuthenticationService implements IAuthenticationService {
      * @return сформированный респонс энтити.
      */
     @Override
-    public ResponseEntity<Void> resend(String email) {
+    public ResendTokenDTO resend(String email) {
         Optional<ResendToken> resendTokenOptional = resendTokenRepository.findById(email);
 
         if (resendTokenOptional.isEmpty()) {
@@ -86,15 +86,12 @@ public class AuthenticationService implements IAuthenticationService {
 
             createResendToken(email);
 
-            return ResponseEntity.status(201)
-                    .build();
+            return new ResendTokenDTO(204);
         }
 
         ResendToken resendToken = resendTokenOptional.get();
 
-        return ResponseEntity.status(429)
-                .header("Retry-After", String.valueOf(resendToken.getTtlSeconds()))
-                .build();
+        return new ResendTokenDTO(429, String.valueOf(resendToken.getTtlSeconds()));
     }
 
     /**

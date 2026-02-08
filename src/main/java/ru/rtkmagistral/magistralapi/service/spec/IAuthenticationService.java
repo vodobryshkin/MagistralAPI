@@ -1,8 +1,8 @@
 package ru.rtkmagistral.magistralapi.service.spec;
 
-import org.springframework.http.ResponseEntity;
 import ru.rtkmagistral.magistralapi.dto.auth.AuthResponse;
 import ru.rtkmagistral.magistralapi.dto.auth.LoginRequest;
+import ru.rtkmagistral.magistralapi.dto.resend_token.ResendTokenDTO;
 
 /**
  * Интерфейс, который описывает функциональность сервиса для аутентификации в приложении.
@@ -22,7 +22,7 @@ public interface IAuthenticationService {
      * @param email адрес электронной почты пользователя.
      * @return сформированный респонс энтити.
      */
-    ResponseEntity<Void> resend(String email);
+    ResendTokenDTO resend(String email);
 
     /**
      * Метод для создания токена для контроля когда можно отправить новое письмо с подтверждением аккаунта.

@@ -1,8 +1,8 @@
 package ru.rtkmagistral.magistralapi.service.spec;
 
-import org.springframework.http.ResponseEntity;
 import ru.rtkmagistral.magistralapi.dto.order.CreateOrderRequest;
 import ru.rtkmagistral.magistralapi.dto.order.OrderResponse;
+import ru.rtkmagistral.magistralapi.dto.order.OrderResponseDTO;
 
 import java.util.UUID;
 
@@ -29,9 +29,9 @@ public interface IOrdersService {
      * @param email адрес электронной почты пользователя, для нахождения пользователя, к которому следует прикрепить созданный заказ.
      * @return результат создания заказа на доставку.
      */
-    ResponseEntity<OrderResponse> createIdempotentOrder(UUID id,
-                                                        String email,
-                                                        CreateOrderRequest createOrderRequest,
-                                                        String method,
-                                                        String path);
+    OrderResponseDTO createIdempotentOrder(UUID id,
+                                           String email,
+                                           CreateOrderRequest createOrderRequest,
+                                           String method,
+                                           String path);
 }
