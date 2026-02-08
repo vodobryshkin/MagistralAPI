@@ -2,6 +2,7 @@ package ru.rtkmagistral.magistralapi.service.spec;
 
 import ru.rtkmagistral.magistralapi.dto.company.CreateCompanyRequest;
 import ru.rtkmagistral.magistralapi.dto.user.CreateUserRequest;
+import ru.rtkmagistral.magistralapi.dto.user.UserProfileDTO;
 import ru.rtkmagistral.magistralapi.dto.user.UserResponse;
 
 /**
@@ -26,4 +27,6 @@ public interface IUserService {
     UserResponse createLegalUser(CreateUserRequest createUserRequest, CreateCompanyRequest createCompanyRequest);
 
     void verifyUser(String email);
+
+    UserProfileDTO getUserProfile(String email);
 }

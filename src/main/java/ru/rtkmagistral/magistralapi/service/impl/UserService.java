@@ -9,10 +9,12 @@ import ru.rtkmagistral.magistralapi.domain.redis.ConfirmationLink;
 import ru.rtkmagistral.magistralapi.dto.company.CreateCompanyRequest;
 import ru.rtkmagistral.magistralapi.dto.mail.ConfirmAccountMailRequest;
 import ru.rtkmagistral.magistralapi.dto.user.CreateUserRequest;
+import ru.rtkmagistral.magistralapi.dto.user.UserProfileDTO;
 import ru.rtkmagistral.magistralapi.dto.user.UserResponse;
 import ru.rtkmagistral.magistralapi.dto.user.UserResponses;
 import ru.rtkmagistral.magistralapi.exception.UserException;
 import ru.rtkmagistral.magistralapi.mapper.IUserMapper;
+import ru.rtkmagistral.magistralapi.repository.IOrderRepository;
 import ru.rtkmagistral.magistralapi.repository.UserRepository;
 import ru.rtkmagistral.magistralapi.service.spec.ICompanyService;
 import ru.rtkmagistral.magistralapi.service.spec.IConfirmationLinkService;
@@ -36,6 +38,7 @@ public class UserService implements IUserService {
     private final PasswordEncoder passwordEncoder;
 
     private final UserRepository userRepository;
+    private final IOrderRepository orderRepository;
 
     /**
      * Метод для создания пользователя (физическое лицо) в системе (вызывается при регистрации пользователя)
@@ -93,6 +96,18 @@ public class UserService implements IUserService {
 
         User user = userOptional.get();
         user.setVerified(true);
+    }
+
+    @Override
+    public UserProfileDTO getUserProfile(String email) {
+        User user = userRepository.findUserByEmail(email).orElseThrow(() -> new UserException("USER_NOT_FOUND"));
+
+        return new UserProfileDTO(
+                user.getEmail(),
+                user.getPhone(),
+                user.getUserType(),
+                orderRepository.countOrdersByUser(user)
+        );
     }
 
     private User validateUser(CreateUserRequest createUserRequest) {

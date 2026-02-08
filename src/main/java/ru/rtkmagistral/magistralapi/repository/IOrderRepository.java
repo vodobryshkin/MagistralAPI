@@ -3,6 +3,7 @@ package ru.rtkmagistral.magistralapi.repository;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 import ru.rtkmagistral.magistralapi.domain.jpa.Order;
+import ru.rtkmagistral.magistralapi.domain.jpa.User;
 
 import java.util.UUID;
 
@@ -11,4 +12,5 @@ import java.util.UUID;
  */
 @Repository
 public interface IOrderRepository extends CrudRepository<Order, UUID> {
+    long countOrdersByUser(User user);
 }
