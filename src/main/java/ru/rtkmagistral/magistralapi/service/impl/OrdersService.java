@@ -156,9 +156,11 @@ public class OrdersService implements IOrdersService {
             throw new RuntimeException(e);
         }
 
-        String suffix = userBlock.getCompanyName() == null ? userBlock.getName() + userBlock.getSurname() : userBlock.getCompanyName();
+        String suffix = userBlock.getCompanyName() == null ?
+                userBlock.getName() + userBlock.getSurname() :
+                userBlock.getCompanyName().replace('\"', '\'');
 
-        String filename = "zayavka-" + suffix + "-" + order.getId() + ".docx";
+        String filename = "Заявка-" + suffix + "-" + order.getId() + ".docx";
         String subject = "Заявка № " + order.getId();
 
         return new DocumentMailRequest(subject, docx, filename);
