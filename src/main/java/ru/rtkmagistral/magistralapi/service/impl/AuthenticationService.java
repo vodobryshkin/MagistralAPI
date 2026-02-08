@@ -9,7 +9,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Service;
 import ru.rtkmagistral.magistralapi.domain.jpa.User;
-import ru.rtkmagistral.magistralapi.domain.redis.ConfirmationLink;
 import ru.rtkmagistral.magistralapi.domain.redis.ResendToken;
 import ru.rtkmagistral.magistralapi.dto.auth.AuthResponse;
 import ru.rtkmagistral.magistralapi.dto.auth.LoginRequest;
@@ -19,7 +18,6 @@ import ru.rtkmagistral.magistralapi.exception.UserException;
 import ru.rtkmagistral.magistralapi.repository.IResendTokenRepository;
 import ru.rtkmagistral.magistralapi.repository.UserRepository;
 import ru.rtkmagistral.magistralapi.service.spec.IAuthenticationService;
-import ru.rtkmagistral.magistralapi.service.spec.IConfirmationLinkService;
 import ru.rtkmagistral.magistralapi.service.spec.IMessageService;
 
 import java.util.List;
@@ -34,7 +32,6 @@ public class AuthenticationService implements IAuthenticationService {
     @Value("${redis.resend_token.ttl}")
     private Long resendTokenTtl;
 
-    private final IConfirmationLinkService confirmationLinkService;
     private final IMessageService messageService;
 
     private final AuthenticationManager authenticationManager;
@@ -76,18 +73,13 @@ public class AuthenticationService implements IAuthenticationService {
         Optional<ResendToken> resendTokenOptional = resendTokenRepository.findById(email);
 
         if (resendTokenOptional.isEmpty()) {
-            ConfirmationLink confirmationLink = confirmationLinkService.generateConfirmationLink(email);
-            confirmationLinkService.saveConfirmationLink(confirmationLink);
-            String id = confirmationLink.getId().toString();
-
             User user = userRepository.findUserByEmail(email).orElseThrow(() -> new UserException("USER_NOT_FOUND"));
 
             ConfirmAccountMailRequest request = new ConfirmAccountMailRequest(
                     user.getName(),
                     user.getFathersName() == null? "": user.getFathersName(),
                     user.getEmail(),
-                    "Подтверждение аккаунта",
-                    id
+                    "Подтверждение аккаунта"
             );
 
             messageService.sendConfirmAccountMessageToQueue(request);

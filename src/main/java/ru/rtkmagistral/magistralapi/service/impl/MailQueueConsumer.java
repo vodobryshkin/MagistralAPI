@@ -5,9 +5,11 @@ import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
+import ru.rtkmagistral.magistralapi.domain.redis.ConfirmationLink;
 import ru.rtkmagistral.magistralapi.dto.MinioDTO;
 import ru.rtkmagistral.magistralapi.dto.mail.ConfirmAccountMailRequest;
 import ru.rtkmagistral.magistralapi.dto.mail.DocumentMailRequest;
+import ru.rtkmagistral.magistralapi.service.spec.IConfirmationLinkService;
 import ru.rtkmagistral.magistralapi.service.spec.IMailService;
 import ru.rtkmagistral.magistralapi.service.spec.IMinioService;
 
@@ -17,9 +19,13 @@ public class MailQueueConsumer {
 
     private final IMailService mailService;
     private final IMinioService minioService;
+    private final IConfirmationLinkService confirmationLinkService;
 
     @RabbitListener(queues = "${mail.confirm.queue.name}", containerFactory = "rabbitListenerContainerFactory")
     public void onConfirmAccount(ConfirmAccountMailRequest request) {
+        String id = createConfirmationLink(request.getTo());
+        request.setLink(id);
+
         mailService.sendConfirmationLetter(request);
     }
 
@@ -38,5 +44,12 @@ public class MailQueueConsumer {
         );
 
         minioService.uploadToOrders(mf);
+    }
+
+    private String createConfirmationLink(String email) {
+        ConfirmationLink confirmationLink = confirmationLinkService.generateConfirmationLink(email);
+        confirmationLinkService.saveConfirmationLink(confirmationLink);
+
+        return confirmationLink.getId().toString();
     }
 }

@@ -1,16 +1,17 @@
 package ru.rtkmagistral.magistralapi.dto.mail;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.RequiredArgsConstructor;
+
 /**
  * DTO для передачи данных по очереди сообщений на отправку письма по электронной почте
  */
 @Data
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class ConfirmAccountMailRequest {
-    private String name;
-    private String fathersName;
-    private String to;
-    private String subject;
+    private final String name;
+    private final String fathersName;
+    private final String to;
+    private final String subject;
     private String link;
 }

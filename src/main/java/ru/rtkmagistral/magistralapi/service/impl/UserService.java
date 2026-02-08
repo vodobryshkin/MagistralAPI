@@ -5,7 +5,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.rtkmagistral.magistralapi.domain.jpa.User;
-import ru.rtkmagistral.magistralapi.domain.redis.ConfirmationLink;
 import ru.rtkmagistral.magistralapi.dto.company.CreateCompanyRequest;
 import ru.rtkmagistral.magistralapi.dto.mail.ConfirmAccountMailRequest;
 import ru.rtkmagistral.magistralapi.dto.user.CreateUserRequest;
@@ -17,7 +16,6 @@ import ru.rtkmagistral.magistralapi.mapper.IUserMapper;
 import ru.rtkmagistral.magistralapi.repository.IOrderRepository;
 import ru.rtkmagistral.magistralapi.repository.UserRepository;
 import ru.rtkmagistral.magistralapi.service.spec.ICompanyService;
-import ru.rtkmagistral.magistralapi.service.spec.IConfirmationLinkService;
 import ru.rtkmagistral.magistralapi.service.spec.IMessageService;
 import ru.rtkmagistral.magistralapi.service.spec.IUserService;
 
@@ -33,7 +31,6 @@ public class UserService implements IUserService {
 
     private final ICompanyService companyService;
     private final IMessageService messageService;
-    private final IConfirmationLinkService confirmationLinkService;
 
     private final PasswordEncoder passwordEncoder;
 
@@ -53,8 +50,7 @@ public class UserService implements IUserService {
 
         userRepository.save(user);
 
-        String id = createConfirmationLink(createUserRequest.getEmail());
-        sendConfirmationMessageForUser(user, id);
+        sendConfirmationMessageForUser(user);
 
         return UserResponses.USER_CREATED;
     }
@@ -74,8 +70,7 @@ public class UserService implements IUserService {
         userRepository.save(user);
         companyService.createCompany(createCompanyRequest, user);
 
-        String id = createConfirmationLink(createUserRequest.getEmail());
-        sendConfirmationMessageForUser(user, id);
+        sendConfirmationMessageForUser(user);
 
         return UserResponses.USER_CREATED;
     }
@@ -123,23 +118,15 @@ public class UserService implements IUserService {
         return userMapper.toEntity(createUserRequest, passwordEncoder);
     }
 
-    private void sendConfirmationMessageForUser(User user, String id) {
+    private void sendConfirmationMessageForUser(User user) {
         ConfirmAccountMailRequest request = new ConfirmAccountMailRequest(
                 user.getName(),
                 user.getFathersName() == null? "": user.getFathersName(),
                 user.getEmail(),
-                "Подтверждение аккаунта",
-                id
+                "Подтверждение аккаунта"
         );
 
         messageService.sendConfirmAccountMessageToQueue(request);
-    }
-
-    private String createConfirmationLink(String email) {
-        ConfirmationLink confirmationLink = confirmationLinkService.generateConfirmationLink(email);
-        confirmationLinkService.saveConfirmationLink(confirmationLink);
-
-        return confirmationLink.getId().toString();
     }
 
 }
