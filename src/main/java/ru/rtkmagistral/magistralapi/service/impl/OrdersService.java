@@ -45,7 +45,6 @@ public class OrdersService implements IOrdersService {
     private final IIdempotencyKeyService idempotencyKeyService;
     private final IOrderApplicationDocxGeneratorService docxGeneratorService;
     private final IMessageService messageService;
-    private final IMinioService minioService;
 
     @Value("${mail.document.contract-text}")
     private String contractText;

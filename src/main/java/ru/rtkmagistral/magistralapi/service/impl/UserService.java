@@ -106,7 +106,8 @@ public class UserService implements IUserService {
                 user.getEmail(),
                 user.getPhone(),
                 user.getUserType(),
-                orderRepository.countOrdersByUser(user)
+                orderRepository.countOrdersByUser(user),
+                user.isVerified()
         );
     }
 

@@ -13,4 +13,5 @@ public class UserProfileDTO {
     private User.UserType userType;
     @JsonProperty("amount_of_orders")
     private Long amountOfOrders;
+    private boolean verified;
 }
