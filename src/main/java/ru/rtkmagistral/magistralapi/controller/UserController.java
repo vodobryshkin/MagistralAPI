@@ -6,9 +6,11 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import ru.rtkmagistral.magistralapi.dto.token.VerifyResponse;
 import ru.rtkmagistral.magistralapi.dto.user.CreateUserRequest;
+import ru.rtkmagistral.magistralapi.dto.user.UserProfileDTO;
 import ru.rtkmagistral.magistralapi.dto.user.UserResponse;
 import ru.rtkmagistral.magistralapi.service.spec.IAuthenticationService;
 import ru.rtkmagistral.magistralapi.service.spec.IConfirmationLinkService;
@@ -92,4 +94,9 @@ public class UserController {
                 .body(verifyResponse);
     }
 
+    @GetMapping
+    @ResponseStatus(HttpStatus.OK)
+    public UserProfileDTO readUserProfile(Authentication authentication) {
+        return userService.getUserProfile(authentication.getName());
+    }
 }
