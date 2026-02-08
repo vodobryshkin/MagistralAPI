@@ -6,12 +6,9 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import ru.rtkmagistral.magistralapi.dto.auth.AuthResponse;
 import ru.rtkmagistral.magistralapi.dto.auth.LoginRequest;
-import ru.rtkmagistral.magistralapi.dto.resend_token.ResendTokenDTO;
-import ru.rtkmagistral.magistralapi.security.authorization.ForUnverifiedUsers;
 import ru.rtkmagistral.magistralapi.service.spec.IAuthenticationService;
 import ru.rtkmagistral.magistralapi.service.spec.IJWTService;
 
@@ -63,22 +60,6 @@ public class AuthController {
         return ResponseEntity
                 .status(HttpStatus.NO_CONTENT)
                 .header(HttpHeaders.AUTHORIZATION, accessToken)
-                .build();
-    }
-
-    @GetMapping("/resend")
-    @ForUnverifiedUsers
-    public ResponseEntity<Void> resend(Authentication authentication) {
-        ResendTokenDTO resendTokenDTO = authenticationService.resend(authentication.getName());
-
-        if (resendTokenDTO.getCode() == 429) {
-            return ResponseEntity.status(429)
-                    .header("Retry-After", resendTokenDTO.getMessage())
-                    .build();
-        }
-
-        return ResponseEntity
-                .status(HttpStatus.NO_CONTENT)
                 .build();
     }
 }

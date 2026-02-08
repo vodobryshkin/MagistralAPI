@@ -8,16 +8,13 @@ import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
-import ru.rtkmagistral.magistralapi.dto.token.VerifyResponse;
 import ru.rtkmagistral.magistralapi.dto.user.CreateUserRequest;
 import ru.rtkmagistral.magistralapi.dto.user.UserProfileDTO;
 import ru.rtkmagistral.magistralapi.dto.user.UserResponse;
 import ru.rtkmagistral.magistralapi.security.authorization.ForAuthenticatedUsers;
 import ru.rtkmagistral.magistralapi.service.spec.IAuthenticationService;
-import ru.rtkmagistral.magistralapi.service.spec.IConfirmationLinkService;
 import ru.rtkmagistral.magistralapi.service.spec.IJWTService;
 import ru.rtkmagistral.magistralapi.service.spec.IUserService;
-import ru.rtkmagistral.magistralapi.validation.formats.uuid.UUID;
 
 /**
  * Контроллер, принимающий запросы идущие на эндпойнт "/users"
@@ -27,7 +24,6 @@ import ru.rtkmagistral.magistralapi.validation.formats.uuid.UUID;
 @RequiredArgsConstructor
 public class UserController {
     private final IUserService userService;
-    private final IConfirmationLinkService confirmationLinkService;
     private final IJWTService jwtService;
     private final IAuthenticationService authenticationService;
 
@@ -59,38 +55,6 @@ public class UserController {
                 .header(HttpHeaders.AUTHORIZATION, accessToken)
                 .header(HttpHeaders.SET_COOKIE, refreshCookie.toString())
                 .body(userResponse);
-    }
-
-    /**
-     * Метод, принимающий PATCH-запросы идущие на эндпойнт "/users/{id}".
-     * Логика метода заключается в подтверждении пользователя в системе.
-     *
-     * @param id ссылки на подтверждение.
-     * @return ответ на запрос с информацией о прошедшей операции.
-     */
-    @PatchMapping("/{id}")
-    public ResponseEntity<VerifyResponse> verifyUser(@PathVariable @Valid @UUID String id) {
-        VerifyResponse verifyResponse = confirmationLinkService.verifyConfirmationLink(id);
-        String email = verifyResponse.getMessage();
-
-        userService.verifyUser(email);
-        verifyResponse.setMessage(null);
-
-        String accessToken = jwtService.generateAccessToken(email, "ROLE_VERIFIED_USER");
-        String refreshToken = jwtService.generateRefreshToken(email, "ROLE_VERIFIED_USER");
-
-        ResponseCookie refreshCookie = ResponseCookie.from("refresh_token", refreshToken)
-                .httpOnly(true)
-                .secure(true)
-                .sameSite("Strict")
-                .path("/")
-                .build();
-
-        return ResponseEntity
-                .ok()
-                .header(HttpHeaders.AUTHORIZATION, accessToken)
-                .header(HttpHeaders.SET_COOKIE, refreshCookie.toString())
-                .body(verifyResponse);
     }
 
     @GetMapping
