@@ -6,7 +6,6 @@ import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 
 import java.time.OffsetDateTime;
-import java.util.UUID;
 
 /**
  * Доменная сущность "Заказ на доставку". Описывает заказ в системе.
@@ -38,8 +37,8 @@ public class Order {
      * Уникальный идентификатор заказа.
      */
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     /**
      * Пользователь, который привязан к заказу. Не может быть null-значением.
