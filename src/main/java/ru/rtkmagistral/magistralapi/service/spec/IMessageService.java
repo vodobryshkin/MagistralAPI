@@ -1,5 +1,6 @@
 package ru.rtkmagistral.magistralapi.service.spec;
 
+import ru.rtkmagistral.magistralapi.dto.MinioDTO;
 import ru.rtkmagistral.magistralapi.dto.mail.ConfirmAccountMailRequest;
 import ru.rtkmagistral.magistralapi.dto.mail.DocumentMailRequest;
 
@@ -18,4 +19,6 @@ public interface IMessageService {
      * @param documentMailRequest запрос на отправку письма со сформированным документом по заявке по электронной почте.
      */
     void sendDocumentMessageToQueue(DocumentMailRequest documentMailRequest);
+
+    void sendMinioMessageToQueue(MinioDTO minioDTO);
 }

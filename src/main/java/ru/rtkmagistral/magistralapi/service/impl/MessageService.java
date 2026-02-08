@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import ru.rtkmagistral.magistralapi.dto.MinioDTO;
 import ru.rtkmagistral.magistralapi.dto.mail.ConfirmAccountMailRequest;
 import ru.rtkmagistral.magistralapi.dto.mail.DocumentMailRequest;
 import ru.rtkmagistral.magistralapi.service.spec.IMessageService;
@@ -21,6 +22,9 @@ public class MessageService implements IMessageService {
 
     @Value("${mail.document.queue.name}")
     private String documentQueueName;
+
+    @Value("${minio.queue}")
+    private String minioQueueName;
 
     /**
      * Метод для отправки сообщений с данными сервиса отправки почты на RabbitMQ-listener.
@@ -40,5 +44,10 @@ public class MessageService implements IMessageService {
     @Override
     public void sendDocumentMessageToQueue(DocumentMailRequest documentMailRequest) {
         template.convertAndSend(documentQueueName, documentMailRequest);
+    }
+
+    @Override
+    public void sendMinioMessageToQueue(MinioDTO minioDTO) {
+        template.convertAndSend(minioQueueName, minioDTO);
     }
 }

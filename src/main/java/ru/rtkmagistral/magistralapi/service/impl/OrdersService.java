@@ -5,13 +5,12 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
-import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
 import ru.rtkmagistral.magistralapi.domain.jpa.IdempotencyKey;
 import ru.rtkmagistral.magistralapi.domain.jpa.Order;
 import ru.rtkmagistral.magistralapi.domain.jpa.User;
+import ru.rtkmagistral.magistralapi.dto.MinioDTO;
 import ru.rtkmagistral.magistralapi.dto.idempotency_key.IdempotencyKeyDTO;
 import ru.rtkmagistral.magistralapi.dto.mail.DocumentMailRequest;
 import ru.rtkmagistral.magistralapi.dto.order.*;
@@ -45,7 +44,7 @@ public class OrdersService implements IOrdersService {
 
     private final IIdempotencyKeyService idempotencyKeyService;
     private final IOrderApplicationDocxGeneratorService docxGeneratorService;
-    private final IMessageService mailQueueProducer;
+    private final IMessageService messageService;
     private final IMinioService minioService;
 
     @Value("${mail.document.contract-text}")
@@ -74,12 +73,10 @@ public class OrdersService implements IOrdersService {
         orderRepository.save(order);
 
         DocumentMailRequest documentMailRequest = formMailRequest(user, order);
-        mailQueueProducer.sendDocumentMessageToQueue(documentMailRequest);
+        MinioDTO minioDTO = new MinioDTO(documentMailRequest.getDocument(), documentMailRequest.getFilename());
 
-        byte[] document = documentMailRequest.getDocument();
-        String fileName = documentMailRequest.getFilename();
-
-        sendDocumentToMinio(document, fileName);
+        messageService.sendMinioMessageToQueue(minioDTO);
+        messageService.sendDocumentMessageToQueue(documentMailRequest);
 
         return OrderResponses.ORDER_CREATED;
     }
@@ -164,16 +161,5 @@ public class OrdersService implements IOrdersService {
         String subject = "Заявка № " + order.getId();
 
         return new DocumentMailRequest(subject, docx, filename);
-    }
-
-    private void sendDocumentToMinio(byte[] content, String filename) {
-        MultipartFile mf = new MockMultipartFile(
-                "file",
-                filename,
-                "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-                content
-        );
-
-        minioService.uploadToOrders(mf);
     }
 }

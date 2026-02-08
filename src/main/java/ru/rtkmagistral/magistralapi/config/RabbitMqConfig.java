@@ -24,6 +24,9 @@ public class RabbitMqConfig {
     @Value("${mail.document.queue.name}")
     private String documentQueueName;
 
+    @Value("${minio.queue}")
+    private String minioQueueName;
+
     @Value("${spring.rabbitmq.username}")
     private String username;
 
@@ -41,6 +44,11 @@ public class RabbitMqConfig {
     @Bean
     public Queue documentQueue() {
         return new Queue(documentQueueName);
+    }
+
+    @Bean
+    public Queue minioQueue() {
+        return new Queue(minioQueueName);
     }
 
     @Bean

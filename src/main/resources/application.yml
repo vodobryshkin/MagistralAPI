@@ -76,3 +76,4 @@ minio:
   connect-timeout: 3
   read-timeout: 30
   write-timeout: 30
+  queue: ${RABBIT_MINIO_QUEUE:MinioQueue}
