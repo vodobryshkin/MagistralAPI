@@ -28,6 +28,7 @@ public class MailService implements IMailService {
     private final JavaMailSender mailSender;
     private final SpringTemplateEngine templateEngine;
 
+    @Override
     public void sendConfirmationLetter(ConfirmAccountMailRequest confirmAccountMailRequest) {
         Context context = new Context();
         context.setVariable("name", confirmAccountMailRequest.getName());
