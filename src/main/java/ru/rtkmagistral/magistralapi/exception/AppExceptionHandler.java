@@ -86,14 +86,14 @@ public class AppExceptionHandler {
      * */
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseStatus(HttpStatus.UNPROCESSABLE_CONTENT)
-    public UserResponse handleValidationException(MethodArgumentNotValidException ex) {
+    public ValidationResponse handleValidationException(MethodArgumentNotValidException ex) {
         Map<String, List<String>> errors = ex.getBindingResult().getFieldErrors().stream()
                 .collect(Collectors.groupingBy(
                         FieldError::getField,
                         Collectors.mapping(FieldError::getDefaultMessage, Collectors.toList())
                 ));
 
-        return new UserResponse("VALIDATION_ERROR", errors);
+        return new ValidationResponse("VALIDATION_ERROR", errors);
     }
 
     /**
