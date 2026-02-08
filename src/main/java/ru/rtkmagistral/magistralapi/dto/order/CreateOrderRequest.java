@@ -66,7 +66,6 @@ public class CreateOrderRequest {
     @JsonProperty("deliver_as_soon_as_possible")
     private boolean deliverAsSoonAsPossible;
 
-    @NotNull
     @JsonProperty("wishing_delivery_time")
     private OffsetDateTime wishingDeliveryTime;
 
