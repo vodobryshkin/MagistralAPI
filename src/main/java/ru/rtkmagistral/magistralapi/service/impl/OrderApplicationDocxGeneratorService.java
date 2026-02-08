@@ -1,9 +1,9 @@
 package ru.rtkmagistral.magistralapi.service.impl;
 
 import org.apache.poi.xwpf.usermodel.*;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import ru.rtkmagistral.magistralapi.domain.jpa.Order;
-import ru.rtkmagistral.magistralapi.domain.jpa.User;
 import ru.rtkmagistral.magistralapi.dto.order.OrderBlock;
 import ru.rtkmagistral.magistralapi.dto.order.OrderDocumentDTO;
 import ru.rtkmagistral.magistralapi.dto.user.UserBlock;
@@ -16,9 +16,6 @@ import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 
-/**
- * Сервис для генерации документа, соответствующего заявке.
- */
 @Service
 public class OrderApplicationDocxGeneratorService implements IOrderApplicationDocxGeneratorService {
     private static final String KEY_CUSTOMER_NAME = "Наименование Заказчика";
@@ -42,12 +39,12 @@ public class OrderApplicationDocxGeneratorService implements IOrderApplicationDo
 
     private static final DateTimeFormatter RU_DATE = DateTimeFormatter.ofPattern("dd.MM.yyyy");
 
-    /**
-     * Генерирует DOCX-заявку по шаблону и данным заказа.
-     *
-     * @return готовый docx в байтах
-     * @throws IOException если шаблон не читается или docx не записывается
-     */
+    @Value("${mail.document.customer-name}")
+    private String customerNameFixed;
+
+    @Value("${mail.document.contract-text}")
+    private String contractTextFixed;
+
     @Override
     public byte[] generate(InputStream template, OrderDocumentDTO dto) throws IOException {
         try (XWPFDocument doc = new XWPFDocument(template)) {
@@ -64,18 +61,18 @@ public class OrderApplicationDocxGeneratorService implements IOrderApplicationDo
         }
     }
 
-
     private Map<String, String> buildValues(OrderDocumentDTO dto) {
         UserBlock u = dto.getUser();
         OrderBlock o = dto.getOrder();
 
-        String senderName = safeJoin(" ", u.getSurname(), u.getName(), u.getFathersName()).trim();
-        String customerName = (u.getUserType() == User.UserType.BUSINESS && u.getCompanyName() != null && !u.getCompanyName().isBlank())
+        String personName = safeJoin(" ", u.getSurname(), u.getName(), u.getFathersName()).trim();
+
+        String senderName = (u.getCompanyName() != null && !u.getCompanyName().isBlank())
                 ? u.getCompanyName()
-                : senderName;
+                : personName;
 
         String senderAddress = o.getShippingAddress();
-        String senderContact = safeJoin(", ", nullIfBlank(senderName), nullIfBlank(u.getPhone())).trim();
+        String senderContact = safeJoin(", ", nullIfBlank(personName), nullIfBlank(u.getPhone())).trim();
 
         String receiverName = o.getReceiverFio();
         String receiverAddress = o.getArrivalAddress();
@@ -89,12 +86,12 @@ public class OrderApplicationDocxGeneratorService implements IOrderApplicationDo
         String cost = formatKopeika(o.getCostOfInvestmentInKopeika());
         String weight = o.getWeightGr() + " г";
         String placesStr = String.valueOf(Math.max(1, dto.getPlaces()));
-        String dims = (o.getLengthCentiCm() / 100) + " x " + (o.getWidthCentiCm() / 100) + " x " + (o.getHeightCentiCm() / 100) + " см";
+        String dims = formatDimensionsCm(o.getLengthCentiCm(), o.getWidthCentiCm(), o.getHeightCentiCm());
 
         Map<String, String> map = new HashMap<>();
-        map.put(KEY_CUSTOMER_NAME, customerName);
-        map.put(KEY_CONTRACT, nullToEmpty(dto.getContractText()));
-        map.put(KEY_SENDER_NAME, senderName);
+        map.put(KEY_CUSTOMER_NAME, nullToEmpty(customerNameFixed));
+        map.put(KEY_CONTRACT, nullToEmpty(contractTextFixed));
+        map.put(KEY_SENDER_NAME, nullToEmpty(senderName));
         map.put(KEY_SENDER_ADDRESS, nullToEmpty(senderAddress));
         map.put(KEY_SENDER_CONTACT, nullToEmpty(senderContact));
         map.put(KEY_PICKUP_DATE, dto.getPickupDate() != null ? RU_DATE.format(dto.getPickupDate()) : "");
@@ -184,10 +181,21 @@ public class OrderApplicationDocxGeneratorService implements IOrderApplicationDo
         return rub.toPlainString() + " руб.";
     }
 
+    private String formatDimensionsCm(int lengthCentiCm, int widthCentiCm, int heightCentiCm) {
+        BigDecimal l = BigDecimal.valueOf(lengthCentiCm).divide(BigDecimal.valueOf(100), 2, RoundingMode.HALF_UP);
+        BigDecimal w = BigDecimal.valueOf(widthCentiCm).divide(BigDecimal.valueOf(100), 2, RoundingMode.HALF_UP);
+        BigDecimal h = BigDecimal.valueOf(heightCentiCm).divide(BigDecimal.valueOf(100), 2, RoundingMode.HALF_UP);
+        return l.stripTrailingZeros().toPlainString() + " x " +
+                w.stripTrailingZeros().toPlainString() + " x " +
+                h.stripTrailingZeros().toPlainString() + " см";
+    }
+
     private String normalize(String s) {
         return (s == null ? "" : s)
                 .replace('\u00A0', ' ')
                 .replace("\n", " ")
+                .replace("\r", " ")
+                .replaceAll("\\s+", " ")
                 .trim();
     }
 

@@ -42,7 +42,8 @@ mail:
     queue:
       name: ${RABBIT_MQ_QUEUE_CONFIRMATION_NAME:DefaultQueue}
   document:
-    contract-text: "Договор (публичная оферта) об оказании услуг по экспресс-доставке отправлений от 25.01.2026, г. Санкт-Петербург"
+    contract-text: №15930э
+    customer-name: "ООО «ЛТК Магистраль»"
     mail: ${SPEC_SVYAZ_MAIL}
     queue:
       name: ${RABBIT_MQ_QUEUE_CONFIRMATION_NAME:DocumentQueue}
