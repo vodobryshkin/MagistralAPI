@@ -35,12 +35,22 @@ public class SecurityConfig {
                         session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
                 .authorizeHttpRequests(auth -> auth
+                        .requestMatchers(
+                                "/v3/api-docs/**",
+                                "/swagger-ui/**",
+                                "/swagger-ui.html",
+                                "/swagger-ui/index.html",
+                                "/api/v1/v3/api-docs/**",
+                                "/api/v1/swagger-ui/**",
+                                "/api/v1/swagger-ui.html",
+                                "/api/v1/swagger-ui/index.html"
+                        ).permitAll()
                         .requestMatchers("/error").permitAll()
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                         .requestMatchers("/api/v1/auth/login").permitAll()
                         .requestMatchers("/api/v1/auth/refresh").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/v1/users").permitAll()
-                        .requestMatchers(HttpMethod.PATCH, "/api/v1/users/{id}").permitAll()
+                        .requestMatchers(HttpMethod.PUT, "/api/v1/confirmation-links/{id}").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/v1/companies").permitAll()
                         .anyRequest().authenticated()
                 )

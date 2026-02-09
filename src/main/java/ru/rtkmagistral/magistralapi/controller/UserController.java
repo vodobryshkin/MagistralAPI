@@ -57,7 +57,7 @@ public class UserController {
                 .body(userResponse);
     }
 
-    @GetMapping
+    @GetMapping("/me")
     @ForAuthenticatedUsers
     public ResponseEntity<UserProfileDTO> readUserProfile(Authentication authentication) {
         return ResponseEntity

@@ -17,7 +17,8 @@ import ru.rtkmagistral.magistralapi.service.spec.IJWTService;
 import ru.rtkmagistral.magistralapi.service.spec.IUserService;
 import ru.rtkmagistral.magistralapi.validation.formats.uuid.UUID;
 
-@RestController("/confirmation-links")
+@RestController
+@RequestMapping("/confirmation-links")
 @RequiredArgsConstructor
 public class EmailVerificationController {
     private final IAuthenticationService authenticationService;
