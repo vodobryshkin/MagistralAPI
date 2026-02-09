@@ -2,10 +2,7 @@ package ru.rtkmagistral.magistralapi.controller;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseCookie;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import ru.rtkmagistral.magistralapi.dto.resend_token.ResendTokenDTO;
@@ -18,7 +15,11 @@ import ru.rtkmagistral.magistralapi.service.spec.IUserService;
 import ru.rtkmagistral.magistralapi.validation.formats.uuid.UUID;
 
 @RestController
-@RequestMapping("/confirmation-links")
+@RequestMapping(
+        value = "/confirmation-links",
+        consumes = MediaType.APPLICATION_JSON_VALUE,
+        produces = MediaType.APPLICATION_JSON_VALUE
+)
 @RequiredArgsConstructor
 public class EmailVerificationController {
     private final IAuthenticationService authenticationService;

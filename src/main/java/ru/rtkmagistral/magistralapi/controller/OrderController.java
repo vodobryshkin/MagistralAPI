@@ -3,6 +3,7 @@ package ru.rtkmagistral.magistralapi.controller;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
@@ -18,7 +19,11 @@ import java.util.UUID;
  * Контроллер, принимающий запросы идущие на эндпойнт "/orders"
  */
 @RestController
-@RequestMapping("/orders")
+@RequestMapping(
+        value = "/orders",
+        consumes = MediaType.APPLICATION_JSON_VALUE,
+        produces = MediaType.APPLICATION_JSON_VALUE
+)
 @RequiredArgsConstructor
 public class OrderController {
     private final IOrdersService ordersService;

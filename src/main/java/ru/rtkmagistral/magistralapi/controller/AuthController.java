@@ -2,10 +2,7 @@ package ru.rtkmagistral.magistralapi.controller;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseCookie;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 import ru.rtkmagistral.magistralapi.dto.auth.AuthResponse;
 import ru.rtkmagistral.magistralapi.dto.auth.LoginRequest;
@@ -18,7 +15,11 @@ import java.util.List;
  * Контроллер, принимающий запросы идущие на эндпойнт "/auth"
  */
 @RestController
-@RequestMapping("/auth")
+@RequestMapping(
+        value = "/auth",
+        consumes = MediaType.APPLICATION_JSON_VALUE,
+        produces = MediaType.APPLICATION_JSON_VALUE
+)
 @RequiredArgsConstructor
 public class AuthController {
     private final IJWTService jwtService;

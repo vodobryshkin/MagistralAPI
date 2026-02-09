@@ -2,10 +2,7 @@ package ru.rtkmagistral.magistralapi.controller;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseCookie;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 import ru.rtkmagistral.magistralapi.dto.company.CompanyDTO;
 import ru.rtkmagistral.magistralapi.dto.company.CreateCompanyRequest;
@@ -19,7 +16,11 @@ import ru.rtkmagistral.magistralapi.service.spec.IUserService;
  * Контроллер, принимающий запросы идущие на эндпойнт "/company"
  */
 @RestController
-@RequestMapping("/companies")
+@RequestMapping(
+        value = "/companies",
+        consumes = MediaType.APPLICATION_JSON_VALUE,
+        produces = MediaType.APPLICATION_JSON_VALUE
+)
 @RequiredArgsConstructor
 public class CompanyController {
     private final IUserService userService;
