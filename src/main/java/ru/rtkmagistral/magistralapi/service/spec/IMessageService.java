@@ -1,6 +1,6 @@
 package ru.rtkmagistral.magistralapi.service.spec;
 
-import ru.rtkmagistral.magistralapi.dto.MinioDTO;
+import ru.rtkmagistral.magistralapi.dto.minio.MinioDTO;
 import ru.rtkmagistral.magistralapi.dto.mail.ConfirmAccountMailRequest;
 import ru.rtkmagistral.magistralapi.dto.mail.DocumentMailRequest;
 

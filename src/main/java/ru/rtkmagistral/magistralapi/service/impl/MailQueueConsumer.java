@@ -6,7 +6,7 @@ import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 import ru.rtkmagistral.magistralapi.domain.redis.ConfirmationLink;
-import ru.rtkmagistral.magistralapi.dto.MinioDTO;
+import ru.rtkmagistral.magistralapi.dto.minio.MinioDTO;
 import ru.rtkmagistral.magistralapi.dto.mail.ConfirmAccountMailRequest;
 import ru.rtkmagistral.magistralapi.dto.mail.DocumentMailRequest;
 import ru.rtkmagistral.magistralapi.service.spec.IConfirmationLinkService;

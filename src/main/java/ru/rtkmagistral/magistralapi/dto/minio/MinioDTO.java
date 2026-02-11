@@ -1,4 +1,4 @@
-package ru.rtkmagistral.magistralapi.dto;
+package ru.rtkmagistral.magistralapi.dto.minio;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

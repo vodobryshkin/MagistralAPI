@@ -9,7 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.rtkmagistral.magistralapi.domain.jpa.IdempotencyKey;
 import ru.rtkmagistral.magistralapi.domain.jpa.Order;
 import ru.rtkmagistral.magistralapi.domain.jpa.User;
-import ru.rtkmagistral.magistralapi.dto.MinioDTO;
+import ru.rtkmagistral.magistralapi.dto.minio.MinioDTO;
 import ru.rtkmagistral.magistralapi.dto.idempotency_key.IdempotencyKeyDTO;
 import ru.rtkmagistral.magistralapi.dto.mail.DocumentMailRequest;
 import ru.rtkmagistral.magistralapi.dto.order.*;
