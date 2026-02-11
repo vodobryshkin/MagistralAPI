@@ -63,7 +63,7 @@ services:
       retries: 20
 
   backend:
-    image: yourname/magistralapi-backend:main
+    image: dobryshkin/magistralapi-backend:latest
 
     network_mode: host
 
