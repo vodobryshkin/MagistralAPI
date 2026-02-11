@@ -63,14 +63,12 @@ services:
       retries: 20
 
   backend:
+    image: yourname/magistralapi-backend:main
+
     network_mode: host
 
     env_file:
       - ./.env
-
-    build:
-      context: .
-      dockerfile: Dockerfile
 
     environment:
       SPRING_PROFILES_ACTIVE: docker
