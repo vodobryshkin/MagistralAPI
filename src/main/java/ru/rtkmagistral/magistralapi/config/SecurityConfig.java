@@ -98,10 +98,15 @@ public class SecurityConfig {
         ));
 
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
+
         config.setAllowedHeaders(List.of(
                 HttpHeaders.AUTHORIZATION,
                 HttpHeaders.CONTENT_TYPE,
                 "X-Requested-With"
+        ));
+
+        config.setExposedHeaders(List.of(
+                HttpHeaders.AUTHORIZATION
         ));
 
         config.setAllowCredentials(true);
@@ -110,4 +115,5 @@ public class SecurityConfig {
         source.registerCorsConfiguration("/**", config);
         return source;
     }
+
 }

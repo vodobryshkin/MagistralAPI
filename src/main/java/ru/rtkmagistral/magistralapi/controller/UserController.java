@@ -37,6 +37,8 @@ public class UserController {
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<UserResponse> createUser(@RequestBody @Valid CreateUserRequest createUserRequest) {
         UserResponse userResponse = userService.createUser(createUserRequest);
+        UserProfileDTO userProfileDTO = userService.getUserProfile(createUserRequest.getEmail());
+        userResponse.setUserProfileDTO(userProfileDTO);
 
         String accessToken = jwtService.generateAccessToken(createUserRequest.getEmail(), "ROLE_UNVERIFIED_USER");
         String refreshToken = jwtService.generateRefreshToken(createUserRequest.getEmail(), "ROLE_UNVERIFIED_USER");

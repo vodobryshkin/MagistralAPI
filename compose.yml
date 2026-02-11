@@ -62,46 +62,6 @@ services:
       timeout: 3s
       retries: 20
 
-  backend:
-    image: dobryshkin/magistralapi-backend:latest
-
-    network_mode: host
-
-    env_file:
-      - ./.env
-
-    environment:
-      SPRING_PROFILES_ACTIVE: docker
-
-      POSTGRES_URL: jdbc:postgresql://localhost:5432/${POSTGRES_DB}
-
-      RABBIT_MQ_HOST: localhost
-      RABBIT_MQ_PORT: 5672
-
-      REDIS_DATABASE_HOST: localhost
-      REDIS_DATABASE_PORT: 6379
-
-      MINIO_ENDPOINT: http://localhost:9000
-
-      POSTGRES_DB: ${POSTGRES_DB}
-      POSTGRES_USER: ${POSTGRES_USER}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-      RABBIT_MQ_USERNAME: ${RABBIT_MQ_USERNAME}
-      RABBIT_MQ_PASSWORD: ${RABBIT_MQ_PASSWORD}
-      MINIO_ACCESS_KEY: ${MINIO_ACCESS_KEY}
-      MINIO_SECRET_KEY: ${MINIO_SECRET_KEY}
-
-    depends_on:
-      rabbitmq:
-        condition: service_healthy
-      postgres:
-        condition: service_healthy
-      redis:
-        condition: service_healthy
-      minio:
-        condition: service_healthy
-    restart: on-failure
-
 volumes:
   pgdata:
   rabbitmqdata:
