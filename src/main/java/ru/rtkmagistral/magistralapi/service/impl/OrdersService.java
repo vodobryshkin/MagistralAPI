@@ -76,7 +76,7 @@ public class OrdersService implements IOrdersService {
         messageService.sendMinioMessageToQueue(minioDTO);
         messageService.sendDocumentMessageToQueue(documentMailRequest);
 
-        return OrderResponses.ORDER_CREATED;
+        return new OrderResponse("CREATED", true, orderRepository.countOrdersByUser(user));
     }
 
     /**
