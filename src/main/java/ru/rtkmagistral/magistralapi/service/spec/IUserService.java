@@ -29,4 +29,6 @@ public interface IUserService {
     void verifyUser(String email);
 
     UserProfileDTO getUserProfile(String email);
+
+    boolean checkUserExists(String email);
 }

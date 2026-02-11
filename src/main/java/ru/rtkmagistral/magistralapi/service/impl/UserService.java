@@ -106,6 +106,11 @@ public class UserService implements IUserService {
         );
     }
 
+    @Override
+    public boolean checkUserExists(String email) {
+        return userRepository.existsUserByEmail(email);
+    }
+
     private User validateUser(CreateUserRequest createUserRequest) {
         if (userRepository.existsUserByEmail(createUserRequest.getEmail())) {
             throw new UserException("USER_WITH_THIS_EMAIL_ALREADY_EXISTS");

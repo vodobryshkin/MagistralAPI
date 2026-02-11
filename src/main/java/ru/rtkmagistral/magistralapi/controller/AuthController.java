@@ -10,8 +10,10 @@ import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 import ru.rtkmagistral.magistralapi.dto.auth.AuthResponse;
 import ru.rtkmagistral.magistralapi.dto.auth.LoginRequest;
+import ru.rtkmagistral.magistralapi.exception.AuthException;
 import ru.rtkmagistral.magistralapi.service.spec.IAuthenticationService;
 import ru.rtkmagistral.magistralapi.service.spec.IJWTService;
+import ru.rtkmagistral.magistralapi.service.spec.IUserService;
 
 import java.util.List;
 
@@ -33,6 +35,7 @@ import java.util.List;
 public class AuthController {
     private final IJWTService jwtService;
     private final IAuthenticationService authenticationService;
+    private final IUserService userService;
 
     @Operation(
             summary = "Вход в аккаунт",
@@ -82,12 +85,17 @@ public class AuthController {
             @ApiResponse(responseCode = "401", description = "Cookie refresh_token невалиден/неустановлен/просрочен")
     })
     @GetMapping(value = "/refresh")
-    public ResponseEntity<Void> refresh(@CookieValue(name = "refresh_token", required = false) String refreshToken) {
+    public ResponseEntity<?> refresh(@CookieValue(name = "refresh_token", required = false) String refreshToken) {
         if (refreshToken == null || !jwtService.isTokenValid(refreshToken)) {
-            return ResponseEntity.status(401).build();
+            throw new AuthException("REFRESH_TOKEN_EXPIRED");
         }
 
         String email = jwtService.extractUsername(refreshToken);
+
+        if (!userService.checkUserExists(email)) {
+            throw new AuthException("CANNOT_IDENTIFY_USER_USING_THIS_REFRESH_TOKEN");
+        }
+
         List<String> roles = jwtService.extractRoles(refreshToken);
 
         String accessToken = jwtService.generateAccessToken(email, roles);
