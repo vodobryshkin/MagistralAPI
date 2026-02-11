@@ -23,6 +23,8 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import ru.rtkmagistral.magistralapi.security.authentication.JwtAuthenticationFilter;
+import ru.rtkmagistral.magistralapi.security.authentication.RestAccessDeniedHandler;
+import ru.rtkmagistral.magistralapi.security.authentication.RestAuthEntryPoint;
 
 import java.util.List;
 
@@ -33,12 +35,19 @@ import java.util.List;
 @EnableMethodSecurity
 public class SecurityConfig {
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http, JwtAuthenticationFilter jwtAuthenticationFilter) {
+    public SecurityFilterChain securityFilterChain(HttpSecurity http,
+                                                   JwtAuthenticationFilter jwtAuthenticationFilter,
+                                                   RestAuthEntryPoint restAuthEntryPoint,
+                                                   RestAccessDeniedHandler restAccessDeniedHandler) {
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .cors(Customizer.withDefaults())
                 .sessionManagement(session ->
                         session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                )
+                .exceptionHandling(ex -> ex
+                        .authenticationEntryPoint(restAuthEntryPoint)
+                        .accessDeniedHandler(restAccessDeniedHandler)
                 )
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(

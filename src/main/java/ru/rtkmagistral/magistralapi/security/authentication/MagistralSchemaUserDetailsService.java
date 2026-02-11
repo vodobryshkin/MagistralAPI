@@ -16,17 +16,12 @@ import java.util.UUID;
 @Service
 @RequiredArgsConstructor
 public class MagistralSchemaUserDetailsService implements UserDetailsService {
+
     private final AuthenticationUserDAO authenticationUserDAO;
 
-    /**
-     * Метод для получения объекта UserDetails, опираясь на специфику схемы БД для данного приложения.
-     *
-     * @param email адрес электронной почты пользователя.
-     * @return сформированный объект UserDetails.
-     * @throws UsernameNotFoundException выкидывается если пользователь не найден.
-     */
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+
         AuthenticationUserDTO user = authenticationUserDAO.findUserByEmail(email)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
 
@@ -35,7 +30,7 @@ public class MagistralSchemaUserDetailsService implements UserDetailsService {
         List<String> roles = authenticationUserDAO.findUserRoles(id);
         List<SimpleGrantedAuthority> authorities = new ArrayList<>();
 
-        for (String role: roles) {
+        for (String role : roles) {
             authorities.add(new SimpleGrantedAuthority(role));
         }
 

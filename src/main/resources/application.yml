@@ -27,6 +27,11 @@ spring:
       port: ${REDIS_DATABASE_PORT:6379}
       database: ${REDIS_DATABASE_NAME:0}
 
+  docker:
+    compose:
+      stop:
+        command: down
+        arguments[0]: --remove-orphans
 
 idempotency:
   hmac:
