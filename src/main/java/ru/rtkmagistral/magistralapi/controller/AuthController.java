@@ -1,5 +1,9 @@
 package ru.rtkmagistral.magistralapi.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.*;
@@ -14,10 +18,15 @@ import java.util.List;
 /**
  * Контроллер, принимающий запросы идущие на эндпойнт "/auth"
  */
+
+@Tag(
+        name = "Аутентификация",
+        description = "Операции, связанные с получением токенов для аутентификации пользователя (вход в аккаунт, " +
+                "получение нового access-токена после истечения срока годности предыдущего)"
+)
 @RestController
 @RequestMapping(
         value = "/auth",
-        consumes = MediaType.APPLICATION_JSON_VALUE,
         produces = MediaType.APPLICATION_JSON_VALUE
 )
 @RequiredArgsConstructor
@@ -25,7 +34,21 @@ public class AuthController {
     private final IJWTService jwtService;
     private final IAuthenticationService authenticationService;
 
-    @PostMapping("/login")
+    @Operation(
+            summary = "Вход в аккаунт",
+            description = """
+                    Возвращает access-токен для идентификации текущего пользователя в заголовке Authorization.
+                    Устанавливает Cookie refresh_token с refresh-токеном для обновления access-токена.
+                    """
+    )
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Вход прошёл успешно"),
+            @ApiResponse(responseCode = "403", description = "Неверный логин или пароль")
+    })
+    @PostMapping(
+            value = "/login",
+            consumes = MediaType.APPLICATION_JSON_VALUE
+    )
     public ResponseEntity<AuthResponse> login(@RequestBody @Valid LoginRequest loginRequest) {
         AuthResponse authResponse = authenticationService.login(loginRequest);
         List<String> authorities = authResponse.getAuthorities();
@@ -41,13 +64,24 @@ public class AuthController {
                 .build();
 
         return ResponseEntity
-                .status(HttpStatus.CREATED)
+                .status(HttpStatus.OK)
                 .header(HttpHeaders.AUTHORIZATION, accessToken)
                 .header(HttpHeaders.SET_COOKIE, refreshCookie.toString())
                 .body(authResponse);
     }
 
-    @GetMapping("/refresh")
+    @Operation(
+            summary = "Получение нового access-токена",
+            description = """
+                    Возвращает новый access-токен для идентификации текущего пользователя в заголовке Authorization.
+                    Необходим установленный Cookie refresh_token с refresh-токеном для обновления access-токена, иначе метод выполнится некорректно.
+                    """
+    )
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Новый access-токен получен успешно"),
+            @ApiResponse(responseCode = "401", description = "Cookie refresh_token невалиден/неустановлен/просрочен")
+    })
+    @GetMapping(value = "/refresh")
     public ResponseEntity<Void> refresh(@CookieValue(name = "refresh_token", required = false) String refreshToken) {
         if (refreshToken == null || !jwtService.isTokenValid(refreshToken)) {
             return ResponseEntity.status(401).build();

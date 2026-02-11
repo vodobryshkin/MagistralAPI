@@ -5,7 +5,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import ru.rtkmagistral.magistralapi.dto.auth.AuthResponse;
 import ru.rtkmagistral.magistralapi.dto.auth.AuthResponses;
@@ -85,15 +84,16 @@ public class AppExceptionHandler {
      * @return HTTP-ответ с ошибкой 422 Unprocessable Content.
      * */
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    @ResponseStatus(HttpStatus.UNPROCESSABLE_CONTENT)
-    public ValidationResponse handleValidationException(MethodArgumentNotValidException ex) {
+    public ResponseEntity<ValidationResponse> handleValidationException(MethodArgumentNotValidException ex) {
         Map<String, List<String>> errors = ex.getBindingResult().getFieldErrors().stream()
                 .collect(Collectors.groupingBy(
                         FieldError::getField,
                         Collectors.mapping(FieldError::getDefaultMessage, Collectors.toList())
                 ));
 
-        return new ValidationResponse("VALIDATION_ERROR", errors);
+        return ResponseEntity
+                .status(HttpStatus.UNPROCESSABLE_CONTENT)
+                .body(new ValidationResponse("VALIDATION_ERROR", errors));
     }
 
     /**
@@ -103,9 +103,10 @@ public class AppExceptionHandler {
      * @return HTTP-ответ с ошибкой 404 Not found.
      * */
     @ExceptionHandler(ConfirmationLinkException.class)
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    public VerifyResponse handleConfirmationLinkException(ConfirmationLinkException ex) {
-        return ConfirmationLinkResponses.CONFIRMATION_LINK_HAS_EXPIRED_OR_INVALID;
+    public ResponseEntity<VerifyResponse> handleConfirmationLinkException(ConfirmationLinkException ex) {
+        return ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
+                .body(ConfirmationLinkResponses.CONFIRMATION_LINK_HAS_EXPIRED_OR_INVALID);
     }
 
     /**
@@ -115,9 +116,10 @@ public class AppExceptionHandler {
      * @return HTTP-ответ с ошибкой 401 Unauthorized.
      * */
     @ExceptionHandler(AuthException.class)
-    @ResponseStatus(HttpStatus.UNAUTHORIZED)
-    public AuthResponse handleAuthException(AuthException ex) {
-        return AuthResponses.INCORRECT_EMAIL_OR_PASSWORD;
+    public ResponseEntity<AuthResponse> handleAuthException(AuthException ex) {
+        return ResponseEntity
+                .status(HttpStatus.UNAUTHORIZED)
+                .body(AuthResponses.INCORRECT_EMAIL_OR_PASSWORD);
     }
 
     /**
@@ -127,8 +129,9 @@ public class AppExceptionHandler {
      * @return HTTP-ответ с ошибкой 409 Conflict.
      * */
     @ExceptionHandler(OrderException.class)
-    @ResponseStatus(HttpStatus.CONFLICT)
-    public OrderResponse handleOrderException(OrderException ex) {
-        return OrderResponses.ORDER_IS_STILL_BEING_CREATED;
+    public ResponseEntity<OrderResponse> handleOrderException(OrderException ex) {
+        return ResponseEntity
+                .status(HttpStatus.CONFLICT)
+                .body(OrderResponses.ORDER_IS_STILL_BEING_CREATED);
     }
 }

@@ -1,5 +1,12 @@
 package ru.rtkmagistral.magistralapi.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.headers.Header;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.*;
@@ -14,10 +21,16 @@ import ru.rtkmagistral.magistralapi.service.spec.IJWTService;
 import ru.rtkmagistral.magistralapi.service.spec.IUserService;
 import ru.rtkmagistral.magistralapi.validation.formats.uuid.UUID;
 
+@Tag(
+        name = "Подтверждение почты",
+        description = """
+                Операции, связанные с подтверждением почты пользователя (проверка токена на корректность,
+                запрос нового письма с токеном).
+                """
+)
 @RestController
 @RequestMapping(
         value = "/confirmation-links",
-        consumes = MediaType.APPLICATION_JSON_VALUE,
         produces = MediaType.APPLICATION_JSON_VALUE
 )
 @RequiredArgsConstructor
@@ -27,6 +40,33 @@ public class EmailVerificationController {
     private final IUserService userService;
     private final IJWTService jwtService;
 
+    @Operation(
+            summary = "Запрос повторной отправки письма с токеном на подтверждение аккаунта.",
+            description = """
+                    Проверяет возможность повторной отправки письма с токеном на подтверждение аккаунта.
+                    Если письмо отправить нельзя (ввиду того, что после отправки письма не прошло достаточно времени),
+                    то присылает ответ с заголовком Retry-After с количеством секунд, через которое можно будет предпринять
+                    повторную попытку отправки письма с токеном на подтверждение аккаунта.
+                    Если письмо можно отправить, то отправляет его.
+                    """
+    )
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "204",
+                    description = "Письмо с токеном было успешно отправлено на почту пользователя."
+            ),
+            @ApiResponse(
+                    responseCode = "429",
+                    description = "Письмо с токеном не было отправлено на почту пользователя из-за того, что прошло недостаточно времени с предыдущей отправки.",
+                    headers = {
+                            @Header (
+                                    name = "Retry-After",
+                                    description = "Количество секунд, через которое запрос выполнится успешно",
+                                    schema = @Schema(type = "number")
+                            )
+                    }
+            ),
+    })
     @PostMapping
     @ForUnverifiedUsers
     public ResponseEntity<Void> resend(Authentication authentication) {
@@ -50,6 +90,45 @@ public class EmailVerificationController {
      * @param id ссылки на подтверждение.
      * @return ответ на запрос с информацией о прошедшей операции.
      */
+    @Operation(
+            summary = "Проверка валидности переданного токена для верификации пользователя.",
+            description = """
+                    Проверяет токен на валидность (на семантическую корректность, время жизни).
+                    Если проверка прошла успешно, то возвращает access-токен для идентификации текущего пользователя
+                    с обновлёнными правами в заголовке Authorization.
+                    Устанавливает Cookie refresh_token с refresh-токеном с обновлёнными правами для обновления access-токена.
+                    """
+    )
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Верификация прошла успешно",
+                    headers = {
+                            @Header(
+                                    name = "Authorization",
+                                    description = "Access-токен с обновлёнными правами пользователя",
+                                    schema = @Schema(type = "string")
+                            ),
+                            @Header(
+                                    name = "Set-Cookie",
+                                    description = "Cookie refresh_token с refresh-токеном с обновлёнными правами пользователя",
+                                    schema = @Schema(type = "string")
+                            )
+                    },
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = VerifyResponse.class)
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "404",
+                    description = "Переданный на подтверждение токен не был найден в системе (ввиду невалидности или истечения времени жизни)",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = VerifyResponse.class)
+                    )
+            )
+    })
     @PutMapping("/{id}")
     public ResponseEntity<VerifyResponse> verifyUser(@PathVariable @Valid @UUID String id) {
         VerifyResponse verifyResponse = confirmationLinkService.verifyConfirmationLink(id);

@@ -19,7 +19,6 @@ import ru.rtkmagistral.magistralapi.service.spec.IUserService;
 @RestController
 @RequestMapping(
         value = "/users",
-        consumes = MediaType.APPLICATION_JSON_VALUE,
         produces = MediaType.APPLICATION_JSON_VALUE
 )
 @RequiredArgsConstructor
@@ -35,7 +34,7 @@ public class UserController {
      * @param createUserRequest запрос на создание пользователя.
      * @return ответ на запрос с информацией о прошедшей операции.
      */
-    @PostMapping
+    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<UserResponse> createUser(@RequestBody @Valid CreateUserRequest createUserRequest) {
         UserResponse userResponse = userService.createUser(createUserRequest);
 
