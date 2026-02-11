@@ -17,12 +17,12 @@ import ru.rtkmagistral.magistralapi.validation.rules.proper_noun.ProperNoun;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @AllArgsConstructor
 public class CreateUserRequest {
-    @NotBlank
+    @NotBlank(message = "CANNOT_BE_BLANK")
     @CyrillicWord
     @ProperNoun
     private String name;
 
-    @NotBlank
+    @NotBlank(message = "CANNOT_BE_BLANK")
     @CyrillicWord
     @ProperNoun
     private String surname;
@@ -32,20 +32,20 @@ public class CreateUserRequest {
     @JsonProperty("fathers_name")
     private String fathersName;
 
-    @NotBlank
-    @Email
+    @NotBlank(message = "CANNOT_BE_BLANK")
+    @Email(message = "MUST_MATCH_FORMAT")
     private String email;
 
-    @NotBlank
+    @NotBlank(message = "CANNOT_BE_BLANK")
     @PhoneNumber
     private String phone;
 
-    @NotBlank
-    @Size(min = 6, max = 32, message = "Password length must be from 6 to 32 characters")
+    @NotBlank(message = "CANNOT_BE_BLANK")
+    @Size(min = 6, max = 32, message = "LENGTH_MUST_BE_BETWEEN_6_AND_32_SYMBOLS")
     @Password
     private String password;
 
-    @AssertTrue(message = "You must agree to the processing of personal data")
+    @AssertTrue(message = "MUST_BE_TRUE")
     @JsonProperty("agree_to_the_processing_of_personal_data")
     private boolean agreeOnPersonalDataProcessing;
 }

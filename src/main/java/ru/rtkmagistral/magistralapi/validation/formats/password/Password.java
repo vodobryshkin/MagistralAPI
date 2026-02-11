@@ -15,7 +15,7 @@ import java.lang.annotation.Target;
 @Target({ElementType.PARAMETER, ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Password {
-    String message() default "Password must only contain ASCII Symbols";
+    String message() default "MUST_CONTAIN_ONLY_ASCII_SYMBOLS";
 
     Class<?>[] groups() default {};
 

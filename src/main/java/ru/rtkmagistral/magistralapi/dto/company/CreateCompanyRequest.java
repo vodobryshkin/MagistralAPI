@@ -17,22 +17,22 @@ import ru.rtkmagistral.magistralapi.validation.formats.okved.OKVED;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @AllArgsConstructor
 public class CreateCompanyRequest {
-    @NotBlank
+    @NotBlank(message = "CANNOT_BE_BLANK")
     private String title;
 
-    @NotBlank
+    @NotBlank(message = "CANNOT_BE_BLANK")
     @INN
     private String inn;
 
-    @NotBlank
+    @NotBlank(message = "CANNOT_BE_BLANK")
     @KPP
     private String kpp;
 
-    @NotBlank
+    @NotBlank(message = "CANNOT_BE_BLANK")
     @OKVED
     private String okved;
 
-    @AssertTrue(message = "You must agree to the processing of courier services.")
+    @AssertTrue(message = "MUST_BE_TRUE")
     @JsonProperty("agree_to_the_processing_of_courier_services")
     private boolean agreeToTheProcessingOfCourierServices;
 }

@@ -13,12 +13,12 @@ import ru.rtkmagistral.magistralapi.validation.formats.password.Password;
 @Data
 @AllArgsConstructor
 public class LoginRequest {
-    @NotBlank
-    @Email
+    @NotBlank(message = "CANNOT_BE_BLANK")
+    @Email(message = "MUST_MATCH_FORMAT")
     private String email;
 
-    @NotBlank
-    @Size(min = 6, max = 32, message = "Password length must be from 6 to 32 characters")
+    @NotBlank(message = "CANNOT_BE_BLANK")
+    @Size(min = 6, max = 32, message = "LENGTH_MUST_BE_BETWEEN_6_AND_32_SYMBOLS")
     @Password
     private String password;
 }

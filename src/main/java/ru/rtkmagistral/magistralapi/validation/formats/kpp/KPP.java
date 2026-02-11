@@ -15,7 +15,7 @@ import java.lang.annotation.Target;
 @Target({ElementType.PARAMETER, ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface KPP {
-    String message() default "KPP does not match the format.";
+    String message() default "MUST_MATCH_FORMAT";
 
     Class<?>[] groups() default {};
 

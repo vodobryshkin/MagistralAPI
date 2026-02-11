@@ -15,7 +15,7 @@ import java.lang.annotation.Target;
 @Target({ElementType.PARAMETER, ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface ProperNoun {
-    String message() default "The word is not a proper noun";
+    String message() default "MUST_BE_PROPER_NOUN";
 
     Class<?>[] groups() default {};
 

@@ -15,7 +15,7 @@ import java.lang.annotation.Target;
 @Target({ElementType.PARAMETER, ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface CyrillicWord {
-    String message() default "The word contains not only Cyrillic letters";
+    String message() default "MUST_CONTAIN_ONLY_RUSSIAN_LETTERS";
 
     Class<?>[] groups() default {};
 

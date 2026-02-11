@@ -15,7 +15,7 @@ import java.lang.annotation.Target;
 @Target({ElementType.PARAMETER, ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface PhoneNumber {
-    String message() default "Email does not match the format (+79999999999)";
+    String message() default "MUST_MATCH_FORMAT";
 
     Class<?>[] groups() default {};
 
