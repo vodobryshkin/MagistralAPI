@@ -1,6 +1,7 @@
 package ru.rtkmagistral.magistralapi.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.headers.Header;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -58,6 +59,18 @@ public class UserController {
             @ApiResponse(
                     responseCode = "201",
                     description = "Пользователь был успешно создан.",
+                    headers = {
+                            @Header(
+                                    name = "Authorization",
+                                    description = "Access-токен с правами пользователя",
+                                    schema = @Schema(type = "string")
+                            ),
+                            @Header(
+                                    name = "Set-Cookie",
+                                    description = "Cookie refresh_token с refresh-токеном с правами пользователя",
+                                    schema = @Schema(type = "string")
+                            )
+                    },
                     content = @Content(
                             mediaType = "application/json",
                             schema = @Schema(implementation = UserResponse.class)
