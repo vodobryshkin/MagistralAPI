@@ -116,7 +116,7 @@ public class CompanyController {
             ),
             @ApiResponse(
                     responseCode = "422",
-                    description = "Переданные данные для регистрации пользователя семантически некорректные.",
+                    description = "Переданные данные для регистрации компании семантически некорректные.",
                     content = @Content(
                             mediaType = "application/json",
                             schema = @Schema(implementation = ValidationResponse.class),
