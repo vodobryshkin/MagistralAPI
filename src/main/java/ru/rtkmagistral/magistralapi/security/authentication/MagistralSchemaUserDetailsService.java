@@ -23,7 +23,7 @@ public class MagistralSchemaUserDetailsService implements UserDetailsService {
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
 
         AuthenticationUserDTO user = authenticationUserDAO.findUserByEmail(email)
-                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+                .orElseThrow(() -> new UsernameNotFoundException("USER_NOT_FOUND"));
 
         UUID id = user.getUuid();
 
