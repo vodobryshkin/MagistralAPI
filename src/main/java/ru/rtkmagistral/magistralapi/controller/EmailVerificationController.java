@@ -3,6 +3,7 @@ package ru.rtkmagistral.magistralapi.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.headers.Header;
 import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -12,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.*;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+import ru.rtkmagistral.magistralapi.dto.auth.AuthResponse;
 import ru.rtkmagistral.magistralapi.dto.resend_token.ResendTokenDTO;
 import ru.rtkmagistral.magistralapi.dto.token.VerifyResponse;
 import ru.rtkmagistral.magistralapi.security.authorization.ForUnverifiedUsers;
@@ -54,6 +56,46 @@ public class EmailVerificationController {
             @ApiResponse(
                     responseCode = "204",
                     description = "Письмо с токеном было успешно отправлено на почту пользователя."
+            ),
+            @ApiResponse(
+                    responseCode = "401",
+                    description = "Не удалось аутентифицировать пользователя.",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = AuthResponse.class),
+                            examples = {
+                                    @ExampleObject(
+                                            description = "Время жизни access-токена вышло.",
+                                            name = "ACCESS_TOKEN_HAS_EXPIRED",
+                                            value = "{\"message\":\"ACCESS_TOKEN_HAS_EXPIRED\"}"
+                                    ),
+                                    @ExampleObject(
+                                            description = "Access-токен семантически некорректен.",
+                                            name = "ACCESS_TOKEN_INVALID",
+                                            value = "{\"message\":\"ACCESS_TOKEN_INVALID\"}"
+                                    ),
+                            }
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "403",
+                    description = "Недостаточно прав для того, чтобы выполнить операцию.",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = AuthResponse.class),
+                            examples = {
+                                    @ExampleObject(
+                                            description = "Недостаточно прав для совершения операции",
+                                            name = "INSUFFICIENT_RIGHTS",
+                                            value = "{\"message\":\"INSUFFICIENT_RIGHTS\"}"
+                                    ),
+                                    @ExampleObject(
+                                            description = "Сначала нужно аутентифицировать пользователя",
+                                            name = "NEED_AUTHENTICATION",
+                                            value = "{\"message\":\"NEED_AUTHENTICATION\"}"
+                                    )
+                            }
+                    )
             ),
             @ApiResponse(
                     responseCode = "429",
@@ -117,7 +159,14 @@ public class EmailVerificationController {
                     },
                     content = @Content(
                             mediaType = "application/json",
-                            schema = @Schema(implementation = VerifyResponse.class)
+                            schema = @Schema(implementation = VerifyResponse.class),
+                            examples = {
+                                    @ExampleObject(
+                                            description = "Операция завершилась успешно",
+                                            name = "OK",
+                                            value = "{\"status\": true}"
+                                    ),
+                            }
                     )
             ),
             @ApiResponse(
@@ -125,7 +174,14 @@ public class EmailVerificationController {
                     description = "Переданный на подтверждение токен не был найден в системе (ввиду невалидности или истечения времени жизни)",
                     content = @Content(
                             mediaType = "application/json",
-                            schema = @Schema(implementation = VerifyResponse.class)
+                            schema = @Schema(implementation = VerifyResponse.class),
+                            examples = {
+                                    @ExampleObject(
+                                            description = "Операция завершилась неудачно",
+                                            name = "CONFIRMATION_LINK_HAS_EXPIRED_OR_INVALID",
+                                            value = "{\"status\": false, \"message\": \"CONFIRMATION_LINK_HAS_EXPIRED_OR_INVALID\"}"
+                                    ),
+                            }
                     )
             )
     })

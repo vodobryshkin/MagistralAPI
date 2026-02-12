@@ -32,10 +32,7 @@ public class RestAccessDeniedHandler implements AccessDeniedHandler {
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
 
         objectMapper.writeValue(response.getOutputStream(), Map.of(
-                "status", 403,
-                "error", "Forbidden",
-                "message", "INSUFFICIENT_RIGHTS",
-                "path", request.getRequestURI()
+                "message", "INSUFFICIENT_RIGHTS"
         ));
         response.flushBuffer();
     }

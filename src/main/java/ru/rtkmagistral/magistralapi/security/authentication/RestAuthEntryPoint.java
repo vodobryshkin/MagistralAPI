@@ -32,10 +32,7 @@ public class RestAuthEntryPoint implements AuthenticationEntryPoint {
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
 
         objectMapper.writeValue(response.getOutputStream(), Map.of(
-                "status", 401,
-                "error", "Unauthorized",
-                "message", "NEED_AUTHENTICATION",
-                "path", request.getRequestURI()
+                "message", "NEED_AUTHENTICATION"
         ));
         response.flushBuffer();
     }
