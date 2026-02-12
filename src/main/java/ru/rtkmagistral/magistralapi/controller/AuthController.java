@@ -15,9 +15,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 import ru.rtkmagistral.magistralapi.dto.auth.AuthResponse;
-import ru.rtkmagistral.magistralapi.dto.auth.AuthResponses;
 import ru.rtkmagistral.magistralapi.dto.auth.LoginRequest;
 import ru.rtkmagistral.magistralapi.exception.AuthException;
+import ru.rtkmagistral.magistralapi.exception.ValidationResponse;
 import ru.rtkmagistral.magistralapi.service.spec.IAuthenticationService;
 import ru.rtkmagistral.magistralapi.service.spec.IJWTService;
 import ru.rtkmagistral.magistralapi.service.spec.IUserService;
@@ -87,7 +87,7 @@ public class AuthController {
                     description = "Переданные почта и/или пароль семантически некорректные",
                     content = @Content(
                             mediaType = "application/json",
-                            schema = @Schema(implementation = AuthResponse.class),
+                            schema = @Schema(implementation = ValidationResponse.class),
                             examples = {
                                     @ExampleObject(
                                             description = "Почта или пароль не соответствуют заявленным форматам, ввиду чего не прошли валидацию. Все возможные сообщения об ошибках валидации представлены в объекте-примере.",
@@ -170,7 +170,7 @@ public class AuthController {
                     description = "Cookie refresh_token невалиден/неустановлен/просрочен",
                     content = @Content(
                             mediaType = "application/json",
-                            schema = @Schema(implementation = AuthResponses.class),
+                            schema = @Schema(implementation = AuthResponse.class),
                             examples = {
                                     @ExampleObject(
                                             name = "REFRESH_TOKEN_INVALID",
@@ -187,7 +187,7 @@ public class AuthController {
                     description = "Пользователя, чей email зашифрован в refresh-токене, не существует в системе.",
                     content = @Content(
                             mediaType = "application/json",
-                            schema = @Schema(implementation = AuthResponses.class),
+                            schema = @Schema(implementation = AuthResponse.class),
                             examples = {
                                     @ExampleObject(
                                             name = "CANNOT_IDENTIFY_USER_USING_THIS_REFRESH_TOKEN",

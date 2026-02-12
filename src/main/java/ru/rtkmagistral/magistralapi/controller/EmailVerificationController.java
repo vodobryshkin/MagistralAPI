@@ -75,6 +75,11 @@ public class EmailVerificationController {
                                             name = "ACCESS_TOKEN_INVALID",
                                             value = "{\"message\":\"ACCESS_TOKEN_INVALID\"}"
                                     ),
+                                    @ExampleObject(
+                                            description = "Не удалось найти пользователя с email из access-токена.",
+                                            name = "USER_NOT_FOUND",
+                                            value = "{\"message\":\"USER_NOT_FOUND\"}"
+                                    )
                             }
                     )
             ),
