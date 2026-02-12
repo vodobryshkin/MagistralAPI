@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.AssertTrue;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import ru.rtkmagistral.magistralapi.validation.formats.inn.INN;
@@ -70,7 +71,7 @@ public class CreateCompanyRequest {
                     "true"
             }
     )
-    @NotBlank(message = "CANNOT_BE_BLANK")
+    @NotNull(message = "CANNOT_BE_NULL")
     @AssertTrue(message = "MUST_BE_TRUE")
     @JsonProperty("agree_to_the_processing_of_courier_services")
     private Boolean agreeToTheProcessingOfCourierServices;

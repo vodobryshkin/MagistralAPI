@@ -3,7 +3,7 @@ package ru.rtkmagistral.magistralapi.dto.company;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import ru.rtkmagistral.magistralapi.dto.user.CreateUserRequest;
 
@@ -22,7 +22,7 @@ public class CompanyDTO {
             """
     )
     @Valid
-    @NotBlank(message = "CANNOT_BE_BLANK")
+    @NotNull(message = "CANNOT_BE_NULL")
     @JsonProperty("user")
     private CreateUserRequest createUserRequest;
 
@@ -32,7 +32,7 @@ public class CompanyDTO {
             """
     )
     @Valid
-    @NotBlank(message = "CANNOT_BE_BLANK")
+    @NotNull(message = "CANNOT_BE_NULL")
     @JsonProperty("company")
     private CreateCompanyRequest createCompanyRequest;
 }

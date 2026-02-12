@@ -111,7 +111,7 @@ public class CreateOrderRequest {
             """,
             example = "PACKAGE"
     )
-    @NotBlank(message = "CANNOT_BE_BLANK")
+    @NotNull(message = "CANNOT_BE_NULL")
     @JsonProperty("type_of_shipment")
     private Order.TypeOfShipment typeOfShipment;
 
@@ -121,7 +121,7 @@ public class CreateOrderRequest {
             """,
             example = "HOUSEHOLD_CHEMICALS"
     )
-    @NotBlank(message = "CANNOT_BE_BLANK")
+    @NotNull(message = "CANNOT_BE_NULL")
     @JsonProperty("nature_of_investment")
     private NatureOfInvestment natureOfInvestment;
 
@@ -131,7 +131,7 @@ public class CreateOrderRequest {
             """,
             example = "HOUSEHOLD_CHEMICALS"
     )
-    @NotBlank(message = "CANNOT_BE_BLANK")
+    @NotNull(message = "CANNOT_BE_NULL")
     @JsonProperty("secret_cargo")
     private Boolean secretCargo;
 
@@ -142,7 +142,7 @@ public class CreateOrderRequest {
             """,
             example = "false"
     )
-    @NotBlank(message = "CANNOT_BE_BLANK")
+    @NotNull(message = "CANNOT_BE_NULL")
     @JsonProperty("deliver_as_soon_as_possible")
     private Boolean deliverAsSoonAsPossible;
 
@@ -196,7 +196,7 @@ public class CreateOrderRequest {
                     "true"
             }
     )
-    @NotBlank(message = "CANNOT_BE_BLANK")
+    @NotNull(message = "CANNOT_BE_NULL")
     @AssertTrue(message = "MUST_BE_TRUE")
     @JsonProperty("agree_with_the_terms_of_the_agreement")
     private Boolean agreeWithTheTermsOfTheAgreement;

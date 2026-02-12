@@ -94,7 +94,7 @@ public class CreateUserRequest {
                     "true"
             }
     )
-    @NotBlank(message = "CANNOT_BE_BLANK")
+    @NotNull(message = "CANNOT_BE_NULL")
     @AssertTrue(message = "MUST_BE_TRUE")
     @JsonProperty("agree_to_the_processing_of_personal_data")
     private Boolean agreeOnPersonalDataProcessing;
