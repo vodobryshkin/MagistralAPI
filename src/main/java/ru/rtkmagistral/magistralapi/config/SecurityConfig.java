@@ -111,11 +111,13 @@ public class SecurityConfig {
         config.setAllowedHeaders(List.of(
                 HttpHeaders.AUTHORIZATION,
                 HttpHeaders.CONTENT_TYPE,
+                HttpHeaders.RETRY_AFTER,
                 "X-Requested-With"
         ));
 
         config.setExposedHeaders(List.of(
-                HttpHeaders.AUTHORIZATION
+                HttpHeaders.AUTHORIZATION,
+                HttpHeaders.RETRY_AFTER
         ));
 
         config.setAllowCredentials(true);

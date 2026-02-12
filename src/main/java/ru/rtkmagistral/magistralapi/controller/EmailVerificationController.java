@@ -1,6 +1,7 @@
 package ru.rtkmagistral.magistralapi.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.headers.Header;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
@@ -88,11 +89,6 @@ public class EmailVerificationController {
                                             description = "Недостаточно прав для совершения операции",
                                             name = "INSUFFICIENT_RIGHTS",
                                             value = "{\"message\":\"INSUFFICIENT_RIGHTS\"}"
-                                    ),
-                                    @ExampleObject(
-                                            description = "Сначала нужно аутентифицировать пользователя",
-                                            name = "NEED_AUTHENTICATION",
-                                            value = "{\"message\":\"NEED_AUTHENTICATION\"}"
                                     )
                             }
                     )
@@ -186,7 +182,15 @@ public class EmailVerificationController {
             )
     })
     @PutMapping("/{id}")
-    public ResponseEntity<VerifyResponse> verifyUser(@PathVariable @Valid @UUID String id) {
+    public ResponseEntity<VerifyResponse> verifyUser(
+            @Parameter(
+                    name = "id",
+                    description = "UUID-токен, идентифицирующий ссылку на подтверждение. Должен быть передан как часть пути.",
+                    schema = @Schema(type = "string"),
+                    example = "fff04aa8-3458-49a2-ac2d-b1560534c085"
+            )
+            @PathVariable @Valid @UUID String id
+    ) {
         VerifyResponse verifyResponse = confirmationLinkService.verifyConfirmationLink(id);
         String email = verifyResponse.getMessage();
 

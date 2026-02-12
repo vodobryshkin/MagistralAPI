@@ -119,7 +119,7 @@ public class AppExceptionHandler {
     public ResponseEntity<AuthResponse> handleAuthException(AuthException ex) {
         return switch (ex.getMessage()) {
             case "INCORRECT_EMAIL_OR_PASSWORD" -> new ResponseEntity<>(AuthResponses.INCORRECT_EMAIL_OR_PASSWORD, HttpStatus.UNAUTHORIZED);
-            case "CANNOT_IDENTIFY_USER_USING_THIS_REFRESH_TOKEN" -> new ResponseEntity<>(AuthResponses.CANNOT_IDENTIFY_USER_USING_THIS_REFRESH_TOKEN, HttpStatus.UNAUTHORIZED);
+            case "CANNOT_IDENTIFY_USER_USING_THIS_REFRESH_TOKEN" -> new ResponseEntity<>(AuthResponses.CANNOT_IDENTIFY_USER_USING_THIS_REFRESH_TOKEN, HttpStatus.NOT_FOUND);
             default -> new ResponseEntity<>(AuthResponses.REFRESH_TOKEN_INVALID, HttpStatus.UNAUTHORIZED);
         };
     }
