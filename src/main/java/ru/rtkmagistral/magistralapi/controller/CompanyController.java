@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import ru.rtkmagistral.magistralapi.dto.company.CompanyDTO;
 import ru.rtkmagistral.magistralapi.dto.company.CreateCompanyRequest;
 import ru.rtkmagistral.magistralapi.dto.user.CreateUserRequest;
+import ru.rtkmagistral.magistralapi.dto.user.UserProfileDTO;
 import ru.rtkmagistral.magistralapi.dto.user.UserResponse;
 import ru.rtkmagistral.magistralapi.exception.ValidationResponse;
 import ru.rtkmagistral.magistralapi.service.spec.IAuthenticationService;
@@ -220,6 +221,8 @@ public class CompanyController {
         CreateCompanyRequest companyRequest = companyDTO.getCreateCompanyRequest();
 
         UserResponse userResponse = userService.createLegalUser(createUserRequest, companyRequest);
+        UserProfileDTO userProfileDTO = userService.getUserProfile(createUserRequest.getEmail());
+        userResponse.setUserProfileDTO(userProfileDTO);
 
         String accessToken = jwtService.generateAccessToken(createUserRequest.getEmail(), "ROLE_UNVERIFIED_USER");
         String refreshToken = jwtService.generateRefreshToken(createUserRequest.getEmail(), "ROLE_UNVERIFIED_USER");

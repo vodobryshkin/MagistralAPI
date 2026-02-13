@@ -29,6 +29,7 @@ public class UserProfileDTO {
             description = "Тип аккаунта пользователя (обычный или бизнес).",
             example = "INDIVIDUAL"
     )
+    @JsonProperty("user_type")
     private User.UserType userType;
 
     @Schema(

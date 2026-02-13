@@ -16,6 +16,8 @@ import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 import ru.rtkmagistral.magistralapi.dto.auth.AuthResponse;
 import ru.rtkmagistral.magistralapi.dto.auth.LoginRequest;
+import ru.rtkmagistral.magistralapi.dto.user.UserProfileDTO;
+import ru.rtkmagistral.magistralapi.dto.user.UserResponse;
 import ru.rtkmagistral.magistralapi.exception.AuthException;
 import ru.rtkmagistral.magistralapi.exception.ValidationResponse;
 import ru.rtkmagistral.magistralapi.service.spec.IAuthenticationService;
@@ -57,12 +59,11 @@ public class AuthController {
                     description = "Вход прошёл успешно",
                     content = @Content(
                             mediaType = "application/json",
-                            schema = @Schema(implementation = AuthResponse.class),
+                            schema = @Schema(implementation = UserResponse.class),
                             examples = {
                                     @ExampleObject(
                                             description = "Пользователь был успешно аутентифицирован по переданным логину и паролю",
-                                            name = "OK",
-                                            value = "{\"message\":\"OK\"}"
+                                            name = "OK"
                                     )
                             }
                     )
@@ -114,7 +115,7 @@ public class AuthController {
             value = "/login",
             consumes = MediaType.APPLICATION_JSON_VALUE
     )
-    public ResponseEntity<AuthResponse> login(
+    public ResponseEntity<UserResponse> login(
             @io.swagger.v3.oas.annotations.parameters.RequestBody(
                     required = true,
                     description = "Данные для входа: email и пароль пользователя.",
@@ -126,6 +127,11 @@ public class AuthController {
             @RequestBody @Valid LoginRequest loginRequest
     ) {
         AuthResponse authResponse = authenticationService.login(loginRequest);
+
+        UserResponse userResponse = new UserResponse(authResponse.getMessage());
+        UserProfileDTO userProfileDTO = userService.getUserProfile(loginRequest.getEmail());
+        userResponse.setUserProfileDTO(userProfileDTO);
+
         List<String> authorities = authResponse.getAuthorities();
 
         String accessToken = jwtService.generateAccessToken(loginRequest.getEmail(), authorities);
@@ -142,7 +148,7 @@ public class AuthController {
                 .status(HttpStatus.OK)
                 .header(HttpHeaders.AUTHORIZATION, accessToken)
                 .header(HttpHeaders.SET_COOKIE, refreshCookie.toString())
-                .body(authResponse);
+                .body(userResponse);
     }
 
     @Operation(
