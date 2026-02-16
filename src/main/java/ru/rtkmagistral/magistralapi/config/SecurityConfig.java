@@ -112,6 +112,7 @@ public class SecurityConfig {
                 HttpHeaders.AUTHORIZATION,
                 HttpHeaders.CONTENT_TYPE,
                 HttpHeaders.RETRY_AFTER,
+                "Idempotency-Key",
                 "X-Requested-With"
         ));
 
