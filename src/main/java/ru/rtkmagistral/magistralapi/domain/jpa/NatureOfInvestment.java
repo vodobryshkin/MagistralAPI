@@ -41,7 +41,8 @@ public enum NatureOfInvestment {
     FRAGILE_AND_BREAKABLE_ITEMS("Хрупкие и бьющиеся изделия"),
     SECURITIES("Ценные бумаги"),
     ELECTRICAL_AND_ELECTRONIC_EQUIPMENT("Электрическое и электронное оборудование"),
-    JEWELRY("Ювелирные изделия");
+    JEWELRY("Ювелирные изделия"),
+    OTHER("Другое");
 
     private final String russianTitle;
 }
