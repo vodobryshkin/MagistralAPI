@@ -1,9 +1,11 @@
 package ru.rtkmagistral.magistralapi.dto.token;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import ru.rtkmagistral.magistralapi.dto.user.UserProfileDTO;
 
 /**
  * DTO, которое отправляется после обработки токена для подтверждения аккаунта сервисом для работы с токенами.
@@ -31,4 +33,15 @@ public class VerifyResponse {
             example = "CONFIRMATION_LINK_HAS_EXPIRED_OR_INVALID"
     )
     private String message;
+
+    @Schema(
+            description = "Данные о пользователе."
+    )
+    @JsonProperty("user")
+    private UserProfileDTO userProfileDTO;
+
+    public VerifyResponse(boolean status, String message) {
+        this.status = status;
+        this.message = message;
+    }
 }

@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import ru.rtkmagistral.magistralapi.dto.auth.AuthResponse;
 import ru.rtkmagistral.magistralapi.dto.resend_token.ResendTokenDTO;
 import ru.rtkmagistral.magistralapi.dto.token.VerifyResponse;
+import ru.rtkmagistral.magistralapi.dto.user.UserProfileDTO;
 import ru.rtkmagistral.magistralapi.security.authorization.ForUnverifiedUsers;
 import ru.rtkmagistral.magistralapi.service.spec.IAuthenticationService;
 import ru.rtkmagistral.magistralapi.service.spec.IConfirmationLinkService;
@@ -199,8 +200,9 @@ public class EmailVerificationController {
         VerifyResponse verifyResponse = confirmationLinkService.verifyConfirmationLink(id);
         String email = verifyResponse.getMessage();
 
-        userService.verifyUser(email);
+        UserProfileDTO userProfileDTO = userService.verifyUser(email);
         verifyResponse.setMessage(null);
+        verifyResponse.setUserProfileDTO(userProfileDTO);
 
         String accessToken = jwtService.generateAccessToken(email, "ROLE_VERIFIED_USER");
         String refreshToken = jwtService.generateRefreshToken(email, "ROLE_VERIFIED_USER");

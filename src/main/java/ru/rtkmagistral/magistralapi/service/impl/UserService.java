@@ -82,7 +82,7 @@ public class UserService implements IUserService {
      */
     @Override
     @Transactional
-    public void verifyUser(String email) {
+    public UserProfileDTO verifyUser(String email) {
         Optional<User> userOptional = userRepository.findUserByEmail(email);
 
         if (userOptional.isEmpty()) {
@@ -91,6 +91,14 @@ public class UserService implements IUserService {
 
         User user = userOptional.get();
         user.setVerified(true);
+
+        return new UserProfileDTO(
+                user.getEmail(),
+                user.getPhone(),
+                user.getUserType(),
+                orderRepository.countOrdersByUser(user),
+                user.isVerified()
+        );
     }
 
     @Override

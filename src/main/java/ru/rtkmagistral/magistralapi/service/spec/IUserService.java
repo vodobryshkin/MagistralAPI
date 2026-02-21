@@ -26,7 +26,7 @@ public interface IUserService {
      */
     UserResponse createLegalUser(CreateUserRequest createUserRequest, CreateCompanyRequest createCompanyRequest);
 
-    void verifyUser(String email);
+    UserProfileDTO verifyUser(String email);
 
     UserProfileDTO getUserProfile(String email);
 
