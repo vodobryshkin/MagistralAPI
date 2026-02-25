@@ -1,12 +1,8 @@
 package ru.rtkmagistral.magistralapi.dto.auth;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import ru.rtkmagistral.magistralapi.validation.formats.password.Password;
 
 /**
  * DTO, которое поступает на эндпойнт /auth/login
@@ -22,8 +18,6 @@ public class LoginRequest {
             description = "Email пользователя. Не может быть пустым и должен соответствовать формату email.",
             example = "user.ivanov.ivanovich.2281337@gmail.com"
     )
-    @NotBlank(message = "CANNOT_BE_BLANK")
-    @Email(message = "MUST_MATCH_FORMAT")
     private String email;
 
     @Schema(
@@ -33,8 +27,5 @@ public class LoginRequest {
             """,
             example = "12345678"
     )
-    @NotBlank(message = "CANNOT_BE_BLANK")
-    @Size(min = 6, max = 32, message = "LENGTH_MUST_BE_BETWEEN_6_AND_32_SYMBOLS")
-    @Password
     private String password;
 }

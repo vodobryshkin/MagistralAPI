@@ -19,7 +19,6 @@ import ru.rtkmagistral.magistralapi.dto.auth.LoginRequest;
 import ru.rtkmagistral.magistralapi.dto.user.UserProfileDTO;
 import ru.rtkmagistral.magistralapi.dto.user.UserResponse;
 import ru.rtkmagistral.magistralapi.exception.AuthException;
-import ru.rtkmagistral.magistralapi.exception.ValidationResponse;
 import ru.rtkmagistral.magistralapi.service.spec.IAuthenticationService;
 import ru.rtkmagistral.magistralapi.service.spec.IJWTService;
 import ru.rtkmagistral.magistralapi.service.spec.IUserService;
@@ -79,33 +78,6 @@ public class AuthController {
                                             description = "Не удалось аутентифицировать пользователя (неверная почта или пароль)",
                                             name = "NEED_AUTHENTICATION",
                                             value = "{\"message\":\"NEED_AUTHENTICATION\"}"
-                                    )
-                            }
-                    )
-            ),
-            @ApiResponse(
-                    responseCode = "422",
-                    description = "Переданные почта и/или пароль семантически некорректные",
-                    content = @Content(
-                            mediaType = "application/json",
-                            schema = @Schema(implementation = ValidationResponse.class),
-                            examples = {
-                                    @ExampleObject(
-                                            description = "Почта или пароль не соответствуют заявленным форматам, ввиду чего не прошли валидацию. Все возможные сообщения об ошибках валидации представлены в объекте-примере.",
-                                            name = "VALIDATION_ERROR",
-                                            value = "{\"message\": \"VALIDATION_ERROR\"," +
-                                                    "\"validation_errors\": {" +
-                                                    "\"password\": [" +
-                                                    "\"CANNOT_BE_BLANK\"," +
-                                                    "\"MUST_CONTAIN_ONLY_ASCII_SYMBOLS\"," +
-                                                    "\"LENGTH_MUST_BE_BETWEEN_6_AND_32_SYMBOLS\"" +
-                                                    "]," +
-                                                    "\"email\": [" +
-                                                    "\"MUST_MATCH_FORMAT\"," +
-                                                    "\"CANNOT_BE_BLANK\"" +
-                                                    "]" +
-                                                    "}" +
-                                                    "}"
                                     )
                             }
                     )

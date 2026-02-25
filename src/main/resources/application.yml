@@ -33,6 +33,12 @@ spring:
         command: down
         arguments[0]: --remove-orphans
 
+springdoc:
+  api-docs:
+    enabled: false
+  swagger-ui:
+    enabled: false
+
 idempotency:
   hmac:
     secret-key: ${HMAC_SHA256_V1}
