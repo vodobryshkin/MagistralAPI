@@ -103,7 +103,9 @@ public class SecurityConfig {
 
         config.setAllowedOrigins(List.of(
                 "http://localhost:3000",
-                "http://localhost:5173"
+                "http://localhost:5173",
+                "https://ltk-magistral.ru",
+                "https://www.ltk-magistral.ru"
         ));
 
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
@@ -111,9 +113,9 @@ public class SecurityConfig {
         config.setAllowedHeaders(List.of(
                 HttpHeaders.AUTHORIZATION,
                 HttpHeaders.CONTENT_TYPE,
-                HttpHeaders.RETRY_AFTER,
-                "Idempotency-Key",
-                "X-Requested-With"
+                HttpHeaders.ACCEPT,
+                "X-Requested-With",
+                "Idempotency-Key"
         ));
 
         config.setExposedHeaders(List.of(
