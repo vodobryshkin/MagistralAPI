@@ -25,6 +25,10 @@ public class MailService implements IMailService {
     @Value("${mail.document.mail}")
     private String documentTo;
 
+    @Value("${spring.mail.username}")
+    private String from;
+
+
     private final JavaMailSender mailSender;
     private final SpringTemplateEngine templateEngine;
 
@@ -68,6 +72,7 @@ public class MailService implements IMailService {
                     StandardCharsets.UTF_8.name()
             );
 
+            helper.setFrom(from);
             helper.setTo(to);
             helper.setSubject(subject);
             helper.setText(htmlContent, true);
@@ -93,6 +98,7 @@ public class MailService implements IMailService {
                     StandardCharsets.UTF_8.name()
             );
 
+            helper.setFrom(from);
             helper.setTo(to);
             helper.setSubject(subject);
             helper.setText(htmlContent, true);
