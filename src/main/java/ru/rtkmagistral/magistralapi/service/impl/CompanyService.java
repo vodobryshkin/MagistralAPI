@@ -33,7 +33,6 @@ public class CompanyService implements ICompanyService {
     public boolean verifyData(CreateCompanyRequest req) {
         String innReq = req.getInn().trim();
         String kppReq = req.getKpp().trim();
-        String okvedReq = req.getOkved().trim().replace(" ", "");
         String titleReq = req.getTitle();
 
         CreateCompanyRequest companyRequestFormClient = dadataClient.findPartyByInn(innReq);
@@ -54,8 +53,11 @@ public class CompanyService implements ICompanyService {
             throw new CompanyException("KPP_NOT_MATCHES_WITH_DADATA");
         }
 
-        if (!okvedReq.equals(companyRequestFormClient.getOkved())) {
-            throw new CompanyException("OKVED_NOT_MATCHES_WITH_DADATA");
+        if (req.getOkved() != null) {
+            String okvedReq = req.getOkved().trim().replace(" ", "");
+            if (!okvedReq.equals(companyRequestFormClient.getOkved())) {
+                throw new CompanyException("OKVED_NOT_MATCHES_WITH_DADATA");
+            }
         }
 
         return true;

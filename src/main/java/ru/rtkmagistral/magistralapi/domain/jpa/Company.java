@@ -66,8 +66,8 @@ public class Company {
     private String kpp;
 
     /**
-     * ОКВЭД компании. Не может быть null-значением.
+     * ОКВЭД компании
      */
-    @Column(name = "okved", nullable = false)
+    @Column(name = "okved")
     private String okved;
 }

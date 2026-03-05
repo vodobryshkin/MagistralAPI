@@ -59,7 +59,6 @@ public class CreateCompanyRequest {
                     """,
             example = "62.01"
     )
-    @NotBlank(message = "CANNOT_BE_BLANK")
     @OKVED
     private String okved;
 

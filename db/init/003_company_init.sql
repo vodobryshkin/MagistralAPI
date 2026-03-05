@@ -6,7 +6,7 @@ CREATE TABLE IF NOT EXISTS companies(
     title TEXT NOT NULL,
     inn VARCHAR(10) UNIQUE NOT NULL,
     kpp VARCHAR(9) UNIQUE NOT NULL,
-    okved VARCHAR(10) NOT NULL,
+    okved VARCHAR(10),
 
     created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
     updated_at TIMESTAMPTZ NOT NULL DEFAULT now(),
