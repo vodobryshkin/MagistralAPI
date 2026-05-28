@@ -102,6 +102,7 @@ public class UserService implements IUserService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public UserProfileDTO getUserProfile(String email) {
         User user = userRepository.findUserByEmail(email).orElseThrow(() -> new UserException("USER_NOT_FOUND"));
 

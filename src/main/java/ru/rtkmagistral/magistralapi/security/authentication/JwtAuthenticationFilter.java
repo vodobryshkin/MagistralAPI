@@ -10,10 +10,8 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
@@ -22,6 +20,7 @@ import ru.rtkmagistral.magistralapi.service.spec.IJWTService;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.List;
 import java.util.Map;
 
 @Component
@@ -31,7 +30,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private static final String BEARER_PREFIX = "Bearer ";
 
     private final IJWTService jwtService;
-    private final UserDetailsService userDetailsService;
     private final ObjectMapper objectMapper;
 
     @Override
@@ -49,6 +47,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         String token = authHeader.substring(BEARER_PREFIX.length());
 
+        // extractUsername() выполняет parseSignedClaims(), который уже проверяет
+        // и подпись, и срок действия токена (бросает ExpiredJwtException на просроченном
+        // и JwtException на некорректном). Поэтому отдельный вызов isTokenValid() здесь не нужен —
+        // это был второй полный разбор токена с повторной проверкой HMAC-подписи на каждом запросе.
         String username;
         try {
             username = jwtService.extractUsername(token);
@@ -62,24 +64,22 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
 
-            if (!jwtService.isTokenValid(token)) {
-                writeUnauthorized(response, request, "ACCESS_TOKEN_INVALID");
-                return;
-            }
-
-            final UserDetails userDetails;
-            try {
-                userDetails = userDetailsService.loadUserByUsername(username);
-            } catch (UsernameNotFoundException e) {
-                writeUnauthorized(response, request, "USER_NOT_FOUND");
-                return;
-            }
+            // Роли уже лежат в подписанных claims токена (кладутся при выпуске в JWTService),
+            // а подпись токена уже проверена выше при extractUsername(). Поэтому Authentication
+            // строится прямо из токена, без обращения к UserDetailsService — это убирает 2 SQL-запроса
+            // (поиск пользователя по email + его ролей) на КАЖДЫЙ аутентифицированный запрос.
+            // Принципал — это email (username): authentication.getName() возвращает его, как и раньше.
+            // Компромисс: изменение ролей/удаление пользователя вступит в силу только после
+            // перевыпуска access-токена (в пределах его времени жизни).
+            List<SimpleGrantedAuthority> authorities = jwtService.extractRoles(token).stream()
+                    .map(SimpleGrantedAuthority::new)
+                    .toList();
 
             UsernamePasswordAuthenticationToken authentication =
                     UsernamePasswordAuthenticationToken.authenticated(
-                            userDetails,
+                            username,
                             null,
-                            userDetails.getAuthorities()
+                            authorities
                     );
 
             authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
