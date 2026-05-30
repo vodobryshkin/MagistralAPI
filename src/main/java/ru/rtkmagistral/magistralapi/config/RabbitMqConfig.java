@@ -36,6 +36,9 @@ public class RabbitMqConfig {
     @Value("${spring.rabbitmq.host}")
     private String host;
 
+    @Value("${spring.rabbitmq.listener.simple.auto-startup:true}")
+    private boolean listenerAutoStartup;
+
     @Bean
     public Queue confirmQueue() {
         return new Queue(confirmQueueName);
@@ -85,6 +88,7 @@ public class RabbitMqConfig {
         f.setConnectionFactory(cf);
         f.setMessageConverter(conv);
         f.setDefaultRequeueRejected(false);
+        f.setAutoStartup(listenerAutoStartup);
         return f;
     }
 }
