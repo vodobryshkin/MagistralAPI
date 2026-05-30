@@ -71,6 +71,8 @@ dadata:
     base-url: https://suggestions.dadata.ru/suggestions/api/4_1/rs/findById/party
     token: ${DADATA_TOKEN}
     timeout: 30s
+  address:
+    base-url: https://suggestions.dadata.ru/suggestions/api/4_1/rs/suggest/address
 
 jwt:
   secret: ${JWT_SECRET}

@@ -14,6 +14,7 @@ public interface IOrderMapper {
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "user", ignore = true)
     @Mapping(target = "orderStatus", ignore = true)
+    @Mapping(target = "priceInKopeika", ignore = true)
     Order toEntity(CreateOrderRequest createOrderRequest);
 
     OrderBlock toDto(Order order);

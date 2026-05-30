@@ -21,7 +21,9 @@ class IOrderMapperTest {
     void toEntity_copiesFields_ignoresIdUserStatus() {
         CreateOrderRequest req = new CreateOrderRequest(
                 "г. Москва, ул. Тверская, д. 1",
+                false,
                 "г. Москва, ул. Арбат, д. 10",
+                false,
                 10, 20, 30,
                 400,
                 500_000L,
@@ -30,7 +32,6 @@ class IOrderMapperTest {
                 "Хрупкий груз, просьба не кантовать.",
                 false,
                 OffsetDateTime.parse("2026-08-12T14:30:00+03:00"),
-                999L,
                 "Иванов Иван Иванович",
                 "+79999999999",
                 true

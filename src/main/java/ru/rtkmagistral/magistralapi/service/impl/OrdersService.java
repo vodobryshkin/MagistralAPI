@@ -13,6 +13,8 @@ import ru.rtkmagistral.magistralapi.dto.minio.MinioDTO;
 import ru.rtkmagistral.magistralapi.dto.idempotency_key.IdempotencyKeyDTO;
 import ru.rtkmagistral.magistralapi.dto.mail.DocumentMailRequest;
 import ru.rtkmagistral.magistralapi.dto.order.*;
+import ru.rtkmagistral.magistralapi.dto.pricing.PriceCalculationInput;
+import ru.rtkmagistral.magistralapi.dto.pricing.ResolvedLocation;
 import ru.rtkmagistral.magistralapi.dto.user.UserBlock;
 import ru.rtkmagistral.magistralapi.exception.OrderException;
 import ru.rtkmagistral.magistralapi.exception.UserException;
@@ -45,6 +47,9 @@ public class OrdersService implements IOrdersService {
     private final IOrderApplicationDocxGeneratorService docxGeneratorService;
     private final IMessageService messageService;
 
+    private final ICityResolver cityResolver;
+    private final IPriceCalculationService priceCalculationService;
+
     @Value("${mail.document.contract-text}")
     private String contractText;
 
@@ -67,6 +72,7 @@ public class OrdersService implements IOrdersService {
         Order order = orderMapper.toEntity(createOrderRequest);
         order.setOrderStatus(Order.OrderStatus.ACCEPTED);
         order.setUser(user);
+        order.setPriceInKopeika(calculatePrice(createOrderRequest));
 
         orderRepository.save(order);
 
@@ -129,6 +135,37 @@ public class OrdersService implements IOrdersService {
                 new HttpHeaders(),
                 orderResponse
         );
+    }
+
+    /**
+     * Рассчитывает стоимость заказа по правилам экспресс-отправлений: резолвит города отправления
+     * и получения, после чего применяет тарифную логику. Присланная клиентом цена не используется.
+     *
+     * @param request данные создаваемого заказа.
+     * @return итоговая цена отправления в копейках.
+     */
+    private long calculatePrice(CreateOrderRequest request) {
+        ResolvedLocation sender = cityResolver.resolve(request.getShippingAddress());
+        ResolvedLocation receiver = cityResolver.resolve(request.getArrivalAddress());
+
+        PriceCalculationInput input = new PriceCalculationInput(
+                sender.city(),
+                receiver.city(),
+                Boolean.TRUE.equals(request.getShippingFromOffice()),
+                Boolean.TRUE.equals(request.getArrivalToOffice()),
+                request.getWeightGr(),
+                request.getLengthCentiCm(),
+                request.getWidthCentiCm(),
+                request.getHeightCentiCm(),
+                request.getNatureOfInvestment(),
+                request.getCostOfInvestmentInKopeika(),
+                sender.coefficient(),
+                receiver.coefficient(),
+                sender.remotePerKg(),
+                receiver.remotePerKg()
+        );
+
+        return priceCalculationService.calculate(input).priceInKopeika();
     }
 
     private DocumentMailRequest formMailRequest(User user, Order order) {

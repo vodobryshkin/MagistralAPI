@@ -54,7 +54,6 @@ class OrderControllerIT {
             "nature_of_investment": "HOUSEHOLD_CHEMICALS",
             "comment": "Хрупкий груз, просьба не кантовать.",
             "deliver_as_soon_as_possible": true,
-            "price": 50000,
             "receiver_fio": "Иванов Иван Иванович",
             "receiver_phone": "+79999999999",
             "agree_with_the_terms_of_the_agreement": true
@@ -138,7 +137,6 @@ class OrderControllerIT {
                 "comment": "Хрупкий груз, просьба не кантовать.",
                 "deliver_as_soon_as_possible": true,
                 "wishing_delivery_time": "2026-08-12T14:30:00+03:00",
-                "price": 50000,
                 "receiver_fio": "Иванов Иван Иванович",
                 "receiver_phone": "+79999999999",
                 "agree_with_the_terms_of_the_agreement": true
@@ -168,7 +166,6 @@ class OrderControllerIT {
                 "nature_of_investment": "HOUSEHOLD_CHEMICALS",
                 "comment": "Хрупкий груз, просьба не кантовать.",
                 "deliver_as_soon_as_possible": true,
-                "price": 50000,
                 "receiver_fio": "Иванов Иван Иванович",
                 "receiver_phone": "+79999999999",
                 "agree_with_the_terms_of_the_agreement": true

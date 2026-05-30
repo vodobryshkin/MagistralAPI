@@ -37,6 +37,15 @@ public class CreateOrderRequest {
 
     @Schema(
             description = """
+            Отправление сдаётся в отделение спецсвязи («окно»). Если не передано — забор по адресу («дверь»).
+            """,
+            example = "false"
+    )
+    @JsonProperty("shipping_from_office")
+    private Boolean shippingFromOffice;
+
+    @Schema(
+            description = """
             Адрес куда доставляем заказ. Не может быть пустым и должен быть от 1 до 512 символов (включительно)
             """,
             example = "г. Москва, ул. Арбат, д. 10"
@@ -45,6 +54,15 @@ public class CreateOrderRequest {
     @Size(max = 512, message = "LENGTH_MUST_BE_BETWEEN_1_AND_512_SYMBOLS")
     @JsonProperty("arrival_address")
     private String arrivalAddress;
+
+    @Schema(
+            description = """
+            Получение в отделении спецсвязи («окно»). Если не передано — доставка по адресу («дверь»).
+            """,
+            example = "false"
+    )
+    @JsonProperty("arrival_to_office")
+    private Boolean arrivalToOffice;
 
     @Schema(
             description = """
@@ -155,18 +173,6 @@ public class CreateOrderRequest {
     )
     @JsonProperty("wishing_delivery_time")
     private OffsetDateTime wishingDeliveryTime;
-
-    @Schema(
-            description = """
-            Цена доставки в копейках (в одном рубле 100 копеек). Не может быть null и должна быть больше 0.
-            """,
-            format = "date-time",
-            example = "1000000000"
-    )
-    @NotNull(message = "CANNOT_BE_NULL")
-    @Min(value = 0, message = "MUST_BE_GREATER_THAN_0")
-    @JsonProperty("price")
-    private Long priceInKopeika;
 
     @Schema(
             description = """

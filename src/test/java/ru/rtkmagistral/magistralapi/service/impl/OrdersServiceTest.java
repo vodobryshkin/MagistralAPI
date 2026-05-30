@@ -20,6 +20,9 @@ import ru.rtkmagistral.magistralapi.dto.order.CreateOrderRequest;
 import ru.rtkmagistral.magistralapi.dto.order.OrderBlock;
 import ru.rtkmagistral.magistralapi.dto.order.OrderResponse;
 import ru.rtkmagistral.magistralapi.dto.order.OrderResponseDTO;
+import ru.rtkmagistral.magistralapi.dto.pricing.DeliveryType;
+import ru.rtkmagistral.magistralapi.dto.pricing.PriceCalculationResult;
+import ru.rtkmagistral.magistralapi.dto.pricing.ResolvedLocation;
 import ru.rtkmagistral.magistralapi.dto.user.UserBlock;
 import ru.rtkmagistral.magistralapi.exception.OrderException;
 import ru.rtkmagistral.magistralapi.exception.UserException;
@@ -27,9 +30,11 @@ import ru.rtkmagistral.magistralapi.mapper.IOrderMapper;
 import ru.rtkmagistral.magistralapi.mapper.IUserMapper;
 import ru.rtkmagistral.magistralapi.repository.IOrderRepository;
 import ru.rtkmagistral.magistralapi.repository.UserRepository;
+import ru.rtkmagistral.magistralapi.service.spec.ICityResolver;
 import ru.rtkmagistral.magistralapi.service.spec.IIdempotencyKeyService;
 import ru.rtkmagistral.magistralapi.service.spec.IMessageService;
 import ru.rtkmagistral.magistralapi.service.spec.IOrderApplicationDocxGeneratorService;
+import ru.rtkmagistral.magistralapi.service.spec.IPriceCalculationService;
 
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
@@ -40,6 +45,7 @@ import java.util.UUID;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -61,6 +67,10 @@ class OrdersServiceTest {
     IOrderApplicationDocxGeneratorService docxGeneratorService;
     @Mock
     IMessageService messageService;
+    @Mock
+    ICityResolver cityResolver;
+    @Mock
+    IPriceCalculationService priceCalculationService;
 
     @InjectMocks
     OrdersService ordersService;
@@ -69,6 +79,11 @@ class OrdersServiceTest {
     void setUp() {
         ReflectionTestUtils.setField(ordersService, "contractText", "№15930э");
         ReflectionTestUtils.setField(ordersService, "orderApplication", "templates/заявка.docx");
+
+        lenient().when(cityResolver.resolve(any()))
+                .thenReturn(new ResolvedLocation("Москва", 1.0, null));
+        lenient().when(priceCalculationService.calculate(any()))
+                .thenReturn(new PriceCalculationResult(50_000L, 0, DeliveryType.DOOR_DOOR, 1.0));
     }
 
     private User physicalUser() {
@@ -82,7 +97,9 @@ class OrdersServiceTest {
     private CreateOrderRequest createOrderRequest() {
         return new CreateOrderRequest(
                 "г. Москва, ул. Тверская, д. 1",
+                false,
                 "г. Москва, ул. Арбат, д. 10",
+                false,
                 10, 10, 10,
                 100,
                 10000L,
@@ -91,7 +108,6 @@ class OrdersServiceTest {
                 "Комментарий к заказу",
                 true,
                 null,
-                500L,
                 "Петров Пётр",
                 "+79991112233",
                 true
