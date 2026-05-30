@@ -19,6 +19,7 @@ public enum NatureOfInvestment {
     CONTROL_AND_IDENTIFICATION_MARKS_KIZ("Контрольно-измерительные знаки (КИЗ)"),
     COSMETICS("Косметика"),
     CULTURAL_PROPERTY("Культурные ценности"),
+    FURNITURE("Мебель"),
     MEDICINES("Медикаменты"),
     METAL_PRODUCTS("Металлические изделия"),
     PLATINUM_GROUP_METALS_LIQUID("Металлы платиновой группы в жидком виде"),

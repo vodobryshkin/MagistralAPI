@@ -86,6 +86,32 @@ class OrderControllerIT {
     }
 
     @Test
+    @DisplayName("POST /orders с категорией FURNITURE (Мебель) возвращает 201")
+    void furnitureCategory_returns201() throws Exception {
+        OrderResponseDTO dto = new OrderResponseDTO(
+                201, new HttpHeaders(), new OrderResponse("CREATED", true, 1L));
+        when(ordersService.createIdempotentOrder(
+                eq(UUID.fromString(IDEMPOTENCY_KEY)),
+                eq("vova@example.com"),
+                any(),
+                any(),
+                any()
+        )).thenReturn(dto);
+
+        String json = VALID_JSON.replace(
+                "\"nature_of_investment\": \"HOUSEHOLD_CHEMICALS\"",
+                "\"nature_of_investment\": \"FURNITURE\"");
+
+        mvc.perform(post("/api/v1/orders")
+                        .with(user("vova@example.com").roles("VERIFIED_USER"))
+                        .header("Idempotency-Key", IDEMPOTENCY_KEY)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(json))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.message").value("CREATED"));
+    }
+
+    @Test
     @DisplayName("POST /orders без Idempotency-Key — 400")
     void missingIdempotencyKey_returns400() throws Exception {
         mvc.perform(post("/api/v1/orders")
