@@ -66,6 +66,17 @@ mail:
     queue:
       name: ${RABBIT_MQ_QUEUE_CONFIRMATION_NAME:DocumentQueue}
 
+# Параметры формы «Чемоданы»: получателем выступает Магистраль, поэтому его реквизиты
+# и значения по умолчанию (вид/характер вложения, которых нет в самой форме) задаются здесь.
+suitcase:
+  receiver:
+    fio: ${SUITCASE_RECEIVER_FIO:ООО «ЛТК Магистраль»}
+    phone: ${SUITCASE_RECEIVER_PHONE:+74999999999}
+    address: ${SUITCASE_RECEIVER_ADDRESS:г. Москва, ул. Складочная, д. 1}
+  defaults:
+    type-of-shipment: ${SUITCASE_TYPE_OF_SHIPMENT:PACKAGE}
+    nature-of-investment: ${SUITCASE_NATURE_OF_INVESTMENT:OTHER}
+
 dadata:
   client:
     base-url: https://suggestions.dadata.ru/suggestions/api/4_1/rs/findById/party
