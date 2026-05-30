@@ -42,9 +42,9 @@ spring:
 
 springdoc:
   api-docs:
-    enabled: false
+    enabled: true
   swagger-ui:
-    enabled: false
+    enabled: true
 
 idempotency:
   hmac:
@@ -66,8 +66,6 @@ mail:
     queue:
       name: ${RABBIT_MQ_QUEUE_CONFIRMATION_NAME:DocumentQueue}
 
-# Параметры формы «Чемоданы»: получателем выступает Магистраль, поэтому его реквизиты
-# и значения по умолчанию (вид/характер вложения, которых нет в самой форме) задаются здесь.
 suitcase:
   receiver:
     fio: ${SUITCASE_RECEIVER_FIO:ООО «ЛТК Магистраль»}
