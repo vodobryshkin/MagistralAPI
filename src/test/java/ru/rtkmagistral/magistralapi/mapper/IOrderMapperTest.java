@@ -27,7 +27,7 @@ class IOrderMapperTest {
                 500_000L,
                 Order.TypeOfShipment.PACKAGE,
                 NatureOfInvestment.HOUSEHOLD_CHEMICALS,
-                true,
+                "Хрупкий груз, просьба не кантовать.",
                 false,
                 OffsetDateTime.parse("2026-08-12T14:30:00+03:00"),
                 999L,
@@ -51,7 +51,7 @@ class IOrderMapperTest {
         assertThat(order.getCostOfInvestmentInKopeika()).isEqualTo(500_000L);
         assertThat(order.getTypeOfShipment()).isEqualTo(Order.TypeOfShipment.PACKAGE);
         assertThat(order.getNatureOfInvestment()).isEqualTo(NatureOfInvestment.HOUSEHOLD_CHEMICALS);
-        assertThat(order.isSecretCargo()).isTrue();
+        assertThat(order.getComment()).isEqualTo("Хрупкий груз, просьба не кантовать.");
         assertThat(order.isDeliverAsSoonAsPossible()).isFalse();
         assertThat(order.getWishingDeliveryTime()).isEqualTo(req.getWishingDeliveryTime());
         assertThat(order.getReceiverFio()).isEqualTo("Иванов Иван Иванович");
@@ -71,7 +71,7 @@ class IOrderMapperTest {
         order.setCostOfInvestmentInKopeika(123L);
         order.setTypeOfShipment(Order.TypeOfShipment.PACKET);
         order.setNatureOfInvestment(NatureOfInvestment.DOCUMENTATION);
-        order.setSecretCargo(true);
+        order.setComment("Комментарий к заказу");
         order.setDeliverAsSoonAsPossible(false);
         order.setWishingDeliveryTime(OffsetDateTime.parse("2026-08-12T14:30:00+03:00"));
         order.setReceiverFio("Петров П.П.");
@@ -88,7 +88,7 @@ class IOrderMapperTest {
         assertThat(block.getCostOfInvestmentInKopeika()).isEqualTo(123L);
         assertThat(block.getTypeOfShipment()).isEqualTo(Order.TypeOfShipment.PACKET);
         assertThat(block.getNatureOfInvestment()).isEqualTo(NatureOfInvestment.DOCUMENTATION);
-        assertThat(block.isSecretCargo()).isTrue();
+        assertThat(block.getComment()).isEqualTo("Комментарий к заказу");
         assertThat(block.isDeliverAsSoonAsPossible()).isFalse();
         assertThat(block.getReceiverFio()).isEqualTo("Петров П.П.");
         assertThat(block.getReceiverPhone()).isEqualTo("+79991112233");

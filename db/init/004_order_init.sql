@@ -75,7 +75,7 @@ CREATE TABLE IF NOT EXISTS orders (
 
     price_kopeika BIGINT NOT NULL DEFAULT 0,
 
-    secret_cargo BOOLEAN NOT NULL,
+    comment VARCHAR(1024),
 
     agree_with_the_terms_of_the_agreement BOOLEAN NOT NULL DEFAULT true,
     agree_with_the_terms_of_the_agreement_since TIMESTAMPTZ NOT NULL DEFAULT now(),

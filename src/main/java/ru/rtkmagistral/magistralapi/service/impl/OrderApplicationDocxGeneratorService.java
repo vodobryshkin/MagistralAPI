@@ -79,7 +79,7 @@ public class OrderApplicationDocxGeneratorService implements IOrderApplicationDo
         String receiverContact = safeJoin(", ", nullIfBlank(o.getReceiverFio()), nullIfBlank(o.getReceiverPhone())).trim();
 
         String type = mapShipmentType(o.getTypeOfShipment());
-        String secret = o.isSecretCargo() ? "СЕКРЕТНО" : "Без грифа секретности";
+        String secret = "Без грифа секретности";
 
         String nature = o.getNatureOfInvestment() != null ? o.getNatureOfInvestment().getRussianTitle() : "";
 

@@ -20,7 +20,7 @@ public class OrderBlock {
     private Order.TypeOfShipment typeOfShipment;
     private NatureOfInvestment natureOfInvestment;
 
-    private boolean secretCargo;
+    private String comment;
     private boolean deliverAsSoonAsPossible;
     private OffsetDateTime wishingDeliveryTime;
 

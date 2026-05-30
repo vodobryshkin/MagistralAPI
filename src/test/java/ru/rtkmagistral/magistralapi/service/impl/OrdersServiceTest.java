@@ -88,7 +88,7 @@ class OrdersServiceTest {
                 10000L,
                 Order.TypeOfShipment.PACKAGE,
                 NatureOfInvestment.HOUSEHOLD_CHEMICALS,
-                false,
+                "Комментарий к заказу",
                 true,
                 null,
                 500L,

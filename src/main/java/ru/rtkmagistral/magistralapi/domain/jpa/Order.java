@@ -132,10 +132,10 @@ public class Order {
     private Long priceInKopeika;
 
     /**
-     * Поле, отвечающее за то, нужно ли отправить заказ как совершенно секретный груз. Не может быть null-значением.
+     * Произвольный комментарий к заказу, указанный отправителем. Необязательное поле.
      */
-    @Column(name = "secret_cargo", nullable = false)
-    private boolean secretCargo;
+    @Column(name = "comment", length = 1024)
+    private String comment;
 
     /**
      * ФИО получателя заказа. Не может быть null-значением.

@@ -142,7 +142,7 @@ public class OrdersService implements IOrdersService {
                 OffsetDateTime.now(),
                 order.getWishingDeliveryTime(),
                 1,
-                "",
+                order.getComment(),
                 userBlock,
                 orderBlock
         );

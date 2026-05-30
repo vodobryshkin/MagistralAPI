@@ -127,13 +127,13 @@ public class CreateOrderRequest {
 
     @Schema(
             description = """
-            Секретный ли груз или нет. Не может быть null".
+            Произвольный комментарий к заказу. Необязательное поле, не длиннее 1024 символов.
             """,
-            example = "HOUSEHOLD_CHEMICALS"
+            example = "Хрупкий груз, просьба не кантовать."
     )
-    @NotNull(message = "CANNOT_BE_NULL")
-    @JsonProperty("secret_cargo")
-    private Boolean secretCargo;
+    @Size(max = 1024, message = "LENGTH_MUST_BE_LOWER_OR_EQUAL_THAN_1024_SYMBOLS")
+    @JsonProperty("comment")
+    private String comment;
 
     @Schema(
             description = """
