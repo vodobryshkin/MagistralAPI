@@ -15,6 +15,7 @@ spring:
     password: ${MAIL_PASSWORD}
     protocol: smtp
     default-encoding: UTF-8
+
     ssl:
       enabled: true
     properties:
@@ -22,7 +23,7 @@ spring:
       "[mail.smtp.connectiontimeout]": 5000
       "[mail.smtp.timeout]": 3000
       "[mail.smtp.writetimeout]": 5000
-      "[mail.smtp.ssl.trust]": smtp.yandex.ru
+      "[mail.smtp.ssl.trust]": smtp.gmail.com
   rabbitmq:
     host: ${RABBIT_MQ_HOST:localhost}
     port: ${RABBIT_MQ_PORT:5672}
