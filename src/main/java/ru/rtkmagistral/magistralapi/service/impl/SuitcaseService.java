@@ -30,9 +30,6 @@ public class SuitcaseService implements ISuitcaseService {
     @Value("${suitcase.receiver.phone}")
     private String receiverPhone;
 
-    @Value("${suitcase.receiver.address}")
-    private String receiverAddress;
-
     @Value("${suitcase.defaults.type-of-shipment}")
     private Order.TypeOfShipment defaultTypeOfShipment;
 
@@ -50,9 +47,9 @@ public class SuitcaseService implements ISuitcaseService {
     }
 
     /**
-     * Преобразует заявку на чемодан в заявку на заказ: поля чемодана переносятся напрямую,
-     * адрес и контакты получателя берутся из конфигурации Магистрали, а вид и характер
-     * вложения подставляются значениями по умолчанию.
+     * Преобразует заявку на чемодан в заявку на заказ: поля чемодана (включая адреса забора и
+     * доставки) переносятся напрямую, контакты получателя берутся из конфигурации Магистрали,
+     * а вид и характер вложения подставляются значениями по умолчанию.
      *
      * @param request данные формы «Чемоданы».
      * @return заявка на заказ, готовая к обработке общим потоком.
@@ -61,8 +58,8 @@ public class SuitcaseService implements ISuitcaseService {
         return new CreateOrderRequest(
                 request.getShippingAddress(),
                 request.getShippingFromOffice(),
-                receiverAddress,
-                Boolean.FALSE,
+                request.getArrivalAddress(),
+                request.getArrivalToOffice(),
                 request.getLengthCentiCm(),
                 request.getWidthCentiCm(),
                 request.getHeightCentiCm(),

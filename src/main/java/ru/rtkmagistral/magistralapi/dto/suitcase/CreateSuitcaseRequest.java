@@ -45,6 +45,26 @@ public class CreateSuitcaseRequest {
 
     @Schema(
             description = """
+            Адрес, куда доставить чемодан. Не может быть пустым и должен быть от 1 до 512 символов (включительно).
+            """,
+            example = "г. Москва, ул. Складочная, д. 1"
+    )
+    @NotBlank(message = "CANNOT_BE_BLANK")
+    @Size(max = 512, message = "LENGTH_MUST_BE_BETWEEN_1_AND_512_SYMBOLS")
+    @JsonProperty("arrival_address")
+    private String arrivalAddress;
+
+    @Schema(
+            description = """
+            Чемодан получают в отделении спецсвязи («окно»). Если не передано — доставка по адресу («дверь»).
+            """,
+            example = "false"
+    )
+    @JsonProperty("arrival_to_office")
+    private Boolean arrivalToOffice;
+
+    @Schema(
+            description = """
             Длина чемодана в санти-сантиметрах (в одном сантиметре 100 санти-сантиметров). Должна быть больше 1 и меньше или равна 20000 (200 см).
             """,
             example = "20000",

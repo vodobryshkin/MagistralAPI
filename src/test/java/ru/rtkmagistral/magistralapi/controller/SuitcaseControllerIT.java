@@ -44,6 +44,7 @@ class SuitcaseControllerIT {
     private static final String VALID_JSON = """
         {
             "shipping_address": "г. Москва, ул. Тверская, д. 1",
+            "arrival_address": "г. Москва, ул. Складочная, д. 1",
             "length": 100,
             "width": 100,
             "height": 100,
@@ -103,11 +104,25 @@ class SuitcaseControllerIT {
     }
 
     @Test
+    @DisplayName("POST /suitcases с пустым адресом доставки — 422")
+    void blankArrivalAddress_returns422() throws Exception {
+        String json = VALID_JSON.replace("г. Москва, ул. Складочная, д. 1", "");
+
+        mvc.perform(post("/api/v1/suitcases")
+                        .with(user("vova@example.com").roles("VERIFIED_USER"))
+                        .header("Idempotency-Key", IDEMPOTENCY_KEY)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(json))
+                .andExpect(status().isUnprocessableContent());
+    }
+
+    @Test
     @DisplayName("POST /suitcases с нулевыми габаритами — 422")
     void zeroDimensions_returns422() throws Exception {
         String json = """
             {
                 "shipping_address": "г. Москва, ул. Тверская, д. 1",
+                "arrival_address": "г. Москва, ул. Складочная, д. 1",
                 "length": 0,
                 "width": 0,
                 "height": 0,

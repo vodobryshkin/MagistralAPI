@@ -70,7 +70,6 @@ suitcase:
   receiver:
     fio: ${SUITCASE_RECEIVER_FIO:ООО «ЛТК Магистраль»}
     phone: ${SUITCASE_RECEIVER_PHONE:+74999999999}
-    address: ${SUITCASE_RECEIVER_ADDRESS:г. Москва, ул. Складочная, д. 1}
   defaults:
     type-of-shipment: ${SUITCASE_TYPE_OF_SHIPMENT:PACKAGE}
     nature-of-investment: ${SUITCASE_NATURE_OF_INVESTMENT:OTHER}

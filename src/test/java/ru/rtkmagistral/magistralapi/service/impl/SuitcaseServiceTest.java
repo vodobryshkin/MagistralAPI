@@ -39,13 +39,11 @@ class SuitcaseServiceTest {
     private static final String EMAIL = "vova@example.com";
     private static final String RECEIVER_FIO = "ООО «ЛТК Магистраль»";
     private static final String RECEIVER_PHONE = "+74999999999";
-    private static final String RECEIVER_ADDRESS = "г. Москва, ул. Складочная, д. 1";
 
     @BeforeEach
     void setUp() {
         ReflectionTestUtils.setField(suitcaseService, "receiverFio", RECEIVER_FIO);
         ReflectionTestUtils.setField(suitcaseService, "receiverPhone", RECEIVER_PHONE);
-        ReflectionTestUtils.setField(suitcaseService, "receiverAddress", RECEIVER_ADDRESS);
         ReflectionTestUtils.setField(suitcaseService, "defaultTypeOfShipment", Order.TypeOfShipment.PACKAGE);
         ReflectionTestUtils.setField(suitcaseService, "defaultNatureOfInvestment", NatureOfInvestment.OTHER);
     }
@@ -53,6 +51,8 @@ class SuitcaseServiceTest {
     private CreateSuitcaseRequest validRequest() {
         return new CreateSuitcaseRequest(
                 "г. Москва, ул. Тверская, д. 1",
+                false,
+                "г. Москва, ул. Складочная, д. 1",
                 false,
                 100, 200, 300,
                 1000,
@@ -84,9 +84,11 @@ class SuitcaseServiceTest {
 
         CreateOrderRequest sent = captor.getValue();
 
-        // поля чемодана переносятся напрямую
+        // поля чемодана переносятся напрямую, включая адреса забора и доставки
         assertThat(sent.getShippingAddress()).isEqualTo("г. Москва, ул. Тверская, д. 1");
         assertThat(sent.getShippingFromOffice()).isFalse();
+        assertThat(sent.getArrivalAddress()).isEqualTo("г. Москва, ул. Складочная, д. 1");
+        assertThat(sent.getArrivalToOffice()).isFalse();
         assertThat(sent.getLengthCentiCm()).isEqualTo(100);
         assertThat(sent.getWidthCentiCm()).isEqualTo(200);
         assertThat(sent.getHeightCentiCm()).isEqualTo(300);
@@ -97,10 +99,9 @@ class SuitcaseServiceTest {
         assertThat(sent.getWishingDeliveryTime()).isNull();
         assertThat(sent.getAgreeWithTheTermsOfTheAgreement()).isTrue();
 
-        // получатель — Магистраль из конфигурации
+        // получатель (контакты) — Магистраль из конфигурации
         assertThat(sent.getReceiverFio()).isEqualTo(RECEIVER_FIO);
         assertThat(sent.getReceiverPhone()).isEqualTo(RECEIVER_PHONE);
-        assertThat(sent.getArrivalAddress()).isEqualTo(RECEIVER_ADDRESS);
 
         // вид и характер вложения — значения по умолчанию
         assertThat(sent.getTypeOfShipment()).isEqualTo(Order.TypeOfShipment.PACKAGE);
