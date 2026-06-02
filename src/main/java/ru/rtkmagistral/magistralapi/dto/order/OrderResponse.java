@@ -43,4 +43,11 @@ public class OrderResponse implements java.io.Serializable {
     )
     @JsonProperty("amount_of_orders")
     private Long amountOfOrders;
+
+    @Schema(
+            description = "Итоговая стоимость доставки в копейках (с НДС и скидкой).",
+            example = "123456"
+    )
+    @JsonProperty("price_kopeika")
+    private Long priceInKopeika;
 }

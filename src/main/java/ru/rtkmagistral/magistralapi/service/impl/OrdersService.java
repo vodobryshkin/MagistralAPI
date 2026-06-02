@@ -13,8 +13,6 @@ import ru.rtkmagistral.magistralapi.dto.minio.MinioDTO;
 import ru.rtkmagistral.magistralapi.dto.idempotency_key.IdempotencyKeyDTO;
 import ru.rtkmagistral.magistralapi.dto.mail.DocumentMailRequest;
 import ru.rtkmagistral.magistralapi.dto.order.*;
-import ru.rtkmagistral.magistralapi.dto.pricing.PriceCalculationInput;
-import ru.rtkmagistral.magistralapi.dto.pricing.ResolvedLocation;
 import ru.rtkmagistral.magistralapi.dto.user.UserBlock;
 import ru.rtkmagistral.magistralapi.exception.OrderException;
 import ru.rtkmagistral.magistralapi.exception.UserException;
@@ -47,8 +45,7 @@ public class OrdersService implements IOrdersService {
     private final IOrderApplicationDocxGeneratorService docxGeneratorService;
     private final IMessageService messageService;
 
-    private final ICityResolver cityResolver;
-    private final IPriceCalculationService priceCalculationService;
+    private final IPriceQuoteService priceQuoteService;
 
     @Value("${mail.document.contract-text}")
     private String contractText;
@@ -82,7 +79,7 @@ public class OrdersService implements IOrdersService {
         messageService.sendMinioMessageToQueue(minioDTO);
         messageService.sendDocumentMessageToQueue(documentMailRequest);
 
-        return new OrderResponse("CREATED", true, orderRepository.countOrdersByUser(user));
+        return new OrderResponse("CREATED", true, orderRepository.countOrdersByUser(user), order.getPriceInKopeika());
     }
 
     /**
@@ -138,34 +135,25 @@ public class OrdersService implements IOrdersService {
     }
 
     /**
-     * Рассчитывает стоимость заказа по правилам экспресс-отправлений: резолвит города отправления
-     * и получения, после чего применяет тарифную логику. Присланная клиентом цена не используется.
+     * Рассчитывает стоимость заказа по правилам экспресс-отправлений. Присланная клиентом цена
+     * не используется — стоимость считается заново через {@link IPriceQuoteService}.
      *
      * @param request данные создаваемого заказа.
      * @return итоговая цена отправления в копейках.
      */
     private long calculatePrice(CreateOrderRequest request) {
-        ResolvedLocation sender = cityResolver.resolve(request.getShippingAddress());
-        ResolvedLocation receiver = cityResolver.resolve(request.getArrivalAddress());
-
-        PriceCalculationInput input = new PriceCalculationInput(
-                sender.city(),
-                receiver.city(),
-                Boolean.TRUE.equals(request.getShippingFromOffice()),
-                Boolean.TRUE.equals(request.getArrivalToOffice()),
+        return priceQuoteService.calculatePriceInKopeika(
+                request.getShippingAddress(),
+                request.getArrivalAddress(),
+                request.getShippingFromOffice(),
+                request.getArrivalToOffice(),
                 request.getWeightGr(),
                 request.getLengthCentiCm(),
                 request.getWidthCentiCm(),
                 request.getHeightCentiCm(),
                 request.getNatureOfInvestment(),
-                request.getCostOfInvestmentInKopeika(),
-                sender.coefficient(),
-                receiver.coefficient(),
-                sender.remotePerKg(),
-                receiver.remotePerKg()
+                request.getCostOfInvestmentInKopeika()
         );
-
-        return priceCalculationService.calculate(input).priceInKopeika();
     }
 
     private DocumentMailRequest formMailRequest(User user, Order order) {
@@ -180,11 +168,12 @@ public class OrdersService implements IOrdersService {
                 order.getWishingDeliveryTime(),
                 1,
                 order.getComment(),
+                order.getPriceInKopeika(),
                 userBlock,
                 orderBlock
         );
 
-        byte[] docx = null;
+        byte[] docx;
         try (InputStream template = new ClassPathResource(orderApplication).getInputStream()) {
             docx = docxGeneratorService.generate(template, docDto);
         } catch (IOException e) {

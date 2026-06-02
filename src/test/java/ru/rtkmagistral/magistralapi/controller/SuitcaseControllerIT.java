@@ -60,7 +60,7 @@ class SuitcaseControllerIT {
     @DisplayName("POST /suitcases — валидный запрос возвращает 201 и тело OrderResponse")
     void validSuitcase_returns201() throws Exception {
         OrderResponseDTO dto = new OrderResponseDTO(
-                201, new HttpHeaders(), new OrderResponse("CREATED", true, 1L));
+                201, new HttpHeaders(), new OrderResponse("CREATED", true, 1L, null));
         when(suitcaseService.createIdempotentSuitcase(
                 eq(UUID.fromString(IDEMPOTENCY_KEY)),
                 eq("vova@example.com"),

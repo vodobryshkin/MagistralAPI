@@ -64,7 +64,7 @@ class OrderControllerIT {
     @DisplayName("POST /orders — валидный запрос возвращает 201 и тело OrderResponse")
     void validOrder_returns201() throws Exception {
         OrderResponseDTO dto = new OrderResponseDTO(
-                201, new HttpHeaders(), new OrderResponse("CREATED", true, 1L));
+                201, new HttpHeaders(), new OrderResponse("CREATED", true, 1L, 123456L));
         when(ordersService.createIdempotentOrder(
                 eq(UUID.fromString(IDEMPOTENCY_KEY)),
                 eq("vova@example.com"),
@@ -81,14 +81,15 @@ class OrderControllerIT {
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.message").value("CREATED"))
                 .andExpect(jsonPath("$.status").value(true))
-                .andExpect(jsonPath("$.amount_of_orders").value(1));
+                .andExpect(jsonPath("$.amount_of_orders").value(1))
+                .andExpect(jsonPath("$.price_kopeika").value(123456));
     }
 
     @Test
     @DisplayName("POST /orders с категорией FURNITURE (Мебель) возвращает 201")
     void furnitureCategory_returns201() throws Exception {
         OrderResponseDTO dto = new OrderResponseDTO(
-                201, new HttpHeaders(), new OrderResponse("CREATED", true, 1L));
+                201, new HttpHeaders(), new OrderResponse("CREATED", true, 1L, null));
         when(ordersService.createIdempotentOrder(
                 eq(UUID.fromString(IDEMPOTENCY_KEY)),
                 eq("vova@example.com"),

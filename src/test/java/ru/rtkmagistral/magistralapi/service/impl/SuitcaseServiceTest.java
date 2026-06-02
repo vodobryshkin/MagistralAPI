@@ -68,7 +68,7 @@ class SuitcaseServiceTest {
     @DisplayName("createIdempotentSuitcase подставляет реквизиты Магистрали и дефолты, переносит поля чемодана")
     void buildsOrderRequestWithMagistralReceiver() {
         OrderResponseDTO expected = new OrderResponseDTO(
-                201, new HttpHeaders(), new OrderResponse("CREATED", true, 1L));
+                201, new HttpHeaders(), new OrderResponse("CREATED", true, 1L, null));
         when(ordersService.createIdempotentOrder(
                 eq(KEY), eq(EMAIL), any(CreateOrderRequest.class), eq("POST"), eq("/api/v1/suitcases")
         )).thenReturn(expected);
@@ -112,7 +112,7 @@ class SuitcaseServiceTest {
     @DisplayName("createIdempotentSuitcase делегирует обработку в IOrdersService")
     void delegatesToOrdersService() {
         OrderResponseDTO expected = new OrderResponseDTO(
-                201, new HttpHeaders(), new OrderResponse("CREATED", true, 7L));
+                201, new HttpHeaders(), new OrderResponse("CREATED", true, 7L, null));
         when(ordersService.createIdempotentOrder(
                 eq(KEY), eq(EMAIL), any(CreateOrderRequest.class), eq("POST"), eq("/api/v1/suitcases")
         )).thenReturn(expected);

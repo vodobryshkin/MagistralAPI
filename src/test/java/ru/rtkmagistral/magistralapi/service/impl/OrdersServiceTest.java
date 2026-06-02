@@ -20,9 +20,6 @@ import ru.rtkmagistral.magistralapi.dto.order.CreateOrderRequest;
 import ru.rtkmagistral.magistralapi.dto.order.OrderBlock;
 import ru.rtkmagistral.magistralapi.dto.order.OrderResponse;
 import ru.rtkmagistral.magistralapi.dto.order.OrderResponseDTO;
-import ru.rtkmagistral.magistralapi.dto.pricing.DeliveryType;
-import ru.rtkmagistral.magistralapi.dto.pricing.PriceCalculationResult;
-import ru.rtkmagistral.magistralapi.dto.pricing.ResolvedLocation;
 import ru.rtkmagistral.magistralapi.dto.user.UserBlock;
 import ru.rtkmagistral.magistralapi.exception.OrderException;
 import ru.rtkmagistral.magistralapi.exception.UserException;
@@ -30,11 +27,10 @@ import ru.rtkmagistral.magistralapi.mapper.IOrderMapper;
 import ru.rtkmagistral.magistralapi.mapper.IUserMapper;
 import ru.rtkmagistral.magistralapi.repository.IOrderRepository;
 import ru.rtkmagistral.magistralapi.repository.UserRepository;
-import ru.rtkmagistral.magistralapi.service.spec.ICityResolver;
 import ru.rtkmagistral.magistralapi.service.spec.IIdempotencyKeyService;
 import ru.rtkmagistral.magistralapi.service.spec.IMessageService;
 import ru.rtkmagistral.magistralapi.service.spec.IOrderApplicationDocxGeneratorService;
-import ru.rtkmagistral.magistralapi.service.spec.IPriceCalculationService;
+import ru.rtkmagistral.magistralapi.service.spec.IPriceQuoteService;
 
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
@@ -68,9 +64,7 @@ class OrdersServiceTest {
     @Mock
     IMessageService messageService;
     @Mock
-    ICityResolver cityResolver;
-    @Mock
-    IPriceCalculationService priceCalculationService;
+    IPriceQuoteService priceQuoteService;
 
     @InjectMocks
     OrdersService ordersService;
@@ -80,10 +74,14 @@ class OrdersServiceTest {
         ReflectionTestUtils.setField(ordersService, "contractText", "№15930э");
         ReflectionTestUtils.setField(ordersService, "orderApplication", "templates/заявка.docx");
 
-        lenient().when(cityResolver.resolve(any()))
-                .thenReturn(new ResolvedLocation("Москва", 1.0, null));
-        lenient().when(priceCalculationService.calculate(any()))
-                .thenReturn(new PriceCalculationResult(50_000L, 0, DeliveryType.DOOR_DOOR, 1.0));
+        lenient().when(priceQuoteService.calculatePriceInKopeika(
+                        any(), any(), any(), any(),
+                        org.mockito.ArgumentMatchers.anyInt(),
+                        org.mockito.ArgumentMatchers.anyInt(),
+                        org.mockito.ArgumentMatchers.anyInt(),
+                        org.mockito.ArgumentMatchers.anyInt(),
+                        any(), any()))
+                .thenReturn(50_000L);
     }
 
     private User physicalUser() {
@@ -143,11 +141,13 @@ class OrdersServiceTest {
         assertThat(response.getMessage()).isEqualTo("CREATED");
         assertThat(response.isStatus()).isTrue();
         assertThat(response.getAmountOfOrders()).isEqualTo(1L);
+        assertThat(response.getPriceInKopeika()).isEqualTo(50_000L);
 
         ArgumentCaptor<Order> orderCaptor = ArgumentCaptor.forClass(Order.class);
         verify(orderRepository).save(orderCaptor.capture());
         assertThat(orderCaptor.getValue().getOrderStatus()).isEqualTo(Order.OrderStatus.ACCEPTED);
         assertThat(orderCaptor.getValue().getUser()).isSameAs(user);
+        assertThat(orderCaptor.getValue().getPriceInKopeika()).isEqualTo(50_000L);
 
         ArgumentCaptor<DocumentMailRequest> mailCaptor =
                 ArgumentCaptor.forClass(DocumentMailRequest.class);
@@ -228,7 +228,7 @@ class OrdersServiceTest {
         Map<String, String> headers = new HashMap<>();
         headers.put("X-Cached", "1");
         key.setResponseHeaders(headers);
-        OrderResponse cached = new OrderResponse("CREATED", true, 5L);
+        OrderResponse cached = new OrderResponse("CREATED", true, 5L, null);
         key.setResponseBody(cached);
 
         when(idempotencyKeyService.readIdempotencyKey(id)).thenReturn(Optional.of(key));

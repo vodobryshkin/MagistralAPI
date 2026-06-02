@@ -78,7 +78,7 @@ class IdempotencyKeyServiceTest {
         Map<String, String> headers = new HashMap<>();
         headers.put("X-Custom", "value");
 
-        OrderResponse responseBody = new OrderResponse("CREATED", true, 1L);
+        OrderResponse responseBody = new OrderResponse("CREATED", true, 1L, null);
 
         idempotencyKeyService.deactivateIdempotencyKey(id, 201, headers, responseBody);
 
@@ -96,7 +96,7 @@ class IdempotencyKeyServiceTest {
         when(idempotencyKeyRepository.findById(id)).thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> idempotencyKeyService.deactivateIdempotencyKey(
-                id, 201, new HashMap<>(), new OrderResponse("CREATED", true, 1L)))
+                id, 201, new HashMap<>(), new OrderResponse("CREATED", true, 1L, null)))
                 .isInstanceOf(java.util.NoSuchElementException.class);
     }
 }

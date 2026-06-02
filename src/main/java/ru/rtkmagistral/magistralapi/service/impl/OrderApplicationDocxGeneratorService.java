@@ -106,8 +106,19 @@ public class OrderApplicationDocxGeneratorService implements IOrderApplicationDo
         map.put(KEY_WEIGHT, weight);
         map.put(KEY_PLACES, placesStr);
         map.put(KEY_DIMENSIONS, dims);
-        map.put(KEY_EXTRA, nullToEmpty(dto.getExtraInfo()));
+        map.put(KEY_EXTRA, buildExtra(dto));
         return map;
+    }
+
+    /**
+     * Формирует содержимое графы «иная информация»: пользовательский комментарий и итоговую
+     * стоимость доставки (если она рассчитана). Обе части необязательны и при отсутствии опускаются.
+     */
+    private String buildExtra(OrderDocumentDTO dto) {
+        String deliveryCost = dto.getPriceInKopeika() != null
+                ? "Стоимость доставки: " + formatKopeika(dto.getPriceInKopeika())
+                : null;
+        return safeJoin("\n", nullIfBlank(dto.getExtraInfo()), deliveryCost);
     }
 
     private void fillHeaderParagraphs(XWPFDocument doc, String applicationNumber, OffsetDateTime applicationDate) {

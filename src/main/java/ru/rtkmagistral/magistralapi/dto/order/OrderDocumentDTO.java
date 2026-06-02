@@ -19,6 +19,7 @@ public class OrderDocumentDTO {
     private OffsetDateTime deliveryDate;
     private int places;
     private String extraInfo;
+    private Long priceInKopeika;
 
     private UserBlock user;
     private OrderBlock order;
