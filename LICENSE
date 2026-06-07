@@ -1,0 +1,86 @@
+ПРОПРИЕТАРНАЯ ЛИЦЕНЗИЯ / PROPRIETARY LICENSE
+
+Copyright (c) 2026 Владимир Добрышкин (vodobryshkin).
+Все права защищены. / All rights reserved.
+
+================================================================================
+Русская версия (имеет преимущественную силу)
+================================================================================
+
+1. Правообладатель и авторство
+   Автором и обладателем исключительного права на настоящую программу для ЭВМ
+   «MagistralAPI» и все входящие в её состав исходные тексты, файлы и материалы
+   (далее — «Программа») является Владимир Добрышкин (далее — «Правообладатель»).
+   Программа является объектом авторского права и охраняется в соответствии
+   с частью четвёртой Гражданского кодекса Российской Федерации (в частности,
+   статьями 1259, 1261, 1270 ГК РФ) и международными договорами.
+
+   Право авторства и право автора на имя являются неотчуждаемыми и охраняются
+   бессрочно (ст. 1265 ГК РФ).
+
+2. Условия использования
+   Любое использование Программы, в том числе (но не ограничиваясь):
+   воспроизведение, копирование, запуск, установка, развёртывание, размещение,
+   распространение, публичный показ, доведение до всеобщего сведения, изменение,
+   переработка, создание производных произведений, декомпиляция, а также
+   коммерческое или некоммерческое использование, —
+   допускается ИСКЛЮЧИТЕЛЬНО при наличии прямого предварительного согласия
+   Правообладателя.
+
+   Согласие может быть выражено в устной или письменной форме непосредственно
+   Правообладателем. При отсутствии такого согласия любое использование Программы
+   запрещено.
+
+3. Отсутствие передачи прав
+   Передача экземпляра Программы, доступ к её исходному коду, а равно оплата работ
+   по её созданию или доработке сами по себе НЕ влекут перехода исключительного
+   права и не являются лицензией. Переход исключительного права или предоставление
+   лицензии оформляются отдельным договором в порядке, предусмотренном
+   статьями 1234, 1235, 1286 ГК РФ. До заключения такого договора исключительное
+   право в полном объёме сохраняется за Правообладателем.
+
+4. Запреты
+   Без согласия Правообладателя запрещается удалять или изменять указания об
+   авторстве и правообладателе, а также настоящий файл лицензии.
+
+5. Ответственность за нарушение
+   Нарушение исключительного права влечёт ответственность, предусмотренную
+   законодательством Российской Федерации, включая право Правообладателя
+   требовать прекращения нарушения, возмещения убытков либо выплаты компенсации
+   (ст. 1252, 1301 ГК РФ).
+
+6. Отказ от гарантий
+   Программа предоставляется «как есть» (AS IS). Правообладатель не предоставляет
+   никаких гарантий и не несёт ответственности за любой ущерб, возникший в связи
+   с использованием Программы, в максимально допустимой законом степени.
+
+7. Контакты для получения согласия
+   Запросы о предоставлении согласия на использование направляются
+   Правообладателю: dobryshkinvladimir@yandex.ru
+
+================================================================================
+English version (for reference; the Russian version prevails)
+================================================================================
+
+This software "MagistralAPI" and all of its source code, files and materials
+(the "Software") are the proprietary work of and owned by Vladimir Dobryshkin
+(the "Rightholder"). The Software is protected by copyright law, including
+Part IV of the Civil Code of the Russian Federation, and international treaties.
+
+Any use of the Software — including reproduction, copying, running, installation,
+deployment, hosting, distribution, public display, making available, modification,
+adaptation, creation of derivative works, decompilation, and any commercial or
+non-commercial use — is permitted SOLELY with the prior explicit consent of the
+Rightholder. Such consent may be given orally or in writing by the Rightholder.
+Without such consent, any use of the Software is prohibited.
+
+Delivery of a copy, access to the source code, or payment for development or
+modification work does NOT by itself transfer any exclusive rights and does not
+constitute a license. The exclusive rights remain fully with the Rightholder
+until a separate written agreement is concluded in accordance with applicable law.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND. The Rightholder
+shall not be liable for any damages arising from the use of the Software, to the
+maximum extent permitted by law.
+
+Consent requests: dobryshkinvladimir@yandex.ru
