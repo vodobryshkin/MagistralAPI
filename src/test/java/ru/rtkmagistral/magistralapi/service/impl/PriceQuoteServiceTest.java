@@ -106,4 +106,34 @@ class PriceQuoteServiceTest {
 
         assertThat(price).isEqualTo(42_000L);
     }
+
+    @Test
+    @DisplayName("quote с коэффициентом домножает итоговую цену в самом конце")
+    void quote_withMultiplier_appliesCoefficient() {
+        when(cityResolver.resolve(any()))
+                .thenReturn(new ResolvedLocation("Москва", 1.0, null));
+        when(priceCalculationService.calculate(any()))
+                .thenReturn(new PriceCalculationResult(100_000L, 1, DeliveryType.DOOR_DOOR, 1.0));
+
+        // 100000 * 0.95 = 95000
+        assertThat(priceQuoteService.quote(request(NatureOfInvestment.OTHER), 0.95).priceInKopeika())
+                .isEqualTo(95_000L);
+    }
+
+    @Test
+    @DisplayName("calculatePriceInKopeika с коэффициентом 0.95 округляет результат до копейки")
+    void calculatePriceInKopeika_withMultiplier_rounds() {
+        when(cityResolver.resolve(any()))
+                .thenReturn(new ResolvedLocation("Москва", 1.0, null));
+        when(priceCalculationService.calculate(any()))
+                .thenReturn(new PriceCalculationResult(12_345L, 1, DeliveryType.DOOR_DOOR, 1.0));
+
+        // 12345 * 0.95 = 11727.75 -> HALF_UP -> 11728
+        long price = priceQuoteService.calculatePriceInKopeika(
+                "Москва", "Москва", false, false,
+                1000, 100, 100, 100,
+                NatureOfInvestment.HOUSEHOLD_CHEMICALS, 100_000L, 0.95);
+
+        assertThat(price).isEqualTo(11_728L);
+    }
 }

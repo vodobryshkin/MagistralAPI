@@ -23,6 +23,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @WebMvcTest(PriceController.class)
 @Import({AppExceptionHandler.class, WebTestSupport.class})
+@org.springframework.test.context.TestPropertySource(properties = "suitcase.price-coefficient=0.95")
 class PriceControllerIT {
 
     @Autowired
@@ -63,9 +64,9 @@ class PriceControllerIT {
     }
 
     @Test
-    @DisplayName("POST /suitcases/price — валидный запрос возвращает 200 и цену")
+    @DisplayName("POST /suitcases/price — валидный запрос возвращает 200 и цену c коэффициентом 0.95")
     void suitcasePrice_returns200() throws Exception {
-        when(priceQuoteService.quote(any()))
+        when(priceQuoteService.quote(any(), org.mockito.ArgumentMatchers.eq(0.95)))
                 .thenReturn(new PriceCalculationResult(777L, 1, DeliveryType.WINDOW_WINDOW, 0.5));
 
         mvc.perform(post("/api/v1/suitcases/price")

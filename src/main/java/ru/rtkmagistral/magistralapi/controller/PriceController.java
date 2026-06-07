@@ -35,6 +35,9 @@ import ru.rtkmagistral.magistralapi.service.spec.IPriceQuoteService;
 public class PriceController {
     private final IPriceQuoteService priceQuoteService;
 
+    @org.springframework.beans.factory.annotation.Value("${suitcase.price-coefficient}")
+    private double suitcasePriceCoefficient;
+
     @ApiResponses({
             @ApiResponse(
                     responseCode = "200",
@@ -102,7 +105,7 @@ public class PriceController {
             )
             @RequestBody @Valid PriceQuoteRequest request
     ) {
-        return ResponseEntity.ok(toResponse(priceQuoteService.quote(request)));
+        return ResponseEntity.ok(toResponse(priceQuoteService.quote(request, suitcasePriceCoefficient)));
     }
 
     private PriceQuoteResponse toResponse(PriceCalculationResult result) {

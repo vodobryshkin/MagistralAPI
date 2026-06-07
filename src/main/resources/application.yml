@@ -74,6 +74,8 @@ suitcase:
   defaults:
     type-of-shipment: ${SUITCASE_TYPE_OF_SHIPMENT:PACKAGE}
     nature-of-investment: ${SUITCASE_NATURE_OF_INVESTMENT:OTHER}
+  # Итоговая стоимость доставки чемодана = стоимость обычной посылки, домноженная на этот коэффициент.
+  price-coefficient: ${SUITCASE_PRICE_COEFFICIENT:0.95}
 
 dadata:
   client:

@@ -11,6 +11,9 @@ import ru.rtkmagistral.magistralapi.service.spec.ICityResolver;
 import ru.rtkmagistral.magistralapi.service.spec.IPriceCalculationService;
 import ru.rtkmagistral.magistralapi.service.spec.IPriceQuoteService;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+
 /**
  * Реализация предварительного расчёта стоимости. Резолвит города отправления и получения по адресам
  * и применяет тарифную логику. Присланная клиентом цена не используется — стоимость считается заново.
@@ -23,6 +26,11 @@ public class PriceQuoteService implements IPriceQuoteService {
 
     @Override
     public PriceCalculationResult quote(PriceQuoteRequest request) {
+        return quote(request, 1.0);
+    }
+
+    @Override
+    public PriceCalculationResult quote(PriceQuoteRequest request, double multiplier) {
         ResolvedLocation sender = cityResolver.resolve(request.getShippingAddress());
         ResolvedLocation receiver = cityResolver.resolve(request.getArrivalAddress());
 
@@ -43,7 +51,8 @@ public class PriceQuoteService implements IPriceQuoteService {
                 receiver.remotePerKg()
         );
 
-        return priceCalculationService.calculate(input);
+        PriceCalculationResult result = priceCalculationService.calculate(input);
+        return applyMultiplier(result, multiplier);
     }
 
     @Override
@@ -57,6 +66,24 @@ public class PriceQuoteService implements IPriceQuoteService {
                                         int heightCentiCm,
                                         NatureOfInvestment natureOfInvestment,
                                         Long costOfInvestmentKopeika) {
+        return calculatePriceInKopeika(
+                shippingAddress, arrivalAddress, shippingFromOffice, arrivalToOffice,
+                weightGr, lengthCentiCm, widthCentiCm, heightCentiCm,
+                natureOfInvestment, costOfInvestmentKopeika, 1.0);
+    }
+
+    @Override
+    public long calculatePriceInKopeika(String shippingAddress,
+                                        String arrivalAddress,
+                                        Boolean shippingFromOffice,
+                                        Boolean arrivalToOffice,
+                                        int weightGr,
+                                        int lengthCentiCm,
+                                        int widthCentiCm,
+                                        int heightCentiCm,
+                                        NatureOfInvestment natureOfInvestment,
+                                        Long costOfInvestmentKopeika,
+                                        double multiplier) {
         PriceQuoteRequest request = new PriceQuoteRequest(
                 shippingAddress,
                 shippingFromOffice,
@@ -69,6 +96,26 @@ public class PriceQuoteService implements IPriceQuoteService {
                 costOfInvestmentKopeika,
                 natureOfInvestment
         );
-        return quote(request).priceInKopeika();
+        return quote(request, multiplier).priceInKopeika();
+    }
+
+    /**
+     * Домножает итоговую цену на коэффициент в самом конце расчёта (поверх НДС и скидки).
+     * При коэффициенте 1.0 результат не меняется.
+     */
+    private PriceCalculationResult applyMultiplier(PriceCalculationResult result, double multiplier) {
+        if (multiplier == 1.0) {
+            return result;
+        }
+        long adjusted = BigDecimal.valueOf(result.priceInKopeika())
+                .multiply(BigDecimal.valueOf(multiplier))
+                .setScale(0, RoundingMode.HALF_UP)
+                .longValueExact();
+        return new PriceCalculationResult(
+                adjusted,
+                result.zone(),
+                result.deliveryType(),
+                result.chargeableWeightKg()
+        );
     }
 }

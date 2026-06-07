@@ -36,6 +36,9 @@ public class SuitcaseService implements ISuitcaseService {
     @Value("${suitcase.defaults.nature-of-investment}")
     private NatureOfInvestment defaultNatureOfInvestment;
 
+    @Value("${suitcase.price-coefficient}")
+    private double priceCoefficient;
+
     @Override
     public OrderResponseDTO createIdempotentSuitcase(UUID id,
                                                      String email,
@@ -43,7 +46,7 @@ public class SuitcaseService implements ISuitcaseService {
                                                      String method,
                                                      String path) {
         CreateOrderRequest createOrderRequest = toOrderRequest(createSuitcaseRequest);
-        return ordersService.createIdempotentOrder(id, email, createOrderRequest, method, path);
+        return ordersService.createIdempotentOrder(id, email, createOrderRequest, method, path, priceCoefficient);
     }
 
     /**

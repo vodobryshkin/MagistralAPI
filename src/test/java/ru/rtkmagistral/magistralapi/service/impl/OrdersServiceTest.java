@@ -80,7 +80,8 @@ class OrdersServiceTest {
                         org.mockito.ArgumentMatchers.anyInt(),
                         org.mockito.ArgumentMatchers.anyInt(),
                         org.mockito.ArgumentMatchers.anyInt(),
-                        any(), any()))
+                        any(), any(),
+                        org.mockito.ArgumentMatchers.anyDouble()))
                 .thenReturn(50_000L);
     }
 

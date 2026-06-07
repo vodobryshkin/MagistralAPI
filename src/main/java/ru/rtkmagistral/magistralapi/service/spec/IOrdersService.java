@@ -34,4 +34,24 @@ public interface IOrdersService {
                                            CreateOrderRequest createOrderRequest,
                                            String method,
                                            String path);
+
+    /**
+     * Метод для идемпотентного создания заказа на доставку с коэффициентом итоговой цены.
+     * Стоимость доставки рассчитывается обычным образом и в самом конце домножается на
+     * {@code priceMultiplier} (например, 0.95 для заявок на чемодан).
+     *
+     * @param id ключ идемпотентности.
+     * @param email адрес электронной почты пользователя, к которому привязывается заказ.
+     * @param createOrderRequest все необходимые данные для создания заказа.
+     * @param method http-метод запроса.
+     * @param path URI запроса.
+     * @param priceMultiplier коэффициент итоговой стоимости доставки.
+     * @return результат создания заказа на доставку.
+     */
+    OrderResponseDTO createIdempotentOrder(UUID id,
+                                           String email,
+                                           CreateOrderRequest createOrderRequest,
+                                           String method,
+                                           String path,
+                                           double priceMultiplier);
 }

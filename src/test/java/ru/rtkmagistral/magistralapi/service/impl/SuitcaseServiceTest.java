@@ -46,6 +46,7 @@ class SuitcaseServiceTest {
         ReflectionTestUtils.setField(suitcaseService, "receiverPhone", RECEIVER_PHONE);
         ReflectionTestUtils.setField(suitcaseService, "defaultTypeOfShipment", Order.TypeOfShipment.PACKAGE);
         ReflectionTestUtils.setField(suitcaseService, "defaultNatureOfInvestment", NatureOfInvestment.OTHER);
+        ReflectionTestUtils.setField(suitcaseService, "priceCoefficient", 0.95);
     }
 
     private CreateSuitcaseRequest validRequest() {
@@ -70,7 +71,8 @@ class SuitcaseServiceTest {
         OrderResponseDTO expected = new OrderResponseDTO(
                 201, new HttpHeaders(), new OrderResponse("CREATED", true, 1L, null));
         when(ordersService.createIdempotentOrder(
-                eq(KEY), eq(EMAIL), any(CreateOrderRequest.class), eq("POST"), eq("/api/v1/suitcases")
+                eq(KEY), eq(EMAIL), any(CreateOrderRequest.class), eq("POST"), eq("/api/v1/suitcases"),
+                org.mockito.ArgumentMatchers.anyDouble()
         )).thenReturn(expected);
 
         OrderResponseDTO actual = suitcaseService.createIdempotentSuitcase(
@@ -79,8 +81,13 @@ class SuitcaseServiceTest {
         assertThat(actual).isSameAs(expected);
 
         ArgumentCaptor<CreateOrderRequest> captor = ArgumentCaptor.forClass(CreateOrderRequest.class);
+        ArgumentCaptor<Double> multiplierCaptor = ArgumentCaptor.forClass(Double.class);
         verify(ordersService).createIdempotentOrder(
-                eq(KEY), eq(EMAIL), captor.capture(), eq("POST"), eq("/api/v1/suitcases"));
+                eq(KEY), eq(EMAIL), captor.capture(), eq("POST"), eq("/api/v1/suitcases"),
+                multiplierCaptor.capture());
+
+        // к стоимости доставки чемодана применяется коэффициент 0.95
+        assertThat(multiplierCaptor.getValue()).isEqualTo(0.95);
 
         CreateOrderRequest sent = captor.getValue();
 
@@ -114,7 +121,8 @@ class SuitcaseServiceTest {
         OrderResponseDTO expected = new OrderResponseDTO(
                 201, new HttpHeaders(), new OrderResponse("CREATED", true, 7L, null));
         when(ordersService.createIdempotentOrder(
-                eq(KEY), eq(EMAIL), any(CreateOrderRequest.class), eq("POST"), eq("/api/v1/suitcases")
+                eq(KEY), eq(EMAIL), any(CreateOrderRequest.class), eq("POST"), eq("/api/v1/suitcases"),
+                org.mockito.ArgumentMatchers.anyDouble()
         )).thenReturn(expected);
 
         OrderResponseDTO actual = suitcaseService.createIdempotentSuitcase(
@@ -122,6 +130,7 @@ class SuitcaseServiceTest {
 
         assertThat(actual.getBody().getAmountOfOrders()).isEqualTo(7L);
         verify(ordersService).createIdempotentOrder(
-                eq(KEY), eq(EMAIL), any(CreateOrderRequest.class), eq("POST"), eq("/api/v1/suitcases"));
+                eq(KEY), eq(EMAIL), any(CreateOrderRequest.class), eq("POST"), eq("/api/v1/suitcases"),
+                org.mockito.ArgumentMatchers.eq(0.95));
     }
 }

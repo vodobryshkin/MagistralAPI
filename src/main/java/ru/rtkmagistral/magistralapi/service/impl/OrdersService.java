@@ -63,13 +63,26 @@ public class OrdersService implements IOrdersService {
     @Override
     @Transactional
     public OrderResponse createOrder(CreateOrderRequest createOrderRequest, String email) {
+        return createOrder(createOrderRequest, email, 1.0);
+    }
+
+    /**
+     * Создаёт заказ, домножая итоговую стоимость доставки на переданный коэффициент.
+     *
+     * @param createOrderRequest данные создаваемого заказа.
+     * @param email              email пользователя, к которому привязывается заказ.
+     * @param priceMultiplier    коэффициент итоговой стоимости доставки (1.0 — без изменения).
+     * @return результат создания заказа на доставку.
+     */
+    @Transactional
+    public OrderResponse createOrder(CreateOrderRequest createOrderRequest, String email, double priceMultiplier) {
         User user = userRepository.findUserByEmail(email)
                 .orElseThrow(() -> new UserException("USER_NOT_FOUND"));
 
         Order order = orderMapper.toEntity(createOrderRequest);
         order.setOrderStatus(Order.OrderStatus.ACCEPTED);
         order.setUser(user);
-        order.setPriceInKopeika(calculatePrice(createOrderRequest));
+        order.setPriceInKopeika(calculatePrice(createOrderRequest, priceMultiplier));
 
         orderRepository.save(order);
 
@@ -95,6 +108,12 @@ public class OrdersService implements IOrdersService {
     @Override
     @Transactional
     public OrderResponseDTO createIdempotentOrder(UUID id, String email, CreateOrderRequest createOrderRequest, String method, String path) {
+        return createIdempotentOrder(id, email, createOrderRequest, method, path, 1.0);
+    }
+
+    @Override
+    @Transactional
+    public OrderResponseDTO createIdempotentOrder(UUID id, String email, CreateOrderRequest createOrderRequest, String method, String path, double priceMultiplier) {
         Optional<IdempotencyKey> idempotencyKeyOptional = idempotencyKeyService.readIdempotencyKey(id);
 
         if (idempotencyKeyOptional.isPresent()) {
@@ -123,7 +142,7 @@ public class OrdersService implements IOrdersService {
 
         idempotencyKeyService.createIdempotencyKey(idempotencyKeyDTO);
 
-        OrderResponse orderResponse = createOrder(createOrderRequest, email);
+        OrderResponse orderResponse = createOrder(createOrderRequest, email, priceMultiplier);
 
         idempotencyKeyService.deactivateIdempotencyKey(id, 201, new HashMap<>(), orderResponse);
 
@@ -135,13 +154,15 @@ public class OrdersService implements IOrdersService {
     }
 
     /**
-     * Рассчитывает стоимость заказа по правилам экспресс-отправлений. Присланная клиентом цена
-     * не используется — стоимость считается заново через {@link IPriceQuoteService}.
+     * Рассчитывает стоимость заказа по правилам экспресс-отправлений, домножая итоговую цену на
+     * коэффициент. Присланная клиентом цена не используется — стоимость считается заново через
+     * {@link IPriceQuoteService}.
      *
-     * @param request данные создаваемого заказа.
+     * @param request    данные создаваемого заказа.
+     * @param multiplier коэффициент итоговой стоимости доставки.
      * @return итоговая цена отправления в копейках.
      */
-    private long calculatePrice(CreateOrderRequest request) {
+    private long calculatePrice(CreateOrderRequest request, double multiplier) {
         return priceQuoteService.calculatePriceInKopeika(
                 request.getShippingAddress(),
                 request.getArrivalAddress(),
@@ -152,7 +173,8 @@ public class OrdersService implements IOrdersService {
                 request.getWidthCentiCm(),
                 request.getHeightCentiCm(),
                 request.getNatureOfInvestment(),
-                request.getCostOfInvestmentInKopeika()
+                request.getCostOfInvestmentInKopeika(),
+                multiplier
         );
     }
 
