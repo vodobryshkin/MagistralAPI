@@ -6,6 +6,7 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Component;
 import ru.rtkmagistral.magistralapi.dto.pricing.CategorySurchargeBracket;
 import ru.rtkmagistral.magistralapi.dto.pricing.DeliveryType;
+import ru.rtkmagistral.magistralapi.dto.pricing.OfficeEntry;
 import ru.rtkmagistral.magistralapi.dto.pricing.RemoteSurchargeEntry;
 import ru.rtkmagistral.magistralapi.dto.pricing.TariffRow;
 
@@ -32,6 +33,7 @@ public class PricingReferenceData {
     private final Map<String, Integer> underHalfKg;
     private final List<CategorySurchargeBracket> categorySurcharge;
     private final List<RemoteSurchargeEntry> remoteSurcharge;
+    private final List<OfficeEntry> offices;
 
     public PricingReferenceData(ObjectMapper objectMapper) {
         try {
@@ -40,6 +42,7 @@ public class PricingReferenceData {
             this.underHalfKg = read(objectMapper, "under_half_kg.json", new TypeReference<Map<String, Integer>>() {});
             this.categorySurcharge = read(objectMapper, "category_surcharge.json", new TypeReference<List<CategorySurchargeBracket>>() {});
             this.remoteSurcharge = read(objectMapper, "remote_surcharge.json", new TypeReference<List<RemoteSurchargeEntry>>() {});
+            this.offices = read(objectMapper, "offices.json", new TypeReference<List<OfficeEntry>>() {});
 
             this.tariffs = new HashMap<>();
             this.tariffs.put(DeliveryType.DOOR_DOOR, readTariff(objectMapper, "tariffs/door_door.json"));
@@ -101,5 +104,12 @@ public class PricingReferenceData {
 
     public List<RemoteSurchargeEntry> remoteSurcharge() {
         return remoteSurcharge;
+    }
+
+    /**
+     * @return справочник отделений (пунктов) спецсвязи для определения доставки «через окно».
+     */
+    public List<OfficeEntry> offices() {
+        return offices;
     }
 }

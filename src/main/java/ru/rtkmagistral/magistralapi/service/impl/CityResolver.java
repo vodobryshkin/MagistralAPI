@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.rtkmagistral.magistralapi.client.dadata.spec.IDadataAddressClient;
 import ru.rtkmagistral.magistralapi.dto.pricing.DadataAddress;
+import ru.rtkmagistral.magistralapi.dto.pricing.OfficeEntry;
 import ru.rtkmagistral.magistralapi.dto.pricing.RemoteSurchargeEntry;
 import ru.rtkmagistral.magistralapi.dto.pricing.ResolvedLocation;
 import ru.rtkmagistral.magistralapi.exception.DadataClientException;
@@ -11,12 +12,13 @@ import ru.rtkmagistral.magistralapi.exception.OrderException;
 import ru.rtkmagistral.magistralapi.service.spec.ICityResolver;
 
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.Optional;
 
 /**
  * Резолвер города по адресу. Приоритетно обращается к Dadata, при недоступности сервиса
  * ищет город из таблицы зон непосредственно в строке адреса.
+ * Признак отделения спецсвязи («окно») определяется по совпадению адреса со справочником отделений.
  * Региональный коэффициент: 1,0 для административного центра, 1,15 для Ленинградской области,
  * 1,25 для иного субъекта РФ. Доплата за отдалённость определяется по справочнику отдалённых пунктов.
  */
@@ -31,9 +33,11 @@ public class CityResolver implements ICityResolver {
     private final IDadataAddressClient dadataAddressClient;
 
     private Map<String, String> normalizedCities;
+    private Map<String, OfficeEntry> normalizedOffices;
 
     @Override
     public ResolvedLocation resolve(String address) {
+        OfficeEntry office = matchOffice(address);
         DadataAddress dadata = callDadata(address);
 
         String matrixCity = null;
@@ -41,6 +45,10 @@ public class CityResolver implements ICityResolver {
 
         if (dadata != null && dadata.city() != null) {
             matrixCity = matchCity(dadata.city());
+            adminCenter = matrixCity != null;
+        }
+        if (matrixCity == null && office != null) {
+            matrixCity = matchCity(office.city());
             adminCenter = matrixCity != null;
         }
         if (matrixCity == null) {
@@ -53,7 +61,7 @@ public class CityResolver implements ICityResolver {
         double coefficient = coefficient(adminCenter, dadata);
         Integer remotePerKg = remotePerKg(dadata, address);
 
-        return new ResolvedLocation(matrixCity, coefficient, remotePerKg);
+        return new ResolvedLocation(matrixCity, coefficient, remotePerKg, office != null);
     }
 
     private DadataAddress callDadata(String address) {
@@ -113,7 +121,58 @@ public class CityResolver implements ICityResolver {
         return normalizedCities;
     }
 
+    /**
+     * Определяет, является ли адрес адресом отделения спецсвязи. Совпадением считается вхождение
+     * нормализованного адреса отделения в нормализованный адрес из запроса (клиент, выбравший пункт,
+     * передаёт его адрес целиком).
+     *
+     * @return найденное отделение или {@code null}, если адрес не соответствует ни одному пункту.
+     */
+    private OfficeEntry matchOffice(String address) {
+        String normalized = normalizeAddress(address);
+        if (normalized.isBlank()) {
+            return null;
+        }
+        for (Map.Entry<String, OfficeEntry> entry : normalizedOffices().entrySet()) {
+            if (normalized.contains(entry.getKey())) {
+                return entry.getValue();
+            }
+        }
+        return null;
+    }
+
+    private Map<String, OfficeEntry> normalizedOffices() {
+        if (normalizedOffices == null) {
+            Map<String, OfficeEntry> map = new LinkedHashMap<>();
+            for (OfficeEntry office : referenceData.offices()) {
+                String key = normalizeAddress(office.address());
+                if (!key.isBlank()) {
+                    map.put(key, office);
+                }
+            }
+            normalizedOffices = map;
+        }
+        return normalizedOffices;
+    }
+
     private String normalize(String value) {
         return value == null ? "" : value.toLowerCase().replace('ё', 'е').trim();
+    }
+
+    /**
+     * Нормализует адрес для сопоставления с отделениями: приводит к нижнему регистру, убирает
+     * почтовый индекс, слово «россия» и пунктуацию, сводит пробелы.
+     */
+    private String normalizeAddress(String value) {
+        if (value == null) {
+            return "";
+        }
+        return value.toLowerCase()
+                .replace('ё', 'е')
+                .replaceAll("\\b\\d{6}\\b", " ")
+                .replace("россия", " ")
+                .replaceAll("[^а-я0-9 ]", " ")
+                .replaceAll("\\s+", " ")
+                .trim();
     }
 }

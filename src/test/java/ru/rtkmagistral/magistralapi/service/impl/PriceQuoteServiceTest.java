@@ -49,9 +49,9 @@ class PriceQuoteServiceTest {
     @DisplayName("quote резолвит оба города и собирает корректный PriceCalculationInput")
     void quote_buildsInput() {
         when(cityResolver.resolve("г. Москва, ул. Тверская, д. 1"))
-                .thenReturn(new ResolvedLocation("Москва", 1.0, 10));
+                .thenReturn(new ResolvedLocation("Москва", 1.0, 10, false));
         when(cityResolver.resolve("г. Санкт-Петербург, Невский пр., д. 1"))
-                .thenReturn(new ResolvedLocation("Санкт-Петербург", 1.15, null));
+                .thenReturn(new ResolvedLocation("Санкт-Петербург", 1.15, null, false));
         when(priceCalculationService.calculate(any()))
                 .thenReturn(new PriceCalculationResult(99_000L, 2, DeliveryType.WINDOW_DOOR, 2.0));
 
@@ -80,7 +80,7 @@ class PriceQuoteServiceTest {
     @DisplayName("quote подставляет категорию OTHER, если характер вложения не передан")
     void quote_defaultsNatureToOther() {
         when(cityResolver.resolve(any()))
-                .thenReturn(new ResolvedLocation("Москва", 1.0, null));
+                .thenReturn(new ResolvedLocation("Москва", 1.0, null, false));
         when(priceCalculationService.calculate(any()))
                 .thenReturn(new PriceCalculationResult(1L, 0, DeliveryType.DOOR_DOOR, 0.5));
 
@@ -95,7 +95,7 @@ class PriceQuoteServiceTest {
     @DisplayName("calculatePriceInKopeika возвращает цену из расчёта")
     void calculatePriceInKopeika_returnsPrice() {
         when(cityResolver.resolve(any()))
-                .thenReturn(new ResolvedLocation("Москва", 1.0, null));
+                .thenReturn(new ResolvedLocation("Москва", 1.0, null, false));
         when(priceCalculationService.calculate(any()))
                 .thenReturn(new PriceCalculationResult(42_000L, 1, DeliveryType.DOOR_DOOR, 1.0));
 
@@ -111,7 +111,7 @@ class PriceQuoteServiceTest {
     @DisplayName("quote с коэффициентом домножает итоговую цену в самом конце")
     void quote_withMultiplier_appliesCoefficient() {
         when(cityResolver.resolve(any()))
-                .thenReturn(new ResolvedLocation("Москва", 1.0, null));
+                .thenReturn(new ResolvedLocation("Москва", 1.0, null, false));
         when(priceCalculationService.calculate(any()))
                 .thenReturn(new PriceCalculationResult(100_000L, 1, DeliveryType.DOOR_DOOR, 1.0));
 
@@ -124,7 +124,7 @@ class PriceQuoteServiceTest {
     @DisplayName("calculatePriceInKopeika с коэффициентом 0.95 округляет результат до копейки")
     void calculatePriceInKopeika_withMultiplier_rounds() {
         when(cityResolver.resolve(any()))
-                .thenReturn(new ResolvedLocation("Москва", 1.0, null));
+                .thenReturn(new ResolvedLocation("Москва", 1.0, null, false));
         when(priceCalculationService.calculate(any()))
                 .thenReturn(new PriceCalculationResult(12_345L, 1, DeliveryType.DOOR_DOOR, 1.0));
 

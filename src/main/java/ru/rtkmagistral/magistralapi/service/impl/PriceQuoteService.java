@@ -34,11 +34,18 @@ public class PriceQuoteService implements IPriceQuoteService {
         ResolvedLocation sender = cityResolver.resolve(request.getShippingAddress());
         ResolvedLocation receiver = cityResolver.resolve(request.getArrivalAddress());
 
+        boolean senderIsOffice = request.getShippingFromOffice() != null
+                ? request.getShippingFromOffice()
+                : sender.office();
+        boolean receiverIsOffice = request.getArrivalToOffice() != null
+                ? request.getArrivalToOffice()
+                : receiver.office();
+
         PriceCalculationInput input = new PriceCalculationInput(
                 sender.city(),
                 receiver.city(),
-                Boolean.TRUE.equals(request.getShippingFromOffice()),
-                Boolean.TRUE.equals(request.getArrivalToOffice()),
+                senderIsOffice,
+                receiverIsOffice,
                 request.getWeightGr(),
                 request.getLengthCentiCm(),
                 request.getWidthCentiCm(),
