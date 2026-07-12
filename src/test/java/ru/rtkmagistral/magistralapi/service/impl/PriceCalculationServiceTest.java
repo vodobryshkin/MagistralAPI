@@ -8,7 +8,7 @@ import ru.rtkmagistral.magistralapi.domain.jpa.NatureOfInvestment;
 import ru.rtkmagistral.magistralapi.dto.pricing.DeliveryType;
 import ru.rtkmagistral.magistralapi.dto.pricing.PriceCalculationInput;
 import ru.rtkmagistral.magistralapi.dto.pricing.PriceCalculationResult;
-import ru.rtkmagistral.magistralapi.exception.OrderException;
+import ru.rtkmagistral.magistralapi.exception.PricingException;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -79,7 +79,7 @@ class PriceCalculationServiceTest {
                 input("Неизвестноград", "Москва", false, false,
                         1000, 10, 10, 10,
                         NatureOfInvestment.HOUSEHOLD_CHEMICALS, 0)))
-                .isInstanceOf(OrderException.class)
+                .isInstanceOf(PricingException.class)
                 .hasMessage("PRICING_ZONE_NOT_FOUND");
     }
 
@@ -90,7 +90,7 @@ class PriceCalculationServiceTest {
                 input("Москва", "Москва", true, true,
                         1000, 10, 10, 10,
                         NatureOfInvestment.HOUSEHOLD_CHEMICALS, 0)))
-                .isInstanceOf(OrderException.class)
+                .isInstanceOf(PricingException.class)
                 .hasMessage("PRICING_TARIFF_NOT_AVAILABLE");
     }
 }

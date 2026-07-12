@@ -1,0 +1,818 @@
+[
+  {
+    "regionIsoCode": "RU-AD",
+    "regionNames": [
+      "Адыгея",
+      "Республика Адыгея"
+    ],
+    "tariffCity": "Майкоп",
+    "coefficientPolicy": "CENTER_OR_REGIONAL"
+  },
+  {
+    "regionIsoCode": "RU-AL",
+    "regionNames": [
+      "Алтай",
+      "Республика Алтай"
+    ],
+    "tariffCity": "Горно-Алтайск",
+    "coefficientPolicy": "CENTER_OR_REGIONAL"
+  },
+  {
+    "regionIsoCode": "RU-BA",
+    "regionNames": [
+      "Башкортостан",
+      "Республика Башкортостан"
+    ],
+    "tariffCity": "Уфа",
+    "coefficientPolicy": "CENTER_OR_REGIONAL"
+  },
+  {
+    "regionIsoCode": "RU-BU",
+    "regionNames": [
+      "Бурятия",
+      "Республика Бурятия"
+    ],
+    "tariffCity": "Улан-Удэ",
+    "coefficientPolicy": "CENTER_OR_REGIONAL"
+  },
+  {
+    "regionIsoCode": "RU-DA",
+    "regionNames": [
+      "Дагестан",
+      "Республика Дагестан"
+    ],
+    "tariffCity": "Махачкала",
+    "coefficientPolicy": "CENTER_OR_REGIONAL"
+  },
+  {
+    "regionIsoCode": "RU-IN",
+    "regionNames": [
+      "Ингушетия",
+      "Республика Ингушетия"
+    ],
+    "tariffCity": "Магас",
+    "coefficientPolicy": "CENTER_OR_REGIONAL"
+  },
+  {
+    "regionIsoCode": "RU-KB",
+    "regionNames": [
+      "Кабардино-Балкарская",
+      "Кабардино-Балкарская Республика"
+    ],
+    "tariffCity": "Нальчик",
+    "coefficientPolicy": "CENTER_OR_REGIONAL"
+  },
+  {
+    "regionIsoCode": "RU-KL",
+    "regionNames": [
+      "Калмыкия",
+      "Республика Калмыкия"
+    ],
+    "tariffCity": "Элиста",
+    "coefficientPolicy": "CENTER_OR_REGIONAL"
+  },
+  {
+    "regionIsoCode": "RU-KC",
+    "regionNames": [
+      "Карачаево-Черкесская",
+      "Карачаево-Черкесская Республика"
+    ],
+    "tariffCity": "Черкесск",
+    "coefficientPolicy": "CENTER_OR_REGIONAL"
+  },
+  {
+    "regionIsoCode": "RU-KR",
+    "regionNames": [
+      "Карелия",
+      "Республика Карелия"
+    ],
+    "tariffCity": "Петрозаводск",
+    "coefficientPolicy": "CENTER_OR_REGIONAL"
+  },
+  {
+    "regionIsoCode": "RU-KO",
+    "regionNames": [
+      "Коми",
+      "Республика Коми"
+    ],
+    "tariffCity": "Сыктывкар",
+    "coefficientPolicy": "CENTER_OR_REGIONAL"
+  },
+  {
+    "regionIsoCode": "RU-ME",
+    "regionNames": [
+      "Марий Эл",
+      "Республика Марий Эл"
+    ],
+    "tariffCity": "Йошкар-Ола",
+    "coefficientPolicy": "CENTER_OR_REGIONAL"
+  },
+  {
+    "regionIsoCode": "RU-MO",
+    "regionNames": [
+      "Мордовия",
+      "Республика Мордовия"
+    ],
+    "tariffCity": "Саранск",
+    "coefficientPolicy": "CENTER_OR_REGIONAL"
+  },
+  {
+    "regionIsoCode": "RU-SA",
+    "regionNames": [
+      "Саха /Якутия/",
+      "Саха (Якутия)",
+      "Якутия",
+      "Республика Саха (Якутия)"
+    ],
+    "tariffCity": "Якутск",
+    "coefficientPolicy": "CENTER_OR_REGIONAL"
+  },
+  {
+    "regionIsoCode": "RU-SE",
+    "regionNames": [
+      "Северная Осетия - Алания",
+      "Северная Осетия — Алания",
+      "Республика Северная Осетия - Алания"
+    ],
+    "tariffCity": "Владикавказ",
+    "coefficientPolicy": "CENTER_OR_REGIONAL"
+  },
+  {
+    "regionIsoCode": "RU-TA",
+    "regionNames": [
+      "Татарстан",
+      "Республика Татарстан"
+    ],
+    "tariffCity": "Казань",
+    "coefficientPolicy": "CENTER_OR_REGIONAL"
+  },
+  {
+    "regionIsoCode": "RU-TY",
+    "regionNames": [
+      "Тыва",
+      "Тува",
+      "Республика Тыва"
+    ],
+    "tariffCity": "Кызыл",
+    "coefficientPolicy": "CENTER_OR_REGIONAL"
+  },
+  {
+    "regionIsoCode": "RU-UD",
+    "regionNames": [
+      "Удмуртская",
+      "Удмуртия",
+      "Удмуртская Республика"
+    ],
+    "tariffCity": "Ижевск",
+    "coefficientPolicy": "CENTER_OR_REGIONAL"
+  },
+  {
+    "regionIsoCode": "RU-KK",
+    "regionNames": [
+      "Хакасия",
+      "Республика Хакасия"
+    ],
+    "tariffCity": "Абакан",
+    "coefficientPolicy": "CENTER_OR_REGIONAL"
+  },
+  {
+    "regionIsoCode": "RU-CE",
+    "regionNames": [
+      "Чеченская",
+      "Чечня",
+      "Чеченская Республика"
+    ],
+    "tariffCity": "Грозный",
+    "coefficientPolicy": "CENTER_OR_REGIONAL"
+  },
+  {
+    "regionIsoCode": "RU-CU",
+    "regionNames": [
+      "Чувашская Республика - Чувашия",
+      "Чувашская",
+      "Чувашия",
+      "Чувашская Республика"
+    ],
+    "tariffCity": "Чебоксары",
+    "coefficientPolicy": "CENTER_OR_REGIONAL"
+  },
+  {
+    "regionIsoCode": "RU-CR",
+    "regionNames": [
+      "Крым",
+      "Республика Крым"
+    ],
+    "tariffCity": "Симферополь",
+    "coefficientPolicy": "CENTER_OR_REGIONAL"
+  },
+  {
+    "regionIsoCode": "RU-DON",
+    "regionNames": [
+      "Донецкая Народная Республика",
+      "Донецкая",
+      "ДНР"
+    ],
+    "tariffCity": "Донецк",
+    "coefficientPolicy": "CENTER_OR_REGIONAL"
+  },
+  {
+    "regionIsoCode": "RU-LUG",
+    "regionNames": [
+      "Луганская Народная Республика",
+      "Луганская",
+      "ЛНР"
+    ],
+    "tariffCity": "Луганск",
+    "coefficientPolicy": "CENTER_OR_REGIONAL"
+  },
+  {
+    "regionIsoCode": "RU-ALT",
+    "regionNames": [
+      "Алтайский",
+      "Алтайский край"
+    ],
+    "tariffCity": "Барнаул",
+    "coefficientPolicy": "CENTER_OR_REGIONAL"
+  },
+  {
+    "regionIsoCode": "RU-ZAB",
+    "regionNames": [
+      "Забайкальский",
+      "Забайкальский край"
+    ],
+    "tariffCity": "Чита",
+    "coefficientPolicy": "CENTER_OR_REGIONAL"
+  },
+  {
+    "regionIsoCode": "RU-KAM",
+    "regionNames": [
+      "Камчатский",
+      "Камчатский край"
+    ],
+    "tariffCity": "Петропавловск-Камчатский",
+    "coefficientPolicy": "CENTER_OR_REGIONAL"
+  },
+  {
+    "regionIsoCode": "RU-KDA",
+    "regionNames": [
+      "Краснодарский",
+      "Краснодарский край"
+    ],
+    "tariffCity": "Краснодар",
+    "coefficientPolicy": "CENTER_OR_REGIONAL"
+  },
+  {
+    "regionIsoCode": "RU-KYA",
+    "regionNames": [
+      "Красноярский",
+      "Красноярский край"
+    ],
+    "tariffCity": "Красноярск",
+    "coefficientPolicy": "CENTER_OR_REGIONAL"
+  },
+  {
+    "regionIsoCode": "RU-PER",
+    "regionNames": [
+      "Пермский",
+      "Пермский край"
+    ],
+    "tariffCity": "Пермь",
+    "coefficientPolicy": "CENTER_OR_REGIONAL"
+  },
+  {
+    "regionIsoCode": "RU-PRI",
+    "regionNames": [
+      "Приморский",
+      "Приморский край"
+    ],
+    "tariffCity": "Владивосток",
+    "coefficientPolicy": "CENTER_OR_REGIONAL"
+  },
+  {
+    "regionIsoCode": "RU-STA",
+    "regionNames": [
+      "Ставропольский",
+      "Ставропольский край"
+    ],
+    "tariffCity": "Ставрополь",
+    "coefficientPolicy": "CENTER_OR_REGIONAL"
+  },
+  {
+    "regionIsoCode": "RU-KHA",
+    "regionNames": [
+      "Хабаровский",
+      "Хабаровский край"
+    ],
+    "tariffCity": "Хабаровск",
+    "coefficientPolicy": "CENTER_OR_REGIONAL"
+  },
+  {
+    "regionIsoCode": "RU-AMU",
+    "regionNames": [
+      "Амурская",
+      "Амурская область"
+    ],
+    "tariffCity": "Благовещенск",
+    "coefficientPolicy": "CENTER_OR_REGIONAL"
+  },
+  {
+    "regionIsoCode": "RU-ARK",
+    "regionNames": [
+      "Архангельская",
+      "Архангельская область"
+    ],
+    "tariffCity": "Архангельск",
+    "coefficientPolicy": "CENTER_OR_REGIONAL"
+  },
+  {
+    "regionIsoCode": "RU-AST",
+    "regionNames": [
+      "Астраханская",
+      "Астраханская область"
+    ],
+    "tariffCity": "Астрахань",
+    "coefficientPolicy": "CENTER_OR_REGIONAL"
+  },
+  {
+    "regionIsoCode": "RU-BEL",
+    "regionNames": [
+      "Белгородская",
+      "Белгородская область"
+    ],
+    "tariffCity": "Белгород",
+    "coefficientPolicy": "CENTER_OR_REGIONAL"
+  },
+  {
+    "regionIsoCode": "RU-BRY",
+    "regionNames": [
+      "Брянская",
+      "Брянская область"
+    ],
+    "tariffCity": "Брянск",
+    "coefficientPolicy": "CENTER_OR_REGIONAL"
+  },
+  {
+    "regionIsoCode": "RU-VLA",
+    "regionNames": [
+      "Владимирская",
+      "Владимирская область"
+    ],
+    "tariffCity": "Владимир",
+    "coefficientPolicy": "CENTER_OR_REGIONAL"
+  },
+  {
+    "regionIsoCode": "RU-VGG",
+    "regionNames": [
+      "Волгоградская",
+      "Волгоградская область"
+    ],
+    "tariffCity": "Волгоград",
+    "coefficientPolicy": "CENTER_OR_REGIONAL"
+  },
+  {
+    "regionIsoCode": "RU-VLG",
+    "regionNames": [
+      "Вологодская",
+      "Вологодская область"
+    ],
+    "tariffCity": "Вологда",
+    "coefficientPolicy": "CENTER_OR_REGIONAL"
+  },
+  {
+    "regionIsoCode": "RU-VOR",
+    "regionNames": [
+      "Воронежская",
+      "Воронежская область"
+    ],
+    "tariffCity": "Воронеж",
+    "coefficientPolicy": "CENTER_OR_REGIONAL"
+  },
+  {
+    "regionIsoCode": "RU-ZAP",
+    "regionNames": [
+      "Запорожская",
+      "Запорожская область"
+    ],
+    "tariffCity": "Мелитополь",
+    "coefficientPolicy": "CENTER_OR_REGIONAL"
+  },
+  {
+    "regionIsoCode": "RU-IVA",
+    "regionNames": [
+      "Ивановская",
+      "Ивановская область"
+    ],
+    "tariffCity": "Иваново",
+    "coefficientPolicy": "CENTER_OR_REGIONAL"
+  },
+  {
+    "regionIsoCode": "RU-IRK",
+    "regionNames": [
+      "Иркутская",
+      "Иркутская область"
+    ],
+    "tariffCity": "Иркутск",
+    "coefficientPolicy": "CENTER_OR_REGIONAL"
+  },
+  {
+    "regionIsoCode": "RU-KGD",
+    "regionNames": [
+      "Калининградская",
+      "Калининградская область"
+    ],
+    "tariffCity": "Калининград",
+    "coefficientPolicy": "CENTER_OR_REGIONAL"
+  },
+  {
+    "regionIsoCode": "RU-KLU",
+    "regionNames": [
+      "Калужская",
+      "Калужская область"
+    ],
+    "tariffCity": "Калуга",
+    "coefficientPolicy": "CENTER_OR_REGIONAL"
+  },
+  {
+    "regionIsoCode": "RU-KEM",
+    "regionNames": [
+      "Кемеровская область - Кузбасс",
+      "Кемеровская",
+      "Кузбасс",
+      "Кемеровская область"
+    ],
+    "tariffCity": "Кемерово",
+    "coefficientPolicy": "CENTER_OR_REGIONAL"
+  },
+  {
+    "regionIsoCode": "RU-KIR",
+    "regionNames": [
+      "Кировская",
+      "Кировская область"
+    ],
+    "tariffCity": "Киров",
+    "coefficientPolicy": "CENTER_OR_REGIONAL"
+  },
+  {
+    "regionIsoCode": "RU-KOS",
+    "regionNames": [
+      "Костромская",
+      "Костромская область"
+    ],
+    "tariffCity": "Кострома",
+    "coefficientPolicy": "CENTER_OR_REGIONAL"
+  },
+  {
+    "regionIsoCode": "RU-KGN",
+    "regionNames": [
+      "Курганская",
+      "Курганская область"
+    ],
+    "tariffCity": "Курган",
+    "coefficientPolicy": "CENTER_OR_REGIONAL"
+  },
+  {
+    "regionIsoCode": "RU-KRS",
+    "regionNames": [
+      "Курская",
+      "Курская область"
+    ],
+    "tariffCity": "Курск",
+    "coefficientPolicy": "CENTER_OR_REGIONAL"
+  },
+  {
+    "regionIsoCode": "RU-LEN",
+    "regionNames": [
+      "Ленинградская",
+      "Ленинградская область"
+    ],
+    "tariffCity": "Санкт-Петербург",
+    "coefficientPolicy": "ALWAYS_LENINGRAD_REGION"
+  },
+  {
+    "regionIsoCode": "RU-LIP",
+    "regionNames": [
+      "Липецкая",
+      "Липецкая область"
+    ],
+    "tariffCity": "Липецк",
+    "coefficientPolicy": "CENTER_OR_REGIONAL"
+  },
+  {
+    "regionIsoCode": "RU-MAG",
+    "regionNames": [
+      "Магаданская",
+      "Магаданская область"
+    ],
+    "tariffCity": "Магадан",
+    "coefficientPolicy": "CENTER_OR_REGIONAL"
+  },
+  {
+    "regionIsoCode": "RU-MOS",
+    "regionNames": [
+      "Московская",
+      "Московская область"
+    ],
+    "tariffCity": "Москва",
+    "coefficientPolicy": "ALWAYS_REGIONAL"
+  },
+  {
+    "regionIsoCode": "RU-MUR",
+    "regionNames": [
+      "Мурманская",
+      "Мурманская область"
+    ],
+    "tariffCity": "Мурманск",
+    "coefficientPolicy": "CENTER_OR_REGIONAL"
+  },
+  {
+    "regionIsoCode": "RU-NIZ",
+    "regionNames": [
+      "Нижегородская",
+      "Нижегородская область"
+    ],
+    "tariffCity": "Нижний Новгород",
+    "coefficientPolicy": "CENTER_OR_REGIONAL"
+  },
+  {
+    "regionIsoCode": "RU-NGR",
+    "regionNames": [
+      "Новгородская",
+      "Новгородская область"
+    ],
+    "tariffCity": "Великий Новгород",
+    "coefficientPolicy": "CENTER_OR_REGIONAL"
+  },
+  {
+    "regionIsoCode": "RU-NVS",
+    "regionNames": [
+      "Новосибирская",
+      "Новосибирская область"
+    ],
+    "tariffCity": "Новосибирск",
+    "coefficientPolicy": "CENTER_OR_REGIONAL"
+  },
+  {
+    "regionIsoCode": "RU-OMS",
+    "regionNames": [
+      "Омская",
+      "Омская область"
+    ],
+    "tariffCity": "Омск",
+    "coefficientPolicy": "CENTER_OR_REGIONAL"
+  },
+  {
+    "regionIsoCode": "RU-ORE",
+    "regionNames": [
+      "Оренбургская",
+      "Оренбургская область"
+    ],
+    "tariffCity": "Оренбург",
+    "coefficientPolicy": "CENTER_OR_REGIONAL"
+  },
+  {
+    "regionIsoCode": "RU-ORL",
+    "regionNames": [
+      "Орловская",
+      "Орловская область"
+    ],
+    "tariffCity": "Орел",
+    "coefficientPolicy": "CENTER_OR_REGIONAL"
+  },
+  {
+    "regionIsoCode": "RU-PNZ",
+    "regionNames": [
+      "Пензенская",
+      "Пензенская область"
+    ],
+    "tariffCity": "Пенза",
+    "coefficientPolicy": "CENTER_OR_REGIONAL"
+  },
+  {
+    "regionIsoCode": "RU-PSK",
+    "regionNames": [
+      "Псковская",
+      "Псковская область"
+    ],
+    "tariffCity": "Псков",
+    "coefficientPolicy": "CENTER_OR_REGIONAL"
+  },
+  {
+    "regionIsoCode": "RU-ROS",
+    "regionNames": [
+      "Ростовская",
+      "Ростовская область"
+    ],
+    "tariffCity": "Ростов-на-Дону",
+    "coefficientPolicy": "CENTER_OR_REGIONAL"
+  },
+  {
+    "regionIsoCode": "RU-RYA",
+    "regionNames": [
+      "Рязанская",
+      "Рязанская область"
+    ],
+    "tariffCity": "Рязань",
+    "coefficientPolicy": "CENTER_OR_REGIONAL"
+  },
+  {
+    "regionIsoCode": "RU-SAM",
+    "regionNames": [
+      "Самарская",
+      "Самарская область"
+    ],
+    "tariffCity": "Самара",
+    "coefficientPolicy": "CENTER_OR_REGIONAL"
+  },
+  {
+    "regionIsoCode": "RU-SAR",
+    "regionNames": [
+      "Саратовская",
+      "Саратовская область"
+    ],
+    "tariffCity": "Саратов",
+    "coefficientPolicy": "CENTER_OR_REGIONAL"
+  },
+  {
+    "regionIsoCode": "RU-SAK",
+    "regionNames": [
+      "Сахалинская",
+      "Сахалинская область"
+    ],
+    "tariffCity": "Южно-Сахалинск",
+    "coefficientPolicy": "CENTER_OR_REGIONAL"
+  },
+  {
+    "regionIsoCode": "RU-SVE",
+    "regionNames": [
+      "Свердловская",
+      "Свердловская область"
+    ],
+    "tariffCity": "Екатеринбург",
+    "coefficientPolicy": "CENTER_OR_REGIONAL"
+  },
+  {
+    "regionIsoCode": "RU-SMO",
+    "regionNames": [
+      "Смоленская",
+      "Смоленская область"
+    ],
+    "tariffCity": "Смоленск",
+    "coefficientPolicy": "CENTER_OR_REGIONAL"
+  },
+  {
+    "regionIsoCode": "RU-TAM",
+    "regionNames": [
+      "Тамбовская",
+      "Тамбовская область"
+    ],
+    "tariffCity": "Тамбов",
+    "coefficientPolicy": "CENTER_OR_REGIONAL"
+  },
+  {
+    "regionIsoCode": "RU-TVE",
+    "regionNames": [
+      "Тверская",
+      "Тверская область"
+    ],
+    "tariffCity": "Тверь",
+    "coefficientPolicy": "CENTER_OR_REGIONAL"
+  },
+  {
+    "regionIsoCode": "RU-TOM",
+    "regionNames": [
+      "Томская",
+      "Томская область"
+    ],
+    "tariffCity": "Томск",
+    "coefficientPolicy": "CENTER_OR_REGIONAL"
+  },
+  {
+    "regionIsoCode": "RU-TUL",
+    "regionNames": [
+      "Тульская",
+      "Тульская область"
+    ],
+    "tariffCity": "Тула",
+    "coefficientPolicy": "CENTER_OR_REGIONAL"
+  },
+  {
+    "regionIsoCode": "RU-TYU",
+    "regionNames": [
+      "Тюменская",
+      "Тюменская область"
+    ],
+    "tariffCity": "Тюмень",
+    "coefficientPolicy": "CENTER_OR_REGIONAL"
+  },
+  {
+    "regionIsoCode": "RU-ULY",
+    "regionNames": [
+      "Ульяновская",
+      "Ульяновская область"
+    ],
+    "tariffCity": "Ульяновск",
+    "coefficientPolicy": "CENTER_OR_REGIONAL"
+  },
+  {
+    "regionIsoCode": "RU-KHE",
+    "regionNames": [
+      "Херсонская",
+      "Херсонская область"
+    ],
+    "tariffCity": "Геническ",
+    "coefficientPolicy": "CENTER_OR_REGIONAL"
+  },
+  {
+    "regionIsoCode": "RU-CHE",
+    "regionNames": [
+      "Челябинская",
+      "Челябинская область"
+    ],
+    "tariffCity": "Челябинск",
+    "coefficientPolicy": "CENTER_OR_REGIONAL"
+  },
+  {
+    "regionIsoCode": "RU-YAR",
+    "regionNames": [
+      "Ярославская",
+      "Ярославская область"
+    ],
+    "tariffCity": "Ярославль",
+    "coefficientPolicy": "CENTER_OR_REGIONAL"
+  },
+  {
+    "regionIsoCode": "RU-MOW",
+    "regionNames": [
+      "Москва",
+      "г Москва"
+    ],
+    "tariffCity": "Москва",
+    "coefficientPolicy": "ALWAYS_CENTER"
+  },
+  {
+    "regionIsoCode": "RU-SPE",
+    "regionNames": [
+      "Санкт-Петербург",
+      "г Санкт-Петербург"
+    ],
+    "tariffCity": "Санкт-Петербург",
+    "coefficientPolicy": "ALWAYS_CENTER"
+  },
+  {
+    "regionIsoCode": "RU-SEV",
+    "regionNames": [
+      "Севастополь",
+      "г Севастополь"
+    ],
+    "tariffCity": "Севастополь",
+    "coefficientPolicy": "ALWAYS_CENTER"
+  },
+  {
+    "regionIsoCode": "RU-YEV",
+    "regionNames": [
+      "Еврейская",
+      "Еврейская автономная область"
+    ],
+    "tariffCity": "Биробиджан",
+    "coefficientPolicy": "CENTER_OR_REGIONAL"
+  },
+  {
+    "regionIsoCode": "RU-NEN",
+    "regionNames": [
+      "Ненецкий",
+      "Ненецкий автономный округ"
+    ],
+    "tariffCity": "Нарьян-Мар",
+    "coefficientPolicy": "CENTER_OR_REGIONAL"
+  },
+  {
+    "regionIsoCode": "RU-KHM",
+    "regionNames": [
+      "Ханты-Мансийский Автономный округ - Югра",
+      "Ханты-Мансийский",
+      "ХМАО - Югра",
+      "ХМАО"
+    ],
+    "tariffCity": "Ханты-Мансийск",
+    "coefficientPolicy": "CENTER_OR_REGIONAL"
+  },
+  {
+    "regionIsoCode": "RU-CHU",
+    "regionNames": [
+      "Чукотский",
+      "Чукотский автономный округ"
+    ],
+    "tariffCity": "Анадырь",
+    "coefficientPolicy": "CENTER_OR_REGIONAL"
+  },
+  {
+    "regionIsoCode": "RU-YAN",
+    "regionNames": [
+      "Ямало-Ненецкий",
+      "Ямало-Ненецкий автономный округ",
+      "ЯНАО"
+    ],
+    "tariffCity": "Салехард",
+    "coefficientPolicy": "CENTER_OR_REGIONAL"
+  }
+]

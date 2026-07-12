@@ -8,7 +8,8 @@ import ru.rtkmagistral.magistralapi.dto.pricing.DeliveryType;
 import ru.rtkmagistral.magistralapi.dto.pricing.PriceCalculationInput;
 import ru.rtkmagistral.magistralapi.dto.pricing.PriceCalculationResult;
 import ru.rtkmagistral.magistralapi.dto.pricing.TariffRow;
-import ru.rtkmagistral.magistralapi.exception.OrderException;
+import ru.rtkmagistral.magistralapi.exception.PricingErrorCode;
+import ru.rtkmagistral.magistralapi.exception.PricingException;
 import ru.rtkmagistral.magistralapi.service.spec.IPriceCalculationService;
 
 import java.math.BigDecimal;
@@ -57,12 +58,12 @@ public class PriceCalculationService implements IPriceCalculationService {
 
         Integer zone = referenceData.zone(input.senderCity(), input.receiverCity());
         if (zone == null) {
-            throw new OrderException("PRICING_ZONE_NOT_FOUND");
+            throw new PricingException(PricingErrorCode.PRICING_ZONE_NOT_FOUND);
         }
 
         TariffRow tariff = referenceData.tariff(deliveryType, zone);
         if (tariff == null) {
-            throw new OrderException("PRICING_TARIFF_NOT_AVAILABLE");
+            throw new PricingException(PricingErrorCode.PRICING_TARIFF_NOT_AVAILABLE);
         }
 
         BigDecimal chargeableWeight = chargeableWeightKg(input);
@@ -147,7 +148,7 @@ public class PriceCalculationService implements IPriceCalculationService {
 
     private BigDecimal requireTariffValue(Integer value) {
         if (value == null) {
-            throw new OrderException("PRICING_TARIFF_NOT_AVAILABLE");
+            throw new PricingException(PricingErrorCode.PRICING_TARIFF_NOT_AVAILABLE);
         }
         return BigDecimal.valueOf(value);
     }

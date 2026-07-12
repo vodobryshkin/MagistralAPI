@@ -13,6 +13,7 @@ import ru.rtkmagistral.magistralapi.dto.company.CompanyResponses;
 import ru.rtkmagistral.magistralapi.dto.confirmation_link.ConfirmationLinkResponses;
 import ru.rtkmagistral.magistralapi.dto.order.OrderResponse;
 import ru.rtkmagistral.magistralapi.dto.order.OrderResponses;
+import ru.rtkmagistral.magistralapi.dto.pricing.PricingErrorResponse;
 import ru.rtkmagistral.magistralapi.dto.token.VerifyResponse;
 import ru.rtkmagistral.magistralapi.dto.user.UserResponse;
 import ru.rtkmagistral.magistralapi.dto.user.UserResponses;
@@ -122,6 +123,21 @@ public class AppExceptionHandler {
             case "CANNOT_IDENTIFY_USER_USING_THIS_REFRESH_TOKEN" -> new ResponseEntity<>(AuthResponses.CANNOT_IDENTIFY_USER_USING_THIS_REFRESH_TOKEN, HttpStatus.NOT_FOUND);
             default -> new ResponseEntity<>(AuthResponses.REFRESH_TOKEN_INVALID, HttpStatus.UNAUTHORIZED);
         };
+    }
+
+
+    /**
+     * Ошибки адресного разрешения и тарификации не относятся к состоянию создания заказа.
+     */
+    @ExceptionHandler(PricingException.class)
+    public ResponseEntity<PricingErrorResponse> handlePricingException(PricingException ex) {
+        HttpStatus status = ex.getCode() == PricingErrorCode.DADATA_UNAVAILABLE
+                ? HttpStatus.SERVICE_UNAVAILABLE
+                : HttpStatus.UNPROCESSABLE_CONTENT;
+
+        return ResponseEntity
+                .status(status)
+                .body(new PricingErrorResponse(ex.getCode().name(), false));
     }
 
     /**

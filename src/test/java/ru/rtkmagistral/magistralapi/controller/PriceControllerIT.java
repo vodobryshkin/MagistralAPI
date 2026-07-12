@@ -11,6 +11,8 @@ import org.springframework.test.web.servlet.MockMvc;
 import ru.rtkmagistral.magistralapi.dto.pricing.DeliveryType;
 import ru.rtkmagistral.magistralapi.dto.pricing.PriceCalculationResult;
 import ru.rtkmagistral.magistralapi.exception.AppExceptionHandler;
+import ru.rtkmagistral.magistralapi.exception.PricingErrorCode;
+import ru.rtkmagistral.magistralapi.exception.PricingException;
 import ru.rtkmagistral.magistralapi.service.spec.IJWTService;
 import ru.rtkmagistral.magistralapi.service.spec.IPriceQuoteService;
 import ru.rtkmagistral.magistralapi.support.WebTestSupport;
@@ -100,4 +102,34 @@ class PriceControllerIT {
                         .content(json))
                 .andExpect(status().isUnprocessableContent());
     }
+    @Test
+    @DisplayName("Ошибка разрешения региона возвращается как 422, а не ORDER_IS_STILL_BEING_CREATED")
+    void orderPrice_pricingRegionError_returns422() throws Exception {
+        when(priceQuoteService.quote(any()))
+                .thenThrow(new PricingException(PricingErrorCode.PRICING_REGION_NOT_SUPPORTED));
+
+        mvc.perform(post("/api/v1/orders/price")
+                        .with(user("vova@example.com").roles("VERIFIED_USER"))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(VALID_JSON))
+                .andExpect(status().isUnprocessableContent())
+                .andExpect(jsonPath("$.message").value("PRICING_REGION_NOT_SUPPORTED"))
+                .andExpect(jsonPath("$.status").value(false));
+    }
+
+    @Test
+    @DisplayName("Недоступная Dadata возвращается как 503")
+    void orderPrice_dadataUnavailable_returns503() throws Exception {
+        when(priceQuoteService.quote(any()))
+                .thenThrow(new PricingException(PricingErrorCode.DADATA_UNAVAILABLE));
+
+        mvc.perform(post("/api/v1/orders/price")
+                        .with(user("vova@example.com").roles("VERIFIED_USER"))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(VALID_JSON))
+                .andExpect(status().isServiceUnavailable())
+                .andExpect(jsonPath("$.message").value("DADATA_UNAVAILABLE"))
+                .andExpect(jsonPath("$.status").value(false));
+    }
+
 }

@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import ru.rtkmagistral.magistralapi.dto.pricing.PriceCalculationResult;
 import ru.rtkmagistral.magistralapi.dto.pricing.PriceQuoteRequest;
 import ru.rtkmagistral.magistralapi.dto.pricing.PriceQuoteResponse;
+import ru.rtkmagistral.magistralapi.dto.pricing.PricingErrorResponse;
 import ru.rtkmagistral.magistralapi.exception.ValidationResponse;
 import ru.rtkmagistral.magistralapi.security.authorization.ForVerifiedUsers;
 import ru.rtkmagistral.magistralapi.service.spec.IPriceQuoteService;
@@ -49,10 +50,18 @@ public class PriceController {
             ),
             @ApiResponse(
                     responseCode = "422",
-                    description = "Переданные данные для расчёта семантически некорректные.",
+                    description = "Ошибка валидации, разрешения адреса или тарифного справочника.",
                     content = @Content(
                             mediaType = "application/json",
-                            schema = @Schema(implementation = ValidationResponse.class)
+                            schema = @Schema(oneOf = {ValidationResponse.class, PricingErrorResponse.class})
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "503",
+                    description = "Dadata недоступна, а безопасно определить субъект по строке адреса невозможно.",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = PricingErrorResponse.class)
                     )
             )
     })
@@ -84,10 +93,18 @@ public class PriceController {
             ),
             @ApiResponse(
                     responseCode = "422",
-                    description = "Переданные данные для расчёта семантически некорректные.",
+                    description = "Ошибка валидации, разрешения адреса или тарифного справочника.",
                     content = @Content(
                             mediaType = "application/json",
-                            schema = @Schema(implementation = ValidationResponse.class)
+                            schema = @Schema(oneOf = {ValidationResponse.class, PricingErrorResponse.class})
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "503",
+                    description = "Dadata недоступна, а безопасно определить субъект по строке адреса невозможно.",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = PricingErrorResponse.class)
                     )
             )
     })
